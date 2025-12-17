@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\Pagelibres;
+use App\Models\Pagelibre;
 
 class PageLibresSeeder extends Seeder
 {
@@ -81,7 +81,7 @@ class PageLibresSeeder extends Seeder
         ];
 
         foreach ($pages as $page) {
-            Pagelibres::updateOrCreate(['id' => $page['id']], $page);
+            Pagelibre::updateOrCreate(['id' => $page['id']], $page);
         }
     }
 }
