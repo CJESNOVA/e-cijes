@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use Database\Seeders\PageLibresSeeder; // ✅ importer le seeder des pages libres
 
 class DatabaseSeeder extends Seeder
 {
@@ -13,14 +14,13 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        // ── Utilisateur admin
         User::updateOrCreate(
-            [
-                'email' => 'yokamly@gmail.com',
-            ],
+            ['email' => 'yokamly@gmail.com'],
             [
                 'name' => 'ruben',
                 'email_verified_at' => null,
-                'password' => Hash::make('admin'), // ✅ password = admin
+                'password' => Hash::make('admin'), // mot de passe = admin
                 'remember_token' => 'NkBehxKx7yJqFJyFYFUFRvgXJk1hJHNtH5dJ68PtrNUui2cfM7gOoeUfYpDS',
                 'permissions' => json_encode([
                     'platform.systems.roles' => true,
@@ -33,5 +33,8 @@ class DatabaseSeeder extends Seeder
                 'updated_at' => now(),
             ]
         );
+
+        // ── Seed des pages libres
+        $this->call(PageLibresSeeder::class);
     }
 }
