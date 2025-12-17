@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
+use App\Models\User;
 
 class DatabaseSeeder extends Seeder
 {
@@ -13,11 +13,25 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        User::updateOrCreate(
+            [
+                'email' => 'yokamly@gmail.com',
+            ],
+            [
+                'name' => 'ruben',
+                'email_verified_at' => null,
+                'password' => Hash::make('admin'), // ✅ password = admin
+                'remember_token' => 'NkBehxKx7yJqFJyFYFUFRvgXJk1hJHNtH5dJ68PtrNUui2cfM7gOoeUfYpDS',
+                'permissions' => json_encode([
+                    'platform.systems.roles' => true,
+                    'platform.systems.users' => true,
+                    'platform.systems.attachment' => true,
+                    'platform.index' => true,
+                ]),
+                'supabase_user_id' => '370cdafe-1dfc-488b-9271-c6f2bb9d9bd3',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]
+        );
     }
 }
