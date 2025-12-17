@@ -22,7 +22,8 @@ class IndexController extends Controller
 
         $sliders = Slider::where('etat', 1)->where('slidertype_id', '=', 1)->orderBy('slidertype_id', 'asc')->orderBy('id', 'desc')->get();
 
-        $pagelibre = Pagelibre::where('etat', 1)->where('spotlight', 1)->first();
+        //$pagelibre = Pagelibre::where('etat', 1)->where('spotlight', 1)->where('langue_id', __('id'))->first();
+        $pagelibre = Pagelibre::find(1);
 
         $chiffres = Chiffre::where('etat', 1)->where('langue_id', __('id'))->orderBy('id', 'desc')->limit(4)->get();
 
