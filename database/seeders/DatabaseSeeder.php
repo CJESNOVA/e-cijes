@@ -28,7 +28,6 @@ class DatabaseSeeder extends Seeder
                     'platform.systems.attachment' => true,
                     'platform.index' => true,
                 ]),
-                //'supabase_user_id' => '370cdafe-1dfc-488b-9271-c6f2bb9d9bd3',
                 'created_at' => now(),
                 'updated_at' => now(),
             ]
