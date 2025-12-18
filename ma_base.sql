@@ -1359,4 +1359,3 @@ INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `re
 (4, 'Joel', 'greatmiraclethebest@gmail.com', NULL, '$2y$12$leigKwENbezLOW9M52Vly.yJu56dd1eq0SYxHB8bbKVZ.DJnKz9Se', NULL, '2025-09-10 06:48:33', '2025-09-10 06:48:33', NULL),
 (5, 'Assion TOMETY', 'assvictorien@gmail.com', NULL, '$2y$12$8YymD5lNowTP0udILZOeRuOjDotHqFVaX2aXYX/ZZoYTAMG77vnSG', NULL, '2025-09-10 06:54:33', '2025-09-11 22:50:36', '{\"platform.systems.attachment\":\"0\",\"platform.systems.roles\":\"0\",\"platform.systems.users\":\"0\",\"platform.index\":\"0\"}'),
 (6, 'Admin', 'admin@gmail.com', NULL, '$2y$12$H/HaNspVr1vY10DWjLqfOewyxknRuYmwgJd4cw/WPj53FSYbD2QEO', NULL, '2025-09-11 08:19:10', '2025-09-11 08:19:10', '{\"platform.systems.attachment\":\"0\",\"platform.systems.roles\":\"0\",\"platform.systems.users\":\"0\",\"platform.index\":\"0\"}');
-COMMIT;
