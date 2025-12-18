@@ -1,6 +1,6 @@
 
 --
--- Base de données : `cijet`
+-- Base de données : `ecijes`
 --
 
 --
@@ -1353,7 +1353,7 @@ INSERT INTO `temoignages` (`id`, `nom`, `profil`, `commentaire`, `langue_id`, `v
 --
 
 INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `remember_token`, `created_at`, `updated_at`, `permissions`) VALUES
-(1, 'ruben', 'yokamly@gmail.com', NULL, '$2y$12$zAnRDVer7dh20kI04UfmZu8WHOL4SqQ5DIWK1HzU6LMDT8Uk2Rshm', '6q4nbXFDbvPsjTHiJwbjtPfjIFFmJlpL5s2z8c8UWorYBraUpdpPTUfxM0OI', '2025-06-02 19:57:26', '2025-06-02 19:57:26', '{\"platform.systems.roles\":true,\"platform.systems.users\":true,\"platform.systems.attachment\":true,\"platform.index\":true}'),
+(1, 'ruben', 'yokamly@gmail.com', NULL, '$2y$12$zAnRDVer7dh20kI04UfmZu8WHOL4SqQ5DIWK1HzU6LMDT8Uk2Rshm', '6q4nbXFDbvPsjTHiJwbjtPfjIFFmJlpL5s2z8c8UWorYBraUpdpPTUfxM0OI', '2025-06-02 19:57:26', '2025-06-02 19:57:26', '{\"platform.systems.roles\":\"0\",\"platform.systems.users\":\"0\",\"platform.systems.attachment\":\"0\",\"platform.index\":\"0\"}'),
 (2, 'John Doe', 'johndoe@gmail.com', NULL, '$2y$12$bcR3Wh.w9dEjnEJekjC0wOEAuB7vUNuzHm33ShwwLmt3JwyvE3x3C', NULL, '2025-08-22 10:03:46', '2025-08-22 10:03:46', NULL),
 (3, 'Japhet', 'ptchabao@gmail.com', NULL, '$2y$12$py84LZKsnhNW65ljQztnBuStcxHaFGveVMmdVeVWVz3jQ4SmZNw5i', NULL, '2025-08-23 07:30:52', '2025-08-23 07:30:52', NULL),
 (4, 'Joel', 'greatmiraclethebest@gmail.com', NULL, '$2y$12$leigKwENbezLOW9M52Vly.yJu56dd1eq0SYxHB8bbKVZ.DJnKz9Se', NULL, '2025-09-10 06:48:33', '2025-09-10 06:48:33', NULL),
