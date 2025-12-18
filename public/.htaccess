@@ -5,33 +5,60 @@
 
     RewriteEngine On
 
-    # FORCER HTTPS
+    ##################################################
+    # 1. FORCER HTTPS
+    ##################################################
     RewriteCond %{HTTPS} off
     RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
-    # Handle Authorization Header
+    ##################################################
+    # 2. Handle Authorization & X-XSRF-Token Headers
+    ##################################################
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 
-    # Handle X-XSRF-Token Header
     RewriteCond %{HTTP:x-xsrf-token} .
     RewriteRule .* - [E=HTTP_X_XSRF_TOKEN:%{HTTP:X-XSRF-Token}]
 
-    # Redirect Trailing Slashes If Not A Folder...
+    ##################################################
+    # 3. REDIRECTION TRAILING SLASHES (si pas dossier)
+    ##################################################
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_URI} (.+)/$
     RewriteRule ^ %1 [L,R=301]
 
-    # Send Requests To Front Controller...
+    ##################################################
+    # 4. FRONT CONTROLLER LARAVEL
+    ##################################################
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]
 </IfModule>
 
-# SECURITE SUPPLEMENTAIRE
+##################################################
+# 5. HEADERS DE SECURITE
+##################################################
 <IfModule mod_headers.c>
+    # Protection contre le type de contenu incorrect
     Header always set X-Content-Type-Options "nosniff"
+
+    # Protection contre le clickjacking
     Header always set X-Frame-Options "SAMEORIGIN"
+
+    # Protection XSS
     Header always set X-XSS-Protection "1; mode=block"
+
+    # Politique de referrer
     Header always set Referrer-Policy "no-referrer-when-downgrade"
+
+    # CSP minimal pour autoriser JS/CSS Laravel (à adapter selon projet)
+    Header set Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self';"
 </IfModule>
+
+##################################################
+# 6. COMPATIBILITÉ FORMULAIRES AUTO-COMPLÉTION
+##################################################
+# Utiliser dans vos formulaires Laravel
+# <form method="POST" autocomplete="on">
+# <input type="email" name="email" autocomplete="email">
+# <input type="password" name="password" autocomplete="current-password">
