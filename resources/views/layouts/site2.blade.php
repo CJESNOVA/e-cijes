@@ -134,7 +134,7 @@
                                     </button>
 
                             <!-- ✅ Bouton connexion visible aussi sur mobile -->
-<a href="{{ env('APP_URL2', 'https://p-cijes.cjes.africa/') }}" 
+<a href="{{ env('APP_URL2') }}/login" 
    class="theme-btn bg-theme" 
    target="_blank" 
    rel="noopener noreferrer">
@@ -157,7 +157,7 @@
                                         <span class="icon"><i class="fa-solid fa-magnifying-glass"></i></span>
                                     </button>
 
-                                    <a href="{{ env('APP_URL2', 'https://p-cijes.cjes.africa/') }}" class="theme-btn bg-theme" target="_blank">
+                                    <a href="{{ env('APP_URL2') }}/login" class="theme-btn bg-theme" target="_blank">
                                         <span class="link-effect">
                                             <span class="effect-1">{{ __('site_connexion') }}</span>
                                             <span class="effect-1">{{ __('site_connexion') }}</span>
@@ -251,7 +251,7 @@
                                 </button>
 
                             <!-- ✅ Bouton connexion visible aussi sur mobile -->
-<a href="{{ env('APP_URL2', 'https://p-cijes.cjes.africa/') }}" 
+<a href="{{ env('APP_URL2') }}/login" 
    class="theme-btn bg-theme" 
    target="_blank" 
    rel="noopener noreferrer">
