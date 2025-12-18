@@ -1,7 +1,28 @@
 
 --
--- Base de données : `ecijes`
+-- Base de données : `cijet`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `accompagnementconseillers`
+--
+
+CREATE TABLE `accompagnementconseillers` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `observation` text DEFAULT NULL,
+  `accompagnementtype_id` bigint(20) UNSIGNED DEFAULT 0,
+  `conseiller_id` bigint(20) UNSIGNED DEFAULT 0,
+  `datedebut` date DEFAULT NULL,
+  `datefin` date DEFAULT NULL,
+  `montant` varchar(255) DEFAULT '0',
+  `accompagnement_id` bigint(20) UNSIGNED DEFAULT 0,
+  `spotlight` tinyint(1) NOT NULL DEFAULT 0,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table `accompagnementconseillers`
@@ -11,6 +32,22 @@ INSERT INTO `accompagnementconseillers` (`id`, `observation`, `accompagnementtyp
 (1, NULL, 1, 2, '2025-08-14', '2025-08-21', '50000', 2, 0, 1, '2025-08-14 09:18:44', '2025-08-22 11:28:56'),
 (2, NULL, 1, 2, '2025-08-22', '2025-08-30', '50000', 1, 0, 1, '2025-08-22 11:30:10', '2025-08-22 11:30:10');
 
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `accompagnementdocuments`
+--
+
+CREATE TABLE `accompagnementdocuments` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `document_id` bigint(20) UNSIGNED DEFAULT 0,
+  `accompagnement_id` bigint(20) UNSIGNED DEFAULT 0,
+  `spotlight` tinyint(1) NOT NULL DEFAULT 0,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 --
 -- Déchargement des données de la table `accompagnementdocuments`
 --
@@ -18,12 +55,45 @@ INSERT INTO `accompagnementconseillers` (`id`, `observation`, `accompagnementtyp
 INSERT INTO `accompagnementdocuments` (`id`, `document_id`, `accompagnement_id`, `spotlight`, `etat`, `created_at`, `updated_at`) VALUES
 (1, 1, 1, 0, 1, '2025-07-09 12:39:05', '2025-07-09 12:39:05');
 
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `accompagnementniveaus`
+--
+
+CREATE TABLE `accompagnementniveaus` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `titre` varchar(255) NOT NULL,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 --
 -- Déchargement des données de la table `accompagnementniveaus`
 --
 
 INSERT INTO `accompagnementniveaus` (`id`, `titre`, `etat`, `created_at`, `updated_at`) VALUES
 (1, 'Diagnostic', 1, '2025-06-19 12:38:23', '2025-06-19 12:38:38');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `accompagnements`
+--
+
+CREATE TABLE `accompagnements` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `membre_id` bigint(20) DEFAULT 0,
+  `entreprise_id` bigint(20) UNSIGNED DEFAULT 0,
+  `accompagnementniveau_id` bigint(20) UNSIGNED DEFAULT 0,
+  `dateaccompagnement` date DEFAULT NULL,
+  `accompagnementstatut_id` bigint(20) UNSIGNED DEFAULT 0,
+  `spotlight` tinyint(1) NOT NULL DEFAULT 0,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table `accompagnements`
@@ -34,6 +104,20 @@ INSERT INTO `accompagnements` (`id`, `membre_id`, `entreprise_id`, `accompagneme
 (2, 2, 2, 1, '2025-08-22', 2, 0, 1, '2025-08-22 11:21:08', '2025-08-23 07:34:00'),
 (3, 4, 0, 1, '2025-09-10', 1, 0, 1, '2025-09-10 07:33:31', '2025-09-10 07:33:31');
 
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `accompagnementstatuts`
+--
+
+CREATE TABLE `accompagnementstatuts` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `titre` varchar(255) NOT NULL,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 --
 -- Déchargement des données de la table `accompagnementstatuts`
 --
@@ -42,12 +126,68 @@ INSERT INTO `accompagnementstatuts` (`id`, `titre`, `etat`, `created_at`, `updat
 (1, 'En attente', 1, '2025-06-18 13:20:34', '2025-08-22 10:31:06'),
 (2, 'Terminé', 1, '2025-08-22 21:25:32', '2025-08-22 21:25:32');
 
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `accompagnementtypes`
+--
+
+CREATE TABLE `accompagnementtypes` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `titre` varchar(255) NOT NULL,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 --
 -- Déchargement des données de la table `accompagnementtypes`
 --
 
 INSERT INTO `accompagnementtypes` (`id`, `titre`, `etat`, `created_at`, `updated_at`) VALUES
 (1, 'Conseil', 1, '2025-08-14 09:12:11', '2025-08-14 09:12:11');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `actions`
+--
+
+CREATE TABLE `actions` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `titre` varchar(255) NOT NULL,
+  `code` varchar(255) DEFAULT NULL,
+  `point` varchar(255) DEFAULT NULL,
+  `limite` varchar(255) DEFAULT NULL,
+  `seuil` varchar(255) DEFAULT NULL,
+  `ressourcetype_id` bigint(20) UNSIGNED DEFAULT 0,
+  `spotlight` tinyint(1) NOT NULL DEFAULT 0,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `actualites`
+--
+
+CREATE TABLE `actualites` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `titre` varchar(255) NOT NULL,
+  `resume` text DEFAULT NULL,
+  `description` longtext DEFAULT NULL,
+  `langue_id` varchar(255) DEFAULT NULL,
+  `vignette` varchar(255) DEFAULT NULL,
+  `actualitetype_id` bigint(20) UNSIGNED DEFAULT 0,
+  `dateactualite` date DEFAULT NULL,
+  `pays_id` varchar(255) DEFAULT NULL,
+  `spotlight` tinyint(1) NOT NULL DEFAULT 0,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table `actualites`
@@ -58,6 +198,20 @@ INSERT INTO `actualites` (`id`, `titre`, `resume`, `description`, `langue_id`, `
 (2, '5 astuces pour rendre votre business plan irrésistible', 'Un business plan solide peut séduire investisseurs et partenaires. Voici 5 conseils pratiques pour le rendre convaincant et attractif.', '<p>Le business plan est la carte d’identité de votre projet. Mal rédigé, il peut fermer des portes ; bien structuré, il devient votre meilleur atout pour convaincre investisseurs et bailleurs. Dans cet article, nous vous dévoilons <strong>5 astuces incontournables</strong> pour concevoir un business plan clair, réaliste et séduisant, en mettant l’accent sur la viabilité financière et la stratégie de croissance.</p>', 'f9a16e49-d975-4d63-b201-5aee5888ac44', 'storage/actualites/2025/07/25/6883567761be4_femme-d-affaires-afro-americaine-travaillant-sur-ordinateur.jpg', 3, '2025-07-25', '3c4fbe39-dfa8-43c0-b7fd-bb946236543d', 0, 1, '2025-07-25 07:58:41', '2025-09-09 13:24:51'),
 (3, 'Success Story : De l’idée au marché grâce au CIJES', 'Découvrez comment un jeune entrepreneur a transformé une simple idée en une entreprise prospère grâce à l’accompagnement CIJES.', '<p>Chez CIJET, nous croyons que chaque idée mérite une chance. Cette success story raconte le parcours inspirant d’un incubé qui, grâce à notre <strong>parcours structuré</strong>, nos <strong>experts mentors</strong> et nos <strong>bons d’accompagnement</strong>, a franchi toutes les étapes : de la validation du concept jusqu’à la conquête du marché. Une preuve concrète que l’innovation, soutenue par un accompagnement efficace, peut changer des vies.</p>', 'f9a16e49-d975-4d63-b201-5aee5888ac44', 'storage/actualites/2025/07/25/6883568cb619b_personnes-au-bureau-pendant-une-journee-de-travail.jpg', 2, '2025-07-24', '3c4fbe39-dfa8-43c0-b7fd-bb946236543d', 0, 1, '2025-07-25 08:02:01', '2025-09-09 13:24:29');
 
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `actualitetypes`
+--
+
+CREATE TABLE `actualitetypes` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `titre` varchar(255) NOT NULL,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 --
 -- Déchargement des données de la table `actualitetypes`
 --
@@ -67,12 +221,48 @@ INSERT INTO `actualitetypes` (`id`, `titre`, `etat`, `created_at`, `updated_at`)
 (2, 'Événements & Formations', 1, '2025-07-25 07:52:25', '2025-07-25 07:52:25'),
 (3, 'Conseils & Bonnes Pratiques', 1, '2025-07-25 07:52:49', '2025-07-25 07:52:49');
 
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `alertes`
+--
+
+CREATE TABLE `alertes` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `titre` varchar(255) NOT NULL,
+  `contenu` text DEFAULT NULL,
+  `lienurl` text DEFAULT NULL,
+  `langue_id` varchar(255) DEFAULT NULL,
+  `alertetype_id` bigint(20) UNSIGNED DEFAULT 0,
+  `recompense_id` bigint(20) DEFAULT 0,
+  `datealerte` datetime DEFAULT NULL,
+  `membre_id` bigint(20) UNSIGNED DEFAULT 0,
+  `lu` tinyint(1) NOT NULL DEFAULT 0,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 --
 -- Déchargement des données de la table `alertes`
 --
 
-INSERT INTO `alertes` (`id`, `titre`, `contenu`, `lienurl`, `langue_id`, `alertetype_id`, `datealerte`, `membre_id`, `lu`, `etat`, `created_at`, `updated_at`) VALUES
-(1, 'Alerte 1', 'Alerte 1 Alerte 1 Alerte 1 Alerte 1 Alerte 1', NULL, '1', 2, '2025-07-07', 1, 0, 1, '2025-07-07 17:26:28', '2025-07-08 07:04:35');
+INSERT INTO `alertes` (`id`, `titre`, `contenu`, `lienurl`, `langue_id`, `alertetype_id`, `recompense_id`, `datealerte`, `membre_id`, `lu`, `etat`, `created_at`, `updated_at`) VALUES
+(1, 'Alerte 1', 'Alerte 1 Alerte 1 Alerte 1 Alerte 1 Alerte 1', NULL, '1', 2, 0, '2025-07-07 00:00:00', 1, 0, 1, '2025-07-07 17:26:28', '2025-07-08 07:04:35');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `alertetypes`
+--
+
+CREATE TABLE `alertetypes` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `titre` varchar(255) NOT NULL,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table `alertetypes`
@@ -81,6 +271,44 @@ INSERT INTO `alertes` (`id`, `titre`, `contenu`, `lienurl`, `langue_id`, `alerte
 INSERT INTO `alertetypes` (`id`, `titre`, `etat`, `created_at`, `updated_at`) VALUES
 (1, 'Alertes', 1, '2025-07-07 17:25:09', '2025-07-07 17:25:09'),
 (2, 'Infos', 1, '2025-07-07 17:25:18', '2025-07-07 17:25:18');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `attachmentable`
+--
+
+CREATE TABLE `attachmentable` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `attachmentable_type` varchar(255) NOT NULL,
+  `attachmentable_id` int(10) UNSIGNED NOT NULL,
+  `attachment_id` int(10) UNSIGNED NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `attachments`
+--
+
+CREATE TABLE `attachments` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `name` text NOT NULL,
+  `original_name` text NOT NULL,
+  `mime` varchar(255) NOT NULL,
+  `extension` varchar(255) DEFAULT NULL,
+  `size` bigint(20) NOT NULL DEFAULT 0,
+  `sort` int(11) NOT NULL DEFAULT 0,
+  `path` text NOT NULL,
+  `description` text DEFAULT NULL,
+  `alt` text DEFAULT NULL,
+  `hash` text DEFAULT NULL,
+  `disk` varchar(255) NOT NULL DEFAULT 'public',
+  `user_id` bigint(20) UNSIGNED DEFAULT NULL,
+  `group` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table `attachments`
@@ -120,12 +348,47 @@ INSERT INTO `attachments` (`id`, `name`, `original_name`, `mime`, `extension`, `
 (32, 'dd09eda38ce0efe5862d7c391c32a362abe2c468', '13.jpg', 'image/jpeg', 'jpg', 542824, 0, '2025/07/02/', NULL, NULL, '079341ba1d8aae7153545dd82466a34a000fe348', 'public', 1, NULL, '2025-07-02 12:41:34', '2025-07-02 12:41:34'),
 (33, '64fe194339bc6941d7e3706d3c1814b3ed5c3131', 'afrique-togoéàç.png', 'image/png', 'png', 837328, 0, '2025/06/02/', NULL, NULL, 'dfb93b5d6796b83dc21dd811dfb6edb936238750', 'public', 1, NULL, '2025-07-07 14:31:14', '2025-07-07 14:31:14');
 
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `bons`
+--
+
+CREATE TABLE `bons` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `montant` varchar(255) NOT NULL,
+  `bonstatut_id` bigint(20) UNSIGNED DEFAULT 0,
+  `bontype_id` bigint(20) UNSIGNED DEFAULT 0,
+  `datebon` date DEFAULT NULL,
+  `pays_id` varchar(255) DEFAULT NULL,
+  `entreprise_id` bigint(20) DEFAULT 0,
+  `user_id` bigint(20) DEFAULT 0,
+  `spotlight` tinyint(1) NOT NULL DEFAULT 0,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 --
 -- Déchargement des données de la table `bons`
 --
 
 INSERT INTO `bons` (`id`, `montant`, `bonstatut_id`, `bontype_id`, `datebon`, `pays_id`, `entreprise_id`, `user_id`, `spotlight`, `etat`, `created_at`, `updated_at`) VALUES
 (1, '500000', 1, 1, '2025-07-09', '8409335f-e085-4597-9cae-359a60a816c6', 1, 1, 0, 1, '2025-07-08 07:57:13', '2025-08-16 06:29:33');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `bonstatuts`
+--
+
+CREATE TABLE `bonstatuts` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `titre` varchar(255) NOT NULL,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table `bonstatuts`
@@ -134,12 +397,44 @@ INSERT INTO `bons` (`id`, `montant`, `bonstatut_id`, `bontype_id`, `datebon`, `p
 INSERT INTO `bonstatuts` (`id`, `titre`, `etat`, `created_at`, `updated_at`) VALUES
 (1, 'En attente', 1, '2025-08-16 06:29:13', '2025-08-22 10:30:41');
 
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `bontypes`
+--
+
+CREATE TABLE `bontypes` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `titre` varchar(255) NOT NULL,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 --
 -- Déchargement des données de la table `bontypes`
 --
 
 INSERT INTO `bontypes` (`id`, `titre`, `etat`, `created_at`, `updated_at`) VALUES
 (1, 'Bon d\'achat', 1, '2025-07-15 09:09:03', '2025-08-22 10:23:00');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `bonutilises`
+--
+
+CREATE TABLE `bonutilises` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `montant` varchar(255) NOT NULL,
+  `noteservice` text DEFAULT NULL,
+  `bon_id` bigint(20) UNSIGNED DEFAULT 0,
+  `prestationrealisee_id` bigint(20) UNSIGNED DEFAULT 0,
+  `spotlight` tinyint(1) NOT NULL DEFAULT 0,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table `bonutilises`
@@ -148,6 +443,18 @@ INSERT INTO `bontypes` (`id`, `titre`, `etat`, `created_at`, `updated_at`) VALUE
 INSERT INTO `bonutilises` (`id`, `montant`, `noteservice`, `bon_id`, `prestationrealisee_id`, `spotlight`, `etat`, `created_at`, `updated_at`) VALUES
 (1, '500000', 'dferfer', 1, 1, 0, 1, '2025-07-08 20:08:05', '2025-07-08 20:08:05');
 
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `cache`
+--
+
+CREATE TABLE `cache` (
+  `key` varchar(255) NOT NULL,
+  `value` mediumtext NOT NULL,
+  `expiration` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 --
 -- Déchargement des données de la table `cache`
 --
@@ -155,6 +462,37 @@ INSERT INTO `bonutilises` (`id`, `montant`, `noteservice`, `bon_id`, `prestation
 INSERT INTO `cache` (`key`, `value`, `expiration`) VALUES
 ('laravel_cache_5c785c036466adea360111aa28563bfd556b5fba', 'i:2;', 1766058098),
 ('laravel_cache_5c785c036466adea360111aa28563bfd556b5fba:timer', 'i:1766058098;', 1766058098);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `cache_locks`
+--
+
+CREATE TABLE `cache_locks` (
+  `key` varchar(255) NOT NULL,
+  `owner` varchar(255) NOT NULL,
+  `expiration` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `chiffres`
+--
+
+CREATE TABLE `chiffres` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `titre` varchar(255) NOT NULL,
+  `chiffre` varchar(255) DEFAULT NULL,
+  `langue_id` varchar(255) DEFAULT NULL,
+  `vignette` varchar(255) DEFAULT NULL,
+  `pays_id` varchar(255) DEFAULT NULL,
+  `spotlight` tinyint(1) NOT NULL DEFAULT 0,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table `chiffres`
@@ -166,6 +504,39 @@ INSERT INTO `chiffres` (`id`, `titre`, `chiffre`, `langue_id`, `vignette`, `pays
 (3, 'secteurs prioritaires couverts', '5', 'f9a16e49-d975-4d63-b201-5aee5888ac44', NULL, '3c4fbe39-dfa8-43c0-b7fd-bb946236543d', 0, 1, '2025-07-21 18:08:54', '2025-09-09 13:28:08'),
 (4, 'emplois créés en 1 an', '300', 'f9a16e49-d975-4d63-b201-5aee5888ac44', NULL, '3c4fbe39-dfa8-43c0-b7fd-bb946236543d', 0, 1, '2025-07-21 18:09:19', '2025-09-09 13:27:23');
 
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `commentaires`
+--
+
+CREATE TABLE `commentaires` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `nom` varchar(255) NOT NULL,
+  `email` varchar(255) DEFAULT NULL,
+  `message` text DEFAULT NULL,
+  `actualite_id` bigint(20) UNSIGNED DEFAULT 0,
+  `pays_id` varchar(255) DEFAULT NULL,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `communes`
+--
+
+CREATE TABLE `communes` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `nom` varchar(255) NOT NULL,
+  `prefecture_id` bigint(20) UNSIGNED DEFAULT 0,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 --
 -- Déchargement des données de la table `communes`
 --
@@ -174,12 +545,47 @@ INSERT INTO `communes` (`id`, `nom`, `prefecture_id`, `etat`, `created_at`, `upd
 (1, 'Golfe 7', 1, 1, '2025-06-28 14:17:17', '2025-06-28 14:17:17'),
 (2, 'Golfe 1', 1, 1, '2025-06-28 14:17:37', '2025-06-28 14:17:37');
 
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `conseillerentreprises`
+--
+
+CREATE TABLE `conseillerentreprises` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `conseiller_id` bigint(20) UNSIGNED DEFAULT 0,
+  `entreprise_id` bigint(20) UNSIGNED DEFAULT 0,
+  `spotlight` tinyint(1) NOT NULL DEFAULT 0,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 --
 -- Déchargement des données de la table `conseillerentreprises`
 --
 
 INSERT INTO `conseillerentreprises` (`id`, `conseiller_id`, `entreprise_id`, `spotlight`, `etat`, `created_at`, `updated_at`) VALUES
 (1, 1, 1, 0, 1, '2025-08-14 09:13:04', '2025-08-14 09:13:04');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `conseillerprescriptions`
+--
+
+CREATE TABLE `conseillerprescriptions` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `conseiller_id` bigint(20) UNSIGNED DEFAULT 0,
+  `membre_id` bigint(20) UNSIGNED DEFAULT 0,
+  `entreprise_id` bigint(20) DEFAULT 0,
+  `prestation_id` bigint(20) UNSIGNED DEFAULT 0,
+  `formation_id` bigint(20) UNSIGNED DEFAULT 0,
+  `spotlight` tinyint(1) NOT NULL DEFAULT 0,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table `conseillerprescriptions`
@@ -191,6 +597,24 @@ INSERT INTO `conseillerprescriptions` (`id`, `conseiller_id`, `membre_id`, `entr
 (4, 2, 2, 0, 2, 0, 0, 1, '2025-08-22 11:29:30', '2025-08-22 11:29:30'),
 (5, 2, 2, 1, 2, 0, 0, 1, '2025-08-22 11:30:51', '2025-08-22 11:30:51');
 
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `conseillers`
+--
+
+CREATE TABLE `conseillers` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `fonction` longtext DEFAULT NULL,
+  `conseillertype_id` bigint(20) UNSIGNED DEFAULT 0,
+  `conseillervalide_id` bigint(20) UNSIGNED DEFAULT 0,
+  `membre_id` bigint(20) UNSIGNED DEFAULT 0,
+  `spotlight` tinyint(1) NOT NULL DEFAULT 0,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 --
 -- Déchargement des données de la table `conseillers`
 --
@@ -199,12 +623,40 @@ INSERT INTO `conseillers` (`id`, `fonction`, `conseillertype_id`, `conseillerval
 (1, '<p>Conseil sur les technologies de l\'informatique </p>', 1, 1, 1, 0, 1, '2025-08-12 10:51:35', '2025-08-22 10:55:20'),
 (2, '<p>Conseiller</p>', 1, 1, 2, 0, 1, '2025-08-22 11:07:09', '2025-08-22 11:28:41');
 
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `conseillertypes`
+--
+
+CREATE TABLE `conseillertypes` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `titre` varchar(255) NOT NULL,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 --
 -- Déchargement des données de la table `conseillertypes`
 --
 
 INSERT INTO `conseillertypes` (`id`, `titre`, `etat`, `created_at`, `updated_at`) VALUES
 (1, 'Conseiller CIJES', 1, '2025-08-12 10:38:35', '2025-08-12 10:38:35');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `conseillervalides`
+--
+
+CREATE TABLE `conseillervalides` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `titre` varchar(255) NOT NULL,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table `conseillervalides`
@@ -213,12 +665,102 @@ INSERT INTO `conseillertypes` (`id`, `titre`, `etat`, `created_at`, `updated_at`
 INSERT INTO `conseillervalides` (`id`, `titre`, `etat`, `created_at`, `updated_at`) VALUES
 (1, 'En attente', 1, '2025-08-12 10:38:15', '2025-08-22 10:19:59');
 
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `contacts`
+--
+
+CREATE TABLE `contacts` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `nom` varchar(255) NOT NULL,
+  `email` varchar(255) DEFAULT NULL,
+  `message` text DEFAULT NULL,
+  `contacttype_id` bigint(20) UNSIGNED DEFAULT 0,
+  `pays_id` varchar(255) DEFAULT NULL,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `contacttypes`
+--
+
+CREATE TABLE `contacttypes` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `titre` varchar(255) NOT NULL,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `conversations`
+--
+
+CREATE TABLE `conversations` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `membre_id1` bigint(20) UNSIGNED DEFAULT 0,
+  `membre_id2` bigint(20) UNSIGNED DEFAULT 0,
+  `spotlight` tinyint(1) NOT NULL DEFAULT 0,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 --
 -- Déchargement des données de la table `conversations`
 --
 
 INSERT INTO `conversations` (`id`, `membre_id1`, `membre_id2`, `spotlight`, `etat`, `created_at`, `updated_at`) VALUES
 (1, 1, 1, 0, 1, '2025-07-10 10:46:30', '2025-07-10 10:46:30');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `conversions`
+--
+
+CREATE TABLE `conversions` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `taux` varchar(255) DEFAULT NULL,
+  `ressourcetransaction_source_id` bigint(20) UNSIGNED DEFAULT 0,
+  `ressourcetransaction_cible_id` bigint(20) UNSIGNED DEFAULT 0,
+  `membre_id` bigint(20) DEFAULT 0,
+  `entreprise_id` bigint(20) DEFAULT 0,
+  `spotlight` tinyint(1) NOT NULL DEFAULT 0,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `credits`
+--
+
+CREATE TABLE `credits` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `montanttotal` varchar(255) NOT NULL,
+  `montantutilise` varchar(255) NOT NULL,
+  `creditstatut_id` bigint(20) UNSIGNED DEFAULT 0,
+  `credittype_id` bigint(20) UNSIGNED DEFAULT 0,
+  `datecredit` date DEFAULT NULL,
+  `entreprise_id` bigint(20) UNSIGNED DEFAULT 0,
+  `pays_id` varchar(255) DEFAULT NULL,
+  `partenaire_id` bigint(20) DEFAULT 0,
+  `user_id` bigint(20) DEFAULT 0,
+  `spotlight` tinyint(1) NOT NULL DEFAULT 0,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table `credits`
@@ -227,12 +769,61 @@ INSERT INTO `conversations` (`id`, `membre_id1`, `membre_id2`, `spotlight`, `eta
 INSERT INTO `credits` (`id`, `montanttotal`, `montantutilise`, `creditstatut_id`, `credittype_id`, `datecredit`, `entreprise_id`, `pays_id`, `partenaire_id`, `user_id`, `spotlight`, `etat`, `created_at`, `updated_at`) VALUES
 (1, '555', '555', 1, 1, '2025-07-22', 1, '8409335f-e085-4597-9cae-359a60a816c6', 1, 1, 0, 1, '2025-07-10 18:36:04', '2025-08-16 06:52:18');
 
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `creditstatuts`
+--
+
+CREATE TABLE `creditstatuts` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `titre` varchar(255) NOT NULL,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 --
 -- Déchargement des données de la table `creditstatuts`
 --
 
 INSERT INTO `creditstatuts` (`id`, `titre`, `etat`, `created_at`, `updated_at`) VALUES
 (1, 'En attente', 1, '2025-06-18 20:01:04', '2025-06-18 20:01:04');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `credittypes`
+--
+
+CREATE TABLE `credittypes` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `titre` varchar(255) NOT NULL,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `diagnosticmodules`
+--
+
+CREATE TABLE `diagnosticmodules` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `titre` varchar(255) NOT NULL,
+  `position` int(11) DEFAULT 0,
+  `description` longtext DEFAULT NULL,
+  `diagnosticmoduletype_id` bigint(20) DEFAULT 0,
+  `parent` bigint(20) DEFAULT 0,
+  `langue_id` varchar(255) DEFAULT NULL,
+  `pays_id` varchar(255) DEFAULT NULL,
+  `spotlight` tinyint(1) NOT NULL DEFAULT 0,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table `diagnosticmodules`
@@ -252,6 +843,20 @@ INSERT INTO `diagnosticmodules` (`id`, `titre`, `position`, `description`, `diag
 (11, 'BLOC 7 – SYSTÈME D’INFORMATION & DIGITALISATION', 7, NULL, 2, 0, NULL, NULL, 0, 1, '2025-08-22 11:16:58', '2025-08-22 11:16:58'),
 (12, 'BLOC 8 – STRATÉGIE DE DÉVELOPPEMENT & PARTENARIATS', 8, NULL, 2, 0, NULL, NULL, 0, 1, '2025-08-22 11:16:58', '2025-08-22 11:16:58');
 
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `diagnosticmoduletypes`
+--
+
+CREATE TABLE `diagnosticmoduletypes` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `titre` varchar(255) NOT NULL,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 --
 -- Déchargement des données de la table `diagnosticmoduletypes`
 --
@@ -259,6 +864,42 @@ INSERT INTO `diagnosticmodules` (`id`, `titre`, `position`, `description`, `diag
 INSERT INTO `diagnosticmoduletypes` (`id`, `titre`, `etat`, `created_at`, `updated_at`) VALUES
 (1, 'Diagnostics Membre', 1, '2025-08-13 13:04:35', '2025-08-13 13:04:35'),
 (2, 'Diagnostics Entreprise', 1, '2025-08-13 13:04:48', '2025-08-13 13:04:48');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `diagnosticquestioncategories`
+--
+
+CREATE TABLE `diagnosticquestioncategories` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `titre` varchar(255) NOT NULL,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `diagnosticquestions`
+--
+
+CREATE TABLE `diagnosticquestions` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `titre` varchar(255) NOT NULL,
+  `position` varchar(255) DEFAULT NULL,
+  `diagnosticmodule_id` bigint(20) UNSIGNED DEFAULT 0,
+  `diagnosticquestiontype_id` bigint(20) UNSIGNED DEFAULT 0,
+  `diagnosticquestioncategorie_id` bigint(20) UNSIGNED DEFAULT 0,
+  `langue_id` varchar(255) DEFAULT NULL,
+  `obligatoire` tinyint(1) NOT NULL DEFAULT 0,
+  `parent` bigint(20) UNSIGNED DEFAULT 0,
+  `spotlight` tinyint(1) NOT NULL DEFAULT 0,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table `diagnosticquestions`
@@ -312,6 +953,20 @@ INSERT INTO `diagnosticquestions` (`id`, `titre`, `position`, `diagnosticmodule_
 (803, 'Participes-tu à des programmes ou événements qui te permettent de progresser ?', '3', 12, 1, 0, NULL, 0, 0, 0, 1, '2025-08-22 11:16:58', '2025-08-22 11:16:58'),
 (804, 'Est-ce que tu innoves ou fais évoluer ton offre ?', '4', 12, 1, 0, NULL, 0, 0, 0, 1, '2025-08-22 11:16:58', '2025-08-22 11:16:58');
 
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `diagnosticquestiontypes`
+--
+
+CREATE TABLE `diagnosticquestiontypes` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `titre` varchar(255) NOT NULL,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 --
 -- Déchargement des données de la table `diagnosticquestiontypes`
 --
@@ -319,6 +974,25 @@ INSERT INTO `diagnosticquestions` (`id`, `titre`, `position`, `diagnosticmodule_
 INSERT INTO `diagnosticquestiontypes` (`id`, `titre`, `etat`, `created_at`, `updated_at`) VALUES
 (1, 'Choix unique', 1, '2025-07-29 12:55:21', '2025-07-29 12:55:21'),
 (2, 'Choix multiple', 1, '2025-07-29 12:55:42', '2025-07-29 12:55:42');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `diagnosticreponses`
+--
+
+CREATE TABLE `diagnosticreponses` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `titre` varchar(255) NOT NULL,
+  `position` int(11) DEFAULT 0,
+  `score` int(11) DEFAULT NULL,
+  `langue_id` varchar(255) DEFAULT NULL,
+  `diagnosticquestion_id` bigint(20) UNSIGNED DEFAULT 0,
+  `spotlight` tinyint(1) NOT NULL DEFAULT 0,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table `diagnosticreponses`
@@ -514,6 +1188,25 @@ INSERT INTO `diagnosticreponses` (`id`, `titre`, `position`, `score`, `langue_id
 (187, 'Je ne change rien. Ce que je propose reste le même', 3, 1, NULL, 804, 0, 1, '2025-08-22 11:16:58', '2025-08-22 11:16:58'),
 (188, 'Je ne vois pas l’intérêt de changer ce qui fonctionne déjà', 4, 0, NULL, 804, 0, 1, '2025-08-22 11:16:58', '2025-08-22 11:16:58');
 
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `diagnosticresultats`
+--
+
+CREATE TABLE `diagnosticresultats` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `reponsetexte` varchar(255) DEFAULT NULL,
+  `diagnosticreponseids` text DEFAULT NULL,
+  `diagnosticquestion_id` bigint(20) UNSIGNED DEFAULT 0,
+  `diagnosticreponse_id` bigint(20) UNSIGNED DEFAULT 0,
+  `diagnostic_id` bigint(20) UNSIGNED DEFAULT 0,
+  `spotlight` tinyint(1) NOT NULL DEFAULT 0,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 --
 -- Déchargement des données de la table `diagnosticresultats`
 --
@@ -699,6 +1392,27 @@ INSERT INTO `diagnosticresultats` (`id`, `reponsetexte`, `diagnosticreponseids`,
 (351, NULL, NULL, 803, 182, 11, 0, 1, '2025-09-10 13:02:28', '2025-09-10 13:02:28'),
 (352, NULL, NULL, 804, 188, 11, 0, 1, '2025-09-10 13:02:28', '2025-09-10 13:02:28');
 
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `diagnostics`
+--
+
+CREATE TABLE `diagnostics` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `scoreglobal` varchar(255) DEFAULT NULL,
+  `commentaire` text DEFAULT NULL,
+  `accompagnement_id` bigint(20) UNSIGNED DEFAULT 0,
+  `diagnostictype_id` bigint(20) UNSIGNED DEFAULT 0,
+  `diagnosticstatut_id` bigint(20) UNSIGNED DEFAULT 0,
+  `membre_id` bigint(20) UNSIGNED DEFAULT 0,
+  `entreprise_id` bigint(20) DEFAULT 0,
+  `spotlight` tinyint(1) NOT NULL DEFAULT 0,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 --
 -- Déchargement des données de la table `diagnostics`
 --
@@ -711,6 +1425,20 @@ INSERT INTO `diagnostics` (`id`, `scoreglobal`, `commentaire`, `accompagnement_i
 (10, '16', NULL, 3, 1, 2, 4, 0, 0, 1, '2025-09-10 07:33:30', '2025-09-10 07:33:31'),
 (11, '0', NULL, 0, 1, 1, 0, 3, 0, 1, '2025-09-10 13:02:28', '2025-09-10 13:02:28');
 
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `diagnosticstatuts`
+--
+
+CREATE TABLE `diagnosticstatuts` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `titre` varchar(255) NOT NULL,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 --
 -- Déchargement des données de la table `diagnosticstatuts`
 --
@@ -718,6 +1446,38 @@ INSERT INTO `diagnostics` (`id`, `scoreglobal`, `commentaire`, `accompagnement_i
 INSERT INTO `diagnosticstatuts` (`id`, `titre`, `etat`, `created_at`, `updated_at`) VALUES
 (1, 'En cours', 1, '2025-08-22 10:27:32', '2025-08-22 10:27:32'),
 (2, 'Validé', 1, '2025-08-22 10:29:11', '2025-08-22 10:29:11');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `diagnostictypes`
+--
+
+CREATE TABLE `diagnostictypes` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `titre` varchar(255) NOT NULL,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `disponibilites`
+--
+
+CREATE TABLE `disponibilites` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `horairedebut` varchar(255) NOT NULL,
+  `horairefin` varchar(255) DEFAULT NULL,
+  `jour_id` bigint(20) UNSIGNED DEFAULT 0,
+  `expert_id` bigint(20) UNSIGNED DEFAULT 0,
+  `spotlight` tinyint(1) NOT NULL DEFAULT 0,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table `disponibilites`
@@ -741,6 +1501,25 @@ INSERT INTO `disponibilites` (`id`, `horairedebut`, `horairefin`, `jour_id`, `ex
 (16, '11:00', '11:20', 6, 3, 0, 1, '2025-09-10 11:59:34', '2025-09-10 11:59:34'),
 (17, '11:00', '11:20', 6, 3, 0, 1, '2025-09-10 11:59:35', '2025-09-10 11:59:35');
 
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `documents`
+--
+
+CREATE TABLE `documents` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `titre` varchar(255) NOT NULL,
+  `fichier` varchar(255) DEFAULT NULL,
+  `documenttype_id` bigint(20) UNSIGNED DEFAULT 0,
+  `datedocument` date DEFAULT NULL,
+  `membre_id` bigint(20) UNSIGNED DEFAULT 0,
+  `spotlight` tinyint(1) NOT NULL DEFAULT 0,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 --
 -- Déchargement des données de la table `documents`
 --
@@ -752,6 +1531,20 @@ INSERT INTO `documents` (`id`, `titre`, `fichier`, `documenttype_id`, `datedocum
 (4, 'Acte de naissance', 'documents/mZMRNoxZp0wYbeSjka2FAp3NiXih77BBEGwuteY7.jpg', 3, '2025-09-10', 4, 0, 1, '2025-09-10 07:10:52', '2025-09-10 07:10:52'),
 (5, 'Certificat de nationalité', 'documents/H3MO3NzpJaazfFGV65Mn6UVEJVLHMzSOmLCJsx8R.png', 4, '2025-09-10', 4, 0, 1, '2025-09-10 07:10:52', '2025-09-10 07:10:52');
 
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `documenttypes`
+--
+
+CREATE TABLE `documenttypes` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `titre` varchar(255) NOT NULL,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 --
 -- Déchargement des données de la table `documenttypes`
 --
@@ -762,12 +1555,76 @@ INSERT INTO `documenttypes` (`id`, `titre`, `etat`, `created_at`, `updated_at`) 
 (3, 'Acte de naissance', 1, '2025-07-28 21:17:05', '2025-08-22 10:21:17'),
 (4, 'Certificat de nationalité', 1, '2025-07-28 21:17:05', '2025-08-22 10:21:37');
 
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `dossierstatuts`
+--
+
+CREATE TABLE `dossierstatuts` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `titre` varchar(255) NOT NULL,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `echeanciers`
+--
+
+CREATE TABLE `echeanciers` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `montant` varchar(255) NOT NULL,
+  `echeancierstatut_id` bigint(20) UNSIGNED DEFAULT 0,
+  `dateecheancier` date DEFAULT NULL,
+  `entreprise_id` bigint(20) UNSIGNED DEFAULT 0,
+  `spotlight` tinyint(1) NOT NULL DEFAULT 0,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 --
 -- Déchargement des données de la table `echeanciers`
 --
 
 INSERT INTO `echeanciers` (`id`, `montant`, `echeancierstatut_id`, `dateecheancier`, `entreprise_id`, `spotlight`, `etat`, `created_at`, `updated_at`) VALUES
 (1, '566', NULL, '2025-07-10', 1, 0, 1, '2025-07-10 19:34:08', '2025-07-10 19:34:08');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `echeancierstatuts`
+--
+
+CREATE TABLE `echeancierstatuts` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `titre` varchar(255) NOT NULL,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `entreprisemembres`
+--
+
+CREATE TABLE `entreprisemembres` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `fonction` varchar(255) DEFAULT NULL,
+  `bio` text DEFAULT NULL,
+  `membre_id` bigint(20) UNSIGNED DEFAULT 0,
+  `entreprise_id` bigint(20) UNSIGNED DEFAULT 0,
+  `spotlight` tinyint(1) NOT NULL DEFAULT 0,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table `entreprisemembres`
@@ -780,15 +1637,53 @@ INSERT INTO `entreprisemembres` (`id`, `fonction`, `bio`, `membre_id`, `entrepri
 (5, 'Directeur Général', 'Expert en Digitalisation et Management d\'entreprise', 4, 3, 0, 1, '2025-09-10 07:20:54', '2025-09-10 07:20:54'),
 (6, 'PDG', 'Serial entrepreneur', 4, 4, 0, 1, '2025-09-22 07:49:15', '2025-09-22 07:49:15');
 
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `entreprises`
+--
+
+CREATE TABLE `entreprises` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `nom` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `telephone` varchar(255) NOT NULL,
+  `adresse` text DEFAULT NULL,
+  `description` longtext DEFAULT NULL,
+  `vignette` varchar(255) DEFAULT NULL,
+  `entreprisetype_id` bigint(20) UNSIGNED DEFAULT 0,
+  `secteur_id` bigint(20) UNSIGNED DEFAULT 0,
+  `pays_id` varchar(255) DEFAULT NULL,
+  `supabase_startup_id` varchar(255) DEFAULT NULL,
+  `spotlight` tinyint(1) NOT NULL DEFAULT 0,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 --
 -- Déchargement des données de la table `entreprises`
 --
 
-INSERT INTO `entreprises` (`id`, `nom`, `email`, `telephone`, `adresse`, `description`, `vignette`, `entreprisetype_id`, `secteur_id`, `pays_id`, `spotlight`, `etat`, `created_at`, `updated_at`) VALUES
-(1, 'NovaLabs', 'yokamly@gmail.com', '90291387', '57, rue tchiko adewui', 'Innovation / Tech / Startups', 'Laravel/storage/app/public/entreprises/MJoM8EMgBM2NXNe0StRDDRFDJGiGhhNBpERZbyFw.png', 2, 1, '8409335f-e085-4597-9cae-359a60a816c6', 0, 1, '2025-07-07 14:48:01', '2025-08-22 13:30:28'),
-(2, 'SKE Group', 'yokamly@gmail.com', '90291387', '57, rue tchiko adewui', NULL, NULL, 1, 2, '8409335f-e085-4597-9cae-359a60a816c6', 0, 1, '2025-08-22 21:31:10', '2025-08-23 07:26:20'),
-(3, 'INNOVA TECH', 'innovatech@gmail.com', 'AZERZERTAETAERATER23534534', 'Kégué, lomé Togo', 'La vie est belle avec le digital', 'entreprises/Ypplp9dqKAHIarnKhXVP5OBBsctBptS5CmmALqUX.png', 2, 1, '3c4fbe39-dfa8-43c0-b7fd-bb946236543d', 1, 1, '2025-09-10 07:20:54', '2025-09-22 07:50:42'),
-(4, 'High Lab Tech', 'highlabtech@gmail.com', '+22890909090', 'Kégué, Lomé', 'Spécialisation en informatique', 'entreprises/60okuwooh3mAnRFEVYTXu8jm5kUd6zZkcuDutCZI.png', 2, 1, '3c4fbe39-dfa8-43c0-b7fd-bb946236543d', 1, 1, '2025-09-22 07:49:15', '2025-09-22 07:50:50');
+INSERT INTO `entreprises` (`id`, `nom`, `email`, `telephone`, `adresse`, `description`, `vignette`, `entreprisetype_id`, `secteur_id`, `pays_id`, `supabase_startup_id`, `spotlight`, `etat`, `created_at`, `updated_at`) VALUES
+(1, 'NovaLabs', 'yokamly@gmail.com', '90291387', '57, rue tchiko adewui', 'Innovation / Tech / Startups', 'Laravel/storage/app/public/entreprises/MJoM8EMgBM2NXNe0StRDDRFDJGiGhhNBpERZbyFw.png', 2, 1, '8409335f-e085-4597-9cae-359a60a816c6', NULL, 0, 1, '2025-07-07 14:48:01', '2025-08-22 13:30:28'),
+(2, 'SKE Group', 'yokamly@gmail.com', '90291387', '57, rue tchiko adewui', NULL, NULL, 1, 2, '8409335f-e085-4597-9cae-359a60a816c6', NULL, 0, 1, '2025-08-22 21:31:10', '2025-08-23 07:26:20'),
+(3, 'INNOVA TECH', 'innovatech@gmail.com', 'AZERZERTAETAERATER23534534', 'Kégué, lomé Togo', 'La vie est belle avec le digital', 'entreprises/Ypplp9dqKAHIarnKhXVP5OBBsctBptS5CmmALqUX.png', 2, 1, '3c4fbe39-dfa8-43c0-b7fd-bb946236543d', NULL, 1, 1, '2025-09-10 07:20:54', '2025-09-22 07:50:42'),
+(4, 'High Lab Tech', 'highlabtech@gmail.com', '+22890909090', 'Kégué, Lomé', 'Spécialisation en informatique', 'entreprises/60okuwooh3mAnRFEVYTXu8jm5kUd6zZkcuDutCZI.png', 2, 1, '3c4fbe39-dfa8-43c0-b7fd-bb946236543d', NULL, 1, 1, '2025-09-22 07:49:15', '2025-09-22 07:50:50');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `entreprisetypes`
+--
+
+CREATE TABLE `entreprisetypes` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `titre` varchar(255) NOT NULL,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table `entreprisetypes`
@@ -798,13 +1693,71 @@ INSERT INTO `entreprisetypes` (`id`, `titre`, `etat`, `created_at`, `updated_at`
 (1, 'SA', 1, '2025-06-18 21:29:26', '2025-06-18 21:29:26'),
 (2, 'SARL', 1, '2025-06-18 21:29:41', '2025-06-18 21:29:41');
 
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `espaceressources`
+--
+
+CREATE TABLE `espaceressources` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `montant` varchar(255) DEFAULT NULL,
+  `reference` text DEFAULT NULL,
+  `accompagnement_id` bigint(20) UNSIGNED DEFAULT 0,
+  `ressourcecompte_id` bigint(20) UNSIGNED DEFAULT 0,
+  `espace_id` bigint(20) UNSIGNED DEFAULT 0,
+  `paiementstatut_id` bigint(20) UNSIGNED DEFAULT 0,
+  `membre_id` bigint(20) UNSIGNED DEFAULT 0,
+  `entreprise_id` bigint(20) UNSIGNED DEFAULT 0,
+  `spotlight` tinyint(1) NOT NULL DEFAULT 0,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `espaces`
+--
+
+CREATE TABLE `espaces` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `titre` varchar(255) NOT NULL,
+  `capacite` varchar(255) DEFAULT NULL,
+  `resume` text DEFAULT NULL,
+  `prix` varchar(255) DEFAULT NULL,
+  `description` longtext DEFAULT NULL,
+  `vignette` varchar(255) DEFAULT NULL,
+  `espacetype_id` bigint(20) UNSIGNED DEFAULT 0,
+  `pays_id` varchar(255) DEFAULT NULL,
+  `spotlight` tinyint(1) NOT NULL DEFAULT 0,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 --
 -- Déchargement des données de la table `espaces`
 --
 
-INSERT INTO `espaces` (`id`, `titre`, `capacite`, `resume`, `description`, `vignette`, `espacetype_id`, `pays_id`, `spotlight`, `etat`, `created_at`, `updated_at`) VALUES
-(1, 'Nos salles de conférences', '20 m2', 'Nos salles de conférences à des prix imbattables', '<p>Nos salles de conférences à des prix imbattables </p>', 'Laravel/storage/app/public/espaces/2025/08/22/68a8923d9fd65_salle-de-reunion-d-affaires.jpg', 1, '8409335f-e085-4597-9cae-359a60a816c6', 0, 1, '2025-07-10 13:39:45', '2025-08-22 13:52:29'),
-(2, 'Des bureaux à louer', '10 m2', NULL, '<p><br></p>', 'Laravel/storage/app/public/espaces/2025/08/22/68a89258924d3_employe-masculin-a-son-nouveau-travail-de-bureau.jpg', 2, '8409335f-e085-4597-9cae-359a60a816c6', 0, 1, '2025-07-10 13:39:45', '2025-08-22 13:52:56');
+INSERT INTO `espaces` (`id`, `titre`, `capacite`, `resume`, `prix`, `description`, `vignette`, `espacetype_id`, `pays_id`, `spotlight`, `etat`, `created_at`, `updated_at`) VALUES
+(1, 'Nos salles de conférences', '20 m2', 'Nos salles de conférences à des prix imbattables', NULL, '<p>Nos salles de conférences à des prix imbattables </p>', 'Laravel/storage/app/public/espaces/2025/08/22/68a8923d9fd65_salle-de-reunion-d-affaires.jpg', 1, '8409335f-e085-4597-9cae-359a60a816c6', 0, 1, '2025-07-10 13:39:45', '2025-08-22 13:52:29'),
+(2, 'Des bureaux à louer', '10 m2', NULL, NULL, '<p><br></p>', 'Laravel/storage/app/public/espaces/2025/08/22/68a89258924d3_employe-masculin-a-son-nouveau-travail-de-bureau.jpg', 2, '8409335f-e085-4597-9cae-359a60a816c6', 0, 1, '2025-07-10 13:39:45', '2025-08-22 13:52:56');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `espacetypes`
+--
+
+CREATE TABLE `espacetypes` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `titre` varchar(255) NOT NULL,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table `espacetypes`
@@ -814,12 +1767,48 @@ INSERT INTO `espacetypes` (`id`, `titre`, `etat`, `created_at`, `updated_at`) VA
 (1, 'Salle de conférence', 1, '2025-07-31 08:04:15', '2025-07-31 08:04:15'),
 (2, 'Co-working', 1, '2025-07-31 08:04:15', '2025-07-31 08:04:15');
 
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `evaluations`
+--
+
+CREATE TABLE `evaluations` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `note` varchar(255) NOT NULL,
+  `commentaire` text DEFAULT NULL,
+  `membre_id` bigint(20) UNSIGNED DEFAULT 0,
+  `expert_id` bigint(20) UNSIGNED DEFAULT 0,
+  `spotlight` tinyint(1) NOT NULL DEFAULT 0,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 --
 -- Déchargement des données de la table `evaluations`
 --
 
 INSERT INTO `evaluations` (`id`, `note`, `commentaire`, `membre_id`, `expert_id`, `spotlight`, `etat`, `created_at`, `updated_at`) VALUES
 (2, '1', 'Hum', 4, 3, 0, 1, '2025-09-10 07:50:32', '2025-09-22 07:40:22');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `evenementinscriptions`
+--
+
+CREATE TABLE `evenementinscriptions` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `membre_id` bigint(20) UNSIGNED DEFAULT 0,
+  `evenement_id` bigint(20) UNSIGNED DEFAULT 0,
+  `dateevenementinscription` date DEFAULT NULL,
+  `evenementinscriptiontype_id` bigint(20) UNSIGNED DEFAULT 0,
+  `spotlight` tinyint(1) NOT NULL DEFAULT 0,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table `evenementinscriptions`
@@ -830,6 +1819,20 @@ INSERT INTO `evenementinscriptions` (`id`, `membre_id`, `evenement_id`, `dateeve
 (2, 2, 1, '2025-08-22', 1, 0, 1, '2025-08-22 10:52:31', '2025-08-22 10:52:31'),
 (3, 4, 1, '2025-09-10', 1, 0, 1, '2025-09-10 07:39:55', '2025-09-10 07:39:55');
 
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `evenementinscriptiontypes`
+--
+
+CREATE TABLE `evenementinscriptiontypes` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `titre` varchar(255) NOT NULL,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 --
 -- Déchargement des données de la table `evenementinscriptiontypes`
 --
@@ -839,13 +1842,72 @@ INSERT INTO `evenementinscriptiontypes` (`id`, `titre`, `etat`, `created_at`, `u
 (2, 'Peut-être', 1, '2025-08-11 10:51:01', '2025-08-11 10:51:01'),
 (3, 'Non', 1, '2025-08-11 10:51:09', '2025-08-11 10:51:09');
 
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `evenementressources`
+--
+
+CREATE TABLE `evenementressources` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `montant` varchar(255) DEFAULT NULL,
+  `reference` text DEFAULT NULL,
+  `accompagnement_id` bigint(20) UNSIGNED DEFAULT 0,
+  `ressourcecompte_id` bigint(20) UNSIGNED DEFAULT 0,
+  `evenement_id` bigint(20) UNSIGNED DEFAULT 0,
+  `paiementstatut_id` bigint(20) UNSIGNED DEFAULT 0,
+  `membre_id` bigint(20) UNSIGNED DEFAULT 0,
+  `entreprise_id` bigint(20) UNSIGNED DEFAULT 0,
+  `spotlight` tinyint(1) NOT NULL DEFAULT 0,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `evenements`
+--
+
+CREATE TABLE `evenements` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `titre` varchar(255) NOT NULL,
+  `resume` text DEFAULT NULL,
+  `prix` varchar(255) DEFAULT NULL,
+  `description` longtext DEFAULT NULL,
+  `langue_id` varchar(255) DEFAULT NULL,
+  `vignette` varchar(255) DEFAULT NULL,
+  `evenementtype_id` bigint(20) UNSIGNED DEFAULT 0,
+  `dateevenement` datetime DEFAULT NULL,
+  `pays_id` varchar(255) DEFAULT NULL,
+  `spotlight` tinyint(1) NOT NULL DEFAULT 0,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 --
 -- Déchargement des données de la table `evenements`
 --
 
-INSERT INTO `evenements` (`id`, `titre`, `resume`, `description`, `langue_id`, `vignette`, `evenementtype_id`, `dateevenement`, `pays_id`, `spotlight`, `etat`, `created_at`, `updated_at`) VALUES
-(1, 'Networking Entrepreneurial', 'Rencontres entre entrepreneurs', '<p>Séance mensuelle de networking pour échanger avec d’autres fondateurs et experts du secteur.</p>', 'f9a16e49-d975-4d63-b201-5aee5888ac44', 'storage/evenements/2025/08/11/6899ded185c94_conseil.JPG', 3, '2025-08-11 12:15:00', '3c4fbe39-dfa8-43c0-b7fd-bb946236543d', 0, 1, '2025-08-11 10:15:13', '2025-09-09 13:25:31'),
-(2, 'Startup Bootcamp 2025', 'Formation intensive pour incubés', '<p>Un bootcamp de 3 jours destiné aux startups incubées, avec ateliers pratiques sur le business model, le pitch, et la levée de fonds.</p>', 'f9a16e49-d975-4d63-b201-5aee5888ac44', 'storage/evenements/2025/08/21/68a77f003de33_conseils.JPG', 1, '2025-08-21 20:10:00', '3c4fbe39-dfa8-43c0-b7fd-bb946236543d', 0, 0, '2025-08-21 18:10:54', '2025-09-09 13:25:08');
+INSERT INTO `evenements` (`id`, `titre`, `resume`, `prix`, `description`, `langue_id`, `vignette`, `evenementtype_id`, `dateevenement`, `pays_id`, `spotlight`, `etat`, `created_at`, `updated_at`) VALUES
+(1, 'Networking Entrepreneurial', 'Rencontres entre entrepreneurs', NULL, '<p>Séance mensuelle de networking pour échanger avec d’autres fondateurs et experts du secteur.</p>', 'f9a16e49-d975-4d63-b201-5aee5888ac44', 'storage/evenements/2025/08/11/6899ded185c94_conseil.JPG', 3, '2025-08-11 12:15:00', '3c4fbe39-dfa8-43c0-b7fd-bb946236543d', 0, 1, '2025-08-11 10:15:13', '2025-09-09 13:25:31'),
+(2, 'Startup Bootcamp 2025', 'Formation intensive pour incubés', NULL, '<p>Un bootcamp de 3 jours destiné aux startups incubées, avec ateliers pratiques sur le business model, le pitch, et la levée de fonds.</p>', 'f9a16e49-d975-4d63-b201-5aee5888ac44', 'storage/evenements/2025/08/21/68a77f003de33_conseils.JPG', 1, '2025-08-21 20:10:00', '3c4fbe39-dfa8-43c0-b7fd-bb946236543d', 0, 0, '2025-08-21 18:10:54', '2025-09-09 13:25:08');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `evenementtypes`
+--
+
+CREATE TABLE `evenementtypes` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `titre` varchar(255) NOT NULL,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table `evenementtypes`
@@ -856,6 +1918,25 @@ INSERT INTO `evenementtypes` (`id`, `titre`, `etat`, `created_at`, `updated_at`)
 (2, 'Colloques', 1, '2025-08-11 09:48:44', '2025-08-11 09:48:44'),
 (3, 'Conférences de presse', 1, '2025-08-11 09:49:01', '2025-08-11 09:49:01');
 
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `experts`
+--
+
+CREATE TABLE `experts` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `domaine` longtext DEFAULT NULL,
+  `fichier` varchar(255) DEFAULT NULL,
+  `experttype_id` bigint(20) UNSIGNED DEFAULT 0,
+  `expertvalide_id` bigint(20) UNSIGNED DEFAULT 0,
+  `membre_id` bigint(20) UNSIGNED DEFAULT 0,
+  `spotlight` tinyint(1) NOT NULL DEFAULT 0,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 --
 -- Déchargement des données de la table `experts`
 --
@@ -864,6 +1945,20 @@ INSERT INTO `experts` (`id`, `domaine`, `fichier`, `experttype_id`, `expertvalid
 (2, 'Informatique', NULL, 1, 1, 2, 0, 1, '2025-08-22 10:53:01', '2025-08-22 10:53:01'),
 (3, 'Management d\'entreprise', 'experts/sPcsVJ3UOMSMvkInLdi2s3A4QW8y0ptoxuBDIn66.jpg', 1, 1, 4, 0, 1, '2025-09-10 07:45:52', '2025-09-10 07:45:52');
 
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `experttypes`
+--
+
+CREATE TABLE `experttypes` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `titre` varchar(255) NOT NULL,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 --
 -- Déchargement des données de la table `experttypes`
 --
@@ -871,12 +1966,60 @@ INSERT INTO `experts` (`id`, `domaine`, `fichier`, `experttype_id`, `expertvalid
 INSERT INTO `experttypes` (`id`, `titre`, `etat`, `created_at`, `updated_at`) VALUES
 (1, 'Expert', 1, '2025-07-09 13:06:16', '2025-07-09 13:06:16');
 
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `expertvalides`
+--
+
+CREATE TABLE `expertvalides` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `titre` varchar(255) NOT NULL,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 --
 -- Déchargement des données de la table `expertvalides`
 --
 
 INSERT INTO `expertvalides` (`id`, `titre`, `etat`, `created_at`, `updated_at`) VALUES
 (1, 'Validé', 1, '2025-07-09 13:05:04', '2025-07-09 13:05:04');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `failed_jobs`
+--
+
+CREATE TABLE `failed_jobs` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `uuid` varchar(255) NOT NULL,
+  `connection` text NOT NULL,
+  `queue` text NOT NULL,
+  `payload` longtext NOT NULL,
+  `exception` longtext NOT NULL,
+  `failed_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `faqs`
+--
+
+CREATE TABLE `faqs` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `question` text DEFAULT NULL,
+  `reponse` longtext DEFAULT NULL,
+  `langue_id` varchar(255) DEFAULT NULL,
+  `pays_id` varchar(255) DEFAULT NULL,
+  `spotlight` tinyint(1) NOT NULL DEFAULT 0,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table `faqs`
@@ -886,6 +2029,20 @@ INSERT INTO `faqs` (`id`, `question`, `reponse`, `langue_id`, `pays_id`, `spotli
 (1, 'Qu’est-ce que le CIJES ?', '<p>Le <strong>Centre d’Incubation des Juniors Entreprises et Startups (CIJES)</strong> est une plateforme hybride (digitale et physique) qui accompagne les jeunes entreprises, startups et coopératives à travers un <strong>modèle innovant basé sur les crédits d’incubation et les bons d’accompagnement</strong>.</p>', 'f9a16e49-d975-4d63-b201-5aee5888ac44', '3c4fbe39-dfa8-43c0-b7fd-bb946236543d', 0, 1, '2025-07-25 08:11:40', '2025-09-09 13:29:38'),
 (2, 'Qui peut rejoindre le CIJES ?', '<p>Toute <strong>jeune entreprise</strong>, <strong>startup</strong>, <strong>auto-entrepreneur</strong> ou <strong>coopérative</strong> enregistrée au Togo et ayant moins de <strong>10 ans d’existence</strong> peut s’inscrire. Des exceptions sont possibles pour des projets innovants à fort potentiel.</p>', 'f9a16e49-d975-4d63-b201-5aee5888ac44', '3c4fbe39-dfa8-43c0-b7fd-bb946236543d', 0, 1, '2025-07-25 08:12:40', '2025-09-09 13:28:49');
 
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `formationniveaus`
+--
+
+CREATE TABLE `formationniveaus` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `titre` varchar(255) NOT NULL,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 --
 -- Déchargement des données de la table `formationniveaus`
 --
@@ -894,16 +2051,98 @@ INSERT INTO `formationniveaus` (`id`, `titre`, `etat`, `created_at`, `updated_at
 (1, 'Débutant', 1, '2025-08-11 14:37:30', '2025-08-22 10:18:48'),
 (2, 'Intermédiaire', 1, '2025-08-22 10:18:38', '2025-08-22 10:18:38');
 
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `formationressources`
+--
+
+CREATE TABLE `formationressources` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `montant` varchar(255) DEFAULT NULL,
+  `reference` text DEFAULT NULL,
+  `accompagnement_id` bigint(20) UNSIGNED DEFAULT 0,
+  `ressourcecompte_id` bigint(20) UNSIGNED DEFAULT 0,
+  `formation_id` bigint(20) UNSIGNED DEFAULT 0,
+  `paiementstatut_id` bigint(20) UNSIGNED DEFAULT 0,
+  `membre_id` bigint(20) UNSIGNED DEFAULT 0,
+  `entreprise_id` bigint(20) UNSIGNED DEFAULT 0,
+  `spotlight` tinyint(1) NOT NULL DEFAULT 0,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `formations`
+--
+
+CREATE TABLE `formations` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `titre` varchar(255) NOT NULL,
+  `datedebut` date NOT NULL,
+  `datefin` date DEFAULT NULL,
+  `prix` varchar(255) DEFAULT NULL,
+  `description` text DEFAULT NULL,
+  `expert_id` bigint(20) UNSIGNED DEFAULT 0,
+  `formationniveau_id` bigint(20) UNSIGNED DEFAULT 0,
+  `formationtype_id` bigint(20) DEFAULT 0,
+  `pays_id` varchar(255) DEFAULT NULL,
+  `spotlight` tinyint(1) NOT NULL DEFAULT 0,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 --
 -- Déchargement des données de la table `formations`
 --
 
-INSERT INTO `formations` (`id`, `titre`, `datedebut`, `datefin`, `description`, `expert_id`, `formationniveau_id`, `pays_id`, `spotlight`, `etat`, `created_at`, `updated_at`) VALUES
-(1, 'Quelle formation suivre pour lancer sa startup ?', '2025-08-11', '2025-08-14', '<p>Quelle formation suivre pour lancer sa startup ? Quelle formation suivre pour lancer sa startup ?Quelle formation suivre pour lancer sa startup ?</p>', NULL, 1, '8409335f-e085-4597-9cae-359a60a816c6', 0, 1, '2025-08-11 14:46:50', '2025-08-22 10:41:48'),
-(3, 'Développement Personnel', '2025-09-18', '2025-09-24', 'Renforcez votre capacité en développement personnel', 3, 2, NULL, 0, 1, '2025-09-10 12:11:44', '2025-09-10 12:11:44'),
-(4, 'Développement Personnel', '2025-09-18', '2025-09-24', 'Renforcez votre capacité en développement personnel', 3, 2, NULL, 0, 1, '2025-09-10 12:11:44', '2025-09-10 12:11:44'),
-(5, 'Développement Personnel', '2025-09-18', '2025-09-24', 'Renforcez votre capacité en développement personnel', 3, 2, NULL, 0, 1, '2025-09-10 12:11:44', '2025-09-10 12:11:44'),
-(6, 'Développement Personnel', '2025-09-18', '2025-09-24', 'Renforcez votre capacité en développement personnel', 3, 2, NULL, 0, 1, '2025-09-10 12:11:45', '2025-09-10 12:11:45');
+INSERT INTO `formations` (`id`, `titre`, `datedebut`, `datefin`, `prix`, `description`, `expert_id`, `formationniveau_id`, `formationtype_id`, `pays_id`, `spotlight`, `etat`, `created_at`, `updated_at`) VALUES
+(1, 'Quelle formation suivre pour lancer sa startup ?', '2025-08-11', '2025-08-14', NULL, '<p>Quelle formation suivre pour lancer sa startup ? Quelle formation suivre pour lancer sa startup ?Quelle formation suivre pour lancer sa startup ?</p>', NULL, 1, 0, '8409335f-e085-4597-9cae-359a60a816c6', 0, 1, '2025-08-11 14:46:50', '2025-08-22 10:41:48'),
+(3, 'Développement Personnel', '2025-09-18', '2025-09-24', NULL, 'Renforcez votre capacité en développement personnel', 3, 2, 0, NULL, 0, 1, '2025-09-10 12:11:44', '2025-09-10 12:11:44'),
+(4, 'Développement Personnel', '2025-09-18', '2025-09-24', NULL, 'Renforcez votre capacité en développement personnel', 3, 2, 0, NULL, 0, 1, '2025-09-10 12:11:44', '2025-09-10 12:11:44'),
+(5, 'Développement Personnel', '2025-09-18', '2025-09-24', NULL, 'Renforcez votre capacité en développement personnel', 3, 2, 0, NULL, 0, 1, '2025-09-10 12:11:44', '2025-09-10 12:11:44'),
+(6, 'Développement Personnel', '2025-09-18', '2025-09-24', NULL, 'Renforcez votre capacité en développement personnel', 3, 2, 0, NULL, 0, 1, '2025-09-10 12:11:45', '2025-09-10 12:11:45');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `formationtypes`
+--
+
+CREATE TABLE `formationtypes` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `titre` varchar(255) NOT NULL,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `forums`
+--
+
+CREATE TABLE `forums` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `titre` varchar(255) NOT NULL,
+  `resume` text DEFAULT NULL,
+  `description` longtext DEFAULT NULL,
+  `langue_id` varchar(255) DEFAULT NULL,
+  `vignette` varchar(255) DEFAULT NULL,
+  `forumtype_id` bigint(20) UNSIGNED DEFAULT 0,
+  `secteur_id` bigint(20) UNSIGNED DEFAULT 0,
+  `dateforum` date DEFAULT NULL,
+  `pays_id` varchar(255) DEFAULT NULL,
+  `spotlight` tinyint(1) NOT NULL DEFAULT 0,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table `forums`
@@ -912,12 +2151,75 @@ INSERT INTO `formations` (`id`, `titre`, `datedebut`, `datefin`, `description`, 
 INSERT INTO `forums` (`id`, `titre`, `resume`, `description`, `langue_id`, `vignette`, `forumtype_id`, `secteur_id`, `dateforum`, `pays_id`, `spotlight`, `etat`, `created_at`, `updated_at`) VALUES
 (1, 'Présentation des membres', 'Espace pour que chaque entrepreneur se présente.', '<p><strong>Présentation des membres</strong> – espace pour que chaque entrepreneur se présente.</p><p><strong>Success stories</strong> – partager des réussites d’autres startups ou projets incubés.</p><p><strong>Leçons apprises</strong> – expériences, erreurs et apprentissages.</p>', '9a47a2c6-e532-403b-8acb-fb94ea2cb46a', 'storage/forums/2025/07/10/686f9cc7ed958_afrique-togoéàç.png', 1, NULL, '2025-07-11', '8409335f-e085-4597-9cae-359a60a816c6', 0, 1, '2025-07-10 08:58:16', '2025-08-22 10:38:43');
 
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `forumtypes`
+--
+
+CREATE TABLE `forumtypes` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `titre` varchar(255) NOT NULL,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 --
 -- Déchargement des données de la table `forumtypes`
 --
 
 INSERT INTO `forumtypes` (`id`, `titre`, `etat`, `created_at`, `updated_at`) VALUES
 (1, 'Sujet sur l\'incubation', 1, '2025-08-05 19:06:23', '2025-08-22 10:22:18');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `jobs`
+--
+
+CREATE TABLE `jobs` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `queue` varchar(255) NOT NULL,
+  `payload` longtext NOT NULL,
+  `attempts` tinyint(3) UNSIGNED NOT NULL,
+  `reserved_at` int(10) UNSIGNED DEFAULT NULL,
+  `available_at` int(10) UNSIGNED NOT NULL,
+  `created_at` int(10) UNSIGNED NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `job_batches`
+--
+
+CREATE TABLE `job_batches` (
+  `id` varchar(255) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `total_jobs` int(11) NOT NULL,
+  `pending_jobs` int(11) NOT NULL,
+  `failed_jobs` int(11) NOT NULL,
+  `failed_job_ids` longtext NOT NULL,
+  `options` mediumtext DEFAULT NULL,
+  `cancelled_at` int(11) DEFAULT NULL,
+  `created_at` int(11) NOT NULL,
+  `finished_at` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `jours`
+--
+
+CREATE TABLE `jours` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `titre` varchar(255) NOT NULL,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table `jours`
@@ -932,6 +2234,21 @@ INSERT INTO `jours` (`id`, `titre`, `etat`, `created_at`, `updated_at`) VALUES
 (6, 'Samedi', 1, '2025-08-22 10:19:33', '2025-08-22 10:19:33'),
 (7, 'Dimanche', 1, '2025-08-22 10:19:42', '2025-08-22 10:19:42');
 
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `langues`
+--
+
+CREATE TABLE `langues` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `titre` varchar(255) NOT NULL,
+  `code` varchar(255) NOT NULL,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 --
 -- Déchargement des données de la table `langues`
 --
@@ -939,6 +2256,28 @@ INSERT INTO `jours` (`id`, `titre`, `etat`, `created_at`, `updated_at`) VALUES
 INSERT INTO `langues` (`id`, `titre`, `code`, `etat`, `created_at`, `updated_at`) VALUES
 (1, 'Français', 'fr', 1, '2025-06-19 14:02:56', '2025-06-19 14:03:21'),
 (2, 'Anglais', 'en', 1, '2025-06-19 14:03:11', '2025-06-19 14:03:11');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `membres`
+--
+
+CREATE TABLE `membres` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `nom` varchar(255) NOT NULL,
+  `prenom` varchar(255) DEFAULT NULL,
+  `email` varchar(255) DEFAULT NULL,
+  `membrestatut_id` bigint(20) UNSIGNED DEFAULT 0,
+  `vignette` varchar(255) DEFAULT NULL,
+  `membretype_id` bigint(20) UNSIGNED DEFAULT 0,
+  `user_id` varchar(255) DEFAULT NULL,
+  `pays_id` varchar(255) DEFAULT NULL,
+  `telephone` varchar(255) DEFAULT NULL,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table `membres`
@@ -950,6 +2289,20 @@ INSERT INTO `membres` (`id`, `nom`, `prenom`, `email`, `membrestatut_id`, `vigne
 (3, 'Doe', 'John', 'johndoe@gmail.com', 1, NULL, 1, '2', '8409335f-e085-4597-9cae-359a60a816c6', '90291387', 1, '2025-08-22 10:06:39', '2025-08-22 10:06:39'),
 (4, 'TOSSOU', 'Leatitia', 'Leatitia@gmail.com', 1, 'vignettes/ISdQ2CwEGqAUM8n2lZ6rZOvhs7YTc4BZ8llSite6.png', 1, '5', '3c4fbe39-dfa8-43c0-b7fd-bb946236543d', 'AZEEEERTU', 1, '2025-09-10 07:07:38', '2025-09-10 07:14:10');
 
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `membrestatuts`
+--
+
+CREATE TABLE `membrestatuts` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `titre` varchar(255) NOT NULL,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 --
 -- Déchargement des données de la table `membrestatuts`
 --
@@ -957,6 +2310,20 @@ INSERT INTO `membres` (`id`, `nom`, `prenom`, `email`, `membrestatut_id`, `vigne
 INSERT INTO `membrestatuts` (`id`, `titre`, `etat`, `created_at`, `updated_at`) VALUES
 (1, 'En attente', 1, '2025-06-18 12:48:49', '2025-06-18 13:06:40'),
 (3, 'Actif', 1, '2025-06-18 12:50:17', '2025-06-18 16:11:02');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `membretypes`
+--
+
+CREATE TABLE `membretypes` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `titre` varchar(255) NOT NULL,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table `membretypes`
@@ -967,12 +2334,58 @@ INSERT INTO `membretypes` (`id`, `titre`, `etat`, `created_at`, `updated_at`) VA
 (2, 'Expert', 1, '2025-07-04 20:07:17', '2025-07-04 20:07:17'),
 (3, 'Partenaire', 1, '2025-07-04 20:07:36', '2025-07-04 20:07:36');
 
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `messageforums`
+--
+
+CREATE TABLE `messageforums` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `contenu` text DEFAULT NULL,
+  `sujet_id` bigint(20) UNSIGNED DEFAULT 0,
+  `membre_id` bigint(20) UNSIGNED DEFAULT 0,
+  `spotlight` tinyint(1) NOT NULL DEFAULT 0,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `messages`
+--
+
+CREATE TABLE `messages` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `contenu` text DEFAULT NULL,
+  `conversation_id` bigint(20) UNSIGNED DEFAULT 0,
+  `membre_id` bigint(20) UNSIGNED DEFAULT 0,
+  `lu` tinyint(1) NOT NULL DEFAULT 0,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 --
 -- Déchargement des données de la table `messages`
 --
 
 INSERT INTO `messages` (`id`, `contenu`, `conversation_id`, `membre_id`, `lu`, `etat`, `created_at`, `updated_at`) VALUES
 (1, 'dfjghgc df df g', 1, 1, 0, 1, '2025-07-10 11:25:15', '2025-07-10 11:25:15');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `migrations`
+--
+
+CREATE TABLE `migrations` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `migration` varchar(255) NOT NULL,
+  `batch` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table `migrations`
@@ -1090,6 +2503,103 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (122, '2025_06_02_221804_create_piecetypes_table', 100),
 (123, '2025_06_02_225744_create_pieces_table', 101);
 
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `newsletters`
+--
+
+CREATE TABLE `newsletters` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `nom` varchar(255) DEFAULT NULL,
+  `email` varchar(255) NOT NULL,
+  `newslettertype_id` bigint(20) UNSIGNED DEFAULT 0,
+  `pays_id` bigint(20) UNSIGNED DEFAULT 0,
+  `spotlight` tinyint(1) NOT NULL DEFAULT 0,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `newslettertypes`
+--
+
+CREATE TABLE `newslettertypes` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `titre` varchar(255) NOT NULL,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `notifications`
+--
+
+CREATE TABLE `notifications` (
+  `id` char(36) NOT NULL,
+  `type` varchar(255) NOT NULL,
+  `notifiable_type` varchar(255) NOT NULL,
+  `notifiable_id` bigint(20) UNSIGNED NOT NULL,
+  `data` text NOT NULL,
+  `read_at` timestamp NULL DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `offretypes`
+--
+
+CREATE TABLE `offretypes` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `titre` varchar(255) NOT NULL,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `operationtypes`
+--
+
+CREATE TABLE `operationtypes` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `titre` varchar(255) NOT NULL,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `pagelibres`
+--
+
+CREATE TABLE `pagelibres` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `titre` varchar(255) NOT NULL,
+  `resume` text DEFAULT NULL,
+  `description` longtext DEFAULT NULL,
+  `langue_id` varchar(255) DEFAULT NULL,
+  `vignette` varchar(255) DEFAULT NULL,
+  `parent` bigint(20) UNSIGNED DEFAULT 0,
+  `spotlight` tinyint(1) NOT NULL DEFAULT 0,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 --
 -- Déchargement des données de la table `pagelibres`
 --
@@ -1101,12 +2611,92 @@ INSERT INTO `pagelibres` (`id`, `titre`, `resume`, `description`, `langue_id`, `
 (4, 'Nos Valeurs', NULL, '<p><strong>Innovation</strong> : Anticiper et intégrer les meilleures solutions pour l’entrepreneuriat.</p><p><strong>Collaboration</strong> : Créer un écosystème basé sur l’entraide et le partage d’expériences.</p><p><strong>Intégrité</strong> : Garantir la transparence dans tous nos processus et partenariats.</p><p><strong>Inclusion</strong> : Offrir un accès équitable aux services, sans barrières sociales ou financières.</p><p><strong>Impact</strong> : Mesurer notre réussite par la croissance et la durabilité des entreprises incubées.</p>', 'f9a16e49-d975-4d63-b201-5aee5888ac44', NULL, 1, 0, 1, '2025-07-21 17:45:36', '2025-09-09 13:22:27'),
 (5, 'Notre Approche Unique', NULL, '<p>CIJES combine <strong>expertise humaine</strong> et <strong>technologies avancées</strong> pour offrir :</p><ol><li data-list=\"bullet\"><span class=\"ql-ui\" contenteditable=\"false\"></span>Un <strong>parcours d’incubation personnalisé</strong> adapté aux besoins réels.</li><li data-list=\"bullet\"><span class=\"ql-ui\" contenteditable=\"false\"></span>Des <strong>bons d’accompagnement intelligents</strong> pour les services stratégiques.</li><li data-list=\"bullet\"><span class=\"ql-ui\" contenteditable=\"false\"></span>Une <strong>intelligence artificielle intégrée</strong> pour le suivi et l’analyse en temps réel.</li><li data-list=\"bullet\"><span class=\"ql-ui\" contenteditable=\"false\"></span>Une <strong>plateforme digitale</strong> accessible 24/7 pour rester connecté et progresser.</li></ol><p><br></p>', 'f9a16e49-d975-4d63-b201-5aee5888ac44', NULL, 1, 0, 1, '2025-07-21 17:46:10', '2025-09-09 13:22:50');
 
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `paiementstatuts`
+--
+
+CREATE TABLE `paiementstatuts` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `titre` varchar(255) NOT NULL,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `parrainages`
+--
+
+CREATE TABLE `parrainages` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `lien` varchar(255) DEFAULT NULL,
+  `membre_parrain_id` bigint(20) UNSIGNED DEFAULT 0,
+  `membre_filleul_id` bigint(20) UNSIGNED DEFAULT 0,
+  `spotlight` tinyint(1) NOT NULL DEFAULT 0,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `partenaireactivitetypes`
+--
+
+CREATE TABLE `partenaireactivitetypes` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `titre` varchar(255) NOT NULL,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `partenaires`
+--
+
+CREATE TABLE `partenaires` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `titre` varchar(255) NOT NULL,
+  `contact` text DEFAULT NULL,
+  `description` longtext DEFAULT NULL,
+  `langue_id` varchar(255) DEFAULT NULL,
+  `vignette` varchar(255) DEFAULT NULL,
+  `partenairetype_id` bigint(20) UNSIGNED DEFAULT 0,
+  `pays_id` varchar(255) DEFAULT NULL,
+  `spotlight` tinyint(1) NOT NULL DEFAULT 0,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 --
 -- Déchargement des données de la table `partenaires`
 --
 
 INSERT INTO `partenaires` (`id`, `titre`, `contact`, `description`, `langue_id`, `vignette`, `partenairetype_id`, `pays_id`, `spotlight`, `etat`, `created_at`, `updated_at`) VALUES
 (1, 'Partenaire 1 Partenaire 1', NULL, NULL, 'f9a16e49-d975-4d63-b201-5aee5888ac44', NULL, 1, '3c4fbe39-dfa8-43c0-b7fd-bb946236543d', 0, 1, '2025-08-16 06:51:46', '2025-09-09 13:26:06');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `partenairetypes`
+--
+
+CREATE TABLE `partenairetypes` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `titre` varchar(255) NOT NULL,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table `partenairetypes`
@@ -1119,6 +2709,24 @@ INSERT INTO `partenairetypes` (`id`, `titre`, `etat`, `created_at`, `updated_at`
 (4, 'ONG', 1, '2025-07-21 18:10:48', '2025-07-21 18:10:48'),
 (5, 'Entreprises partenaires', 1, '2025-07-21 18:11:05', '2025-07-21 18:11:05');
 
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `participants`
+--
+
+CREATE TABLE `participants` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `membre_id` bigint(20) UNSIGNED DEFAULT 0,
+  `formation_id` bigint(20) UNSIGNED DEFAULT 0,
+  `dateparticipant` date DEFAULT NULL,
+  `participantstatut_id` bigint(20) UNSIGNED DEFAULT 0,
+  `spotlight` tinyint(1) NOT NULL DEFAULT 0,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 --
 -- Déchargement des données de la table `participants`
 --
@@ -1128,12 +2736,56 @@ INSERT INTO `participants` (`id`, `membre_id`, `formation_id`, `dateparticipant`
 (2, 2, 1, '2025-08-22', 1, 0, 1, '2025-08-22 12:44:43', '2025-08-22 12:44:43'),
 (3, 4, 3, '2025-09-10', 1, 0, 1, '2025-09-10 12:16:31', '2025-09-10 12:16:31');
 
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `participantstatuts`
+--
+
+CREATE TABLE `participantstatuts` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `titre` varchar(255) NOT NULL,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 --
 -- Déchargement des données de la table `participantstatuts`
 --
 
 INSERT INTO `participantstatuts` (`id`, `titre`, `etat`, `created_at`, `updated_at`) VALUES
 (1, 'En attente', 1, '2025-08-11 14:36:26', '2025-08-22 10:30:16');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `password_reset_tokens`
+--
+
+CREATE TABLE `password_reset_tokens` (
+  `email` varchar(255) NOT NULL,
+  `token` varchar(255) NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `payss`
+--
+
+CREATE TABLE `payss` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `nom` varchar(255) NOT NULL,
+  `code` varchar(255) NOT NULL,
+  `indicatif` varchar(255) DEFAULT NULL,
+  `monnaie` varchar(255) DEFAULT NULL,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `drapeau` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table `payss`
@@ -1142,6 +2794,25 @@ INSERT INTO `participantstatuts` (`id`, `titre`, `etat`, `created_at`, `updated_
 INSERT INTO `payss` (`id`, `nom`, `code`, `indicatif`, `monnaie`, `etat`, `drapeau`, `created_at`, `updated_at`) VALUES
 (2, 'Benin', 'BE', '229', 'XOF', 1, 'storage/drapeaux/2025/06/27/685eb9e2661d0_f775cd9e-d47d-4079-97cb-9aaee9413d29.png', '2025-06-27 13:24:29', '2025-06-28 09:24:46'),
 (4, 'Togo', 'TG', '228', 'XOF', 1, 'storage/drapeaux/2025/06/28/685fd1f663091_Image1.png', '2025-06-28 09:28:54', '2025-06-28 09:28:54');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `pieces`
+--
+
+CREATE TABLE `pieces` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `titre` varchar(255) NOT NULL,
+  `fichier` varchar(255) DEFAULT NULL,
+  `piecetype_id` bigint(20) UNSIGNED DEFAULT 0,
+  `datepiece` date DEFAULT NULL,
+  `entreprise_id` bigint(20) UNSIGNED DEFAULT 0,
+  `spotlight` tinyint(1) NOT NULL DEFAULT 0,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table `pieces`
@@ -1155,6 +2826,20 @@ INSERT INTO `pieces` (`id`, `titre`, `fichier`, `piecetype_id`, `datepiece`, `en
 (5, 'Carte OTR', 'pieces/Jms2d4rAlQnwqe2Ph8FgxuGbC6SUDZxULX3cJo22.png', 2, '2025-09-22', 4, 0, 1, '2025-09-22 07:51:57', '2025-09-22 07:51:57'),
 (6, 'Récépissé', 'pieces/xa2wFJBeyVijYEfcT06qm0wTQQ1dqlBegg687t5Z.png', 3, '2025-09-22', 4, 0, 1, '2025-09-22 07:51:57', '2025-09-22 07:51:57');
 
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `piecetypes`
+--
+
+CREATE TABLE `piecetypes` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `titre` varchar(255) NOT NULL,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 --
 -- Déchargement des données de la table `piecetypes`
 --
@@ -1164,6 +2849,24 @@ INSERT INTO `piecetypes` (`id`, `titre`, `etat`, `created_at`, `updated_at`) VAL
 (2, 'Carte OTR', 1, '2025-08-22 10:24:19', '2025-08-22 10:24:58'),
 (3, 'Récépissé', 1, '2025-08-22 10:24:40', '2025-08-22 10:24:40');
 
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `plans`
+--
+
+CREATE TABLE `plans` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `objectif` text DEFAULT NULL,
+  `actionprioritaire` longtext DEFAULT NULL,
+  `dateplan` date DEFAULT NULL,
+  `accompagnement_id` bigint(20) UNSIGNED DEFAULT 0,
+  `spotlight` tinyint(1) NOT NULL DEFAULT 0,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 --
 -- Déchargement des données de la table `plans`
 --
@@ -1171,6 +2874,22 @@ INSERT INTO `piecetypes` (`id`, `titre`, `etat`, `created_at`, `updated_at`) VAL
 INSERT INTO `plans` (`id`, `objectif`, `actionprioritaire`, `dateplan`, `accompagnement_id`, `spotlight`, `etat`, `created_at`, `updated_at`) VALUES
 (1, 'Développement de l’entreprise', 'Comment définir un plan stratégique efficace ?\r\n\r\nIdentifier les besoins financiers et humains pour mon projet\r\n\r\nChoisir entre accompagnement individuel ou collectif', '2025-07-09', 1, 0, 1, '2025-07-09 11:08:50', '2025-08-22 11:24:17'),
 (2, 'Augmenter ma confiance en moi', 'Suivre des séances', '2025-09-11', 3, 0, 1, '2025-09-10 07:35:54', '2025-09-10 07:35:54');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `posts`
+--
+
+CREATE TABLE `posts` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `description` varchar(255) NOT NULL,
+  `body` text NOT NULL,
+  `author` bigint(20) NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table `posts`
@@ -1180,12 +2899,48 @@ INSERT INTO `posts` (`id`, `title`, `description`, `body`, `author`, `created_at
 (2, 'test post 1', 'fg hjklmlkhjhb vg khj glkhkjibljb jb  kbnfg hjklmlkhjhb vg khj glkhkjibljb jb  kbnfg hjklmlkhjhb vg khj glkhkjibljb jb  kbn', '<p>fg hjklmlkhjhb vg khj glkhkjibljb jb  kbnfg hjklmlkhjhb vg khj glkhkjibljb jb  kbnfg hjklmlkhjhb vg khj glkhkjibljb jb  kbnfg hjklmlkhjhb vg khj glkhkjibljb jb  kbnfg hjklmlkhjhb vg khj glkhkjibljb jb  kbnfg hjklmlkhjhb vg khj glkhkjibljb jb  kbnfg hjklmlkhjhb vg khj glkhkjibljb jb  kbnfg hjklmlkhjhb vg khj glkhkjibljb jb  kbnfg hjklmlkhjhb vg khj glkhkjibljb jb  kbnfg hjklmlkhjhb vg khj glkhkjibljb jb  kbnfg hjklmlkhjhb vg khj glkhkjibljb jb  kbnfg hjklmlkhjhb vg khj glkhkjibljb jb  kbnfg hjklmlkhjhb vg khj glkhkjibljb jb  kbnfg hjklmlkhjhb vg khj glkhkjibljb jb  kbnfg hjklmlkhjhb vg khj glkhkjibljb jb  kbnfg hjklmlkhjhb vg khj glkhkjibljb jb  kbn</p>', 1, '2025-06-18 16:54:38', '2025-06-18 16:54:38'),
 (3, 'test post  23', 'test post  2test post  2test post  2test post  2', '<p>test post  2test post  2test post  2test post  2test post  2test post  2test post  2test post  2test post  2test post  2test post  2test post  2test post  2test post  2test post  2</p>', 1, '2025-06-20 11:05:40', '2025-06-20 11:06:05');
 
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `prefectures`
+--
+
+CREATE TABLE `prefectures` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `nom` varchar(255) NOT NULL,
+  `cheflieu` varchar(255) DEFAULT NULL,
+  `region_id` bigint(20) UNSIGNED DEFAULT 0,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 --
 -- Déchargement des données de la table `prefectures`
 --
 
 INSERT INTO `prefectures` (`id`, `nom`, `cheflieu`, `region_id`, `etat`, `created_at`, `updated_at`) VALUES
 (1, 'Golfe', 'Lomé', 1, 1, '2025-06-28 13:58:29', '2025-06-28 13:58:29');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `prestationrealisees`
+--
+
+CREATE TABLE `prestationrealisees` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `note` varchar(255) NOT NULL,
+  `feedback` text DEFAULT NULL,
+  `prestation_id` bigint(20) UNSIGNED DEFAULT 0,
+  `accompagnement_id` bigint(20) UNSIGNED DEFAULT 0,
+  `daterealisation` date DEFAULT NULL,
+  `prestationrealiseestatut_id` bigint(20) UNSIGNED DEFAULT 0,
+  `spotlight` tinyint(1) NOT NULL DEFAULT 0,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table `prestationrealisees`
@@ -1194,12 +2949,69 @@ INSERT INTO `prefectures` (`id`, `nom`, `cheflieu`, `region_id`, `etat`, `create
 INSERT INTO `prestationrealisees` (`id`, `note`, `feedback`, `prestation_id`, `accompagnement_id`, `daterealisation`, `prestationrealiseestatut_id`, `spotlight`, `etat`, `created_at`, `updated_at`) VALUES
 (1, '50', 'gdfg wdfg ddf', 1, 1, '2025-07-08', 1, 0, 1, '2025-07-08 19:40:21', '2025-07-08 19:40:21');
 
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `prestationrealiseestatuts`
+--
+
+CREATE TABLE `prestationrealiseestatuts` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `titre` varchar(255) NOT NULL,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 --
 -- Déchargement des données de la table `prestationrealiseestatuts`
 --
 
 INSERT INTO `prestationrealiseestatuts` (`id`, `titre`, `etat`, `created_at`, `updated_at`) VALUES
 (1, 'En attente', 1, '2025-06-18 13:29:50', '2025-06-18 13:29:53');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `prestationressources`
+--
+
+CREATE TABLE `prestationressources` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `montant` varchar(255) DEFAULT NULL,
+  `reference` text DEFAULT NULL,
+  `accompagnement_id` bigint(20) UNSIGNED DEFAULT 0,
+  `ressourcecompte_id` bigint(20) UNSIGNED DEFAULT 0,
+  `prestation_id` bigint(20) UNSIGNED DEFAULT 0,
+  `paiementstatut_id` bigint(20) UNSIGNED DEFAULT 0,
+  `membre_id` bigint(20) UNSIGNED DEFAULT 0,
+  `entreprise_id` bigint(20) UNSIGNED DEFAULT 0,
+  `spotlight` tinyint(1) NOT NULL DEFAULT 0,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `prestations`
+--
+
+CREATE TABLE `prestations` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `titre` varchar(255) NOT NULL,
+  `prix` varchar(255) NOT NULL,
+  `duree` varchar(255) DEFAULT NULL,
+  `description` text DEFAULT NULL,
+  `entreprise_id` bigint(20) UNSIGNED DEFAULT 0,
+  `prestationtype_id` bigint(20) UNSIGNED DEFAULT 0,
+  `pays_id` varchar(255) DEFAULT NULL,
+  `spotlight` tinyint(1) NOT NULL DEFAULT 0,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table `prestations`
@@ -1209,6 +3021,20 @@ INSERT INTO `prestations` (`id`, `titre`, `prix`, `duree`, `description`, `entre
 (2, 'Prestations en développement web et mobile : comment se démarquer ?', '50000', '2 mois', '<p>Prestations en développement web et mobile : comment se démarquer ? Prestations en développement web et mobile : comment se démarquer ? Prestations en développement web et mobile : comment se démarquer ?</p>', 1, 2, '8409335f-e085-4597-9cae-359a60a816c6', 0, 1, '2025-08-11 11:18:04', '2025-08-22 10:42:53'),
 (3, 'Etat financier', '250000', '1H', 'Votre état financier en 1H', 3, 1, '3c4fbe39-dfa8-43c0-b7fd-bb946236543d', 0, 1, '2025-09-10 12:06:56', '2025-09-10 12:06:56');
 
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `prestationtypes`
+--
+
+CREATE TABLE `prestationtypes` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `titre` varchar(255) NOT NULL,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 --
 -- Déchargement des données de la table `prestationtypes`
 --
@@ -1217,12 +3043,157 @@ INSERT INTO `prestationtypes` (`id`, `titre`, `etat`, `created_at`, `updated_at`
 (1, 'Comptabilité', 1, '2025-08-05 14:45:06', '2025-08-22 10:25:14'),
 (2, 'Secrétariat', 1, '2025-08-22 10:25:28', '2025-08-22 10:25:28');
 
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `quartiers`
+--
+
+CREATE TABLE `quartiers` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `nom` varchar(255) NOT NULL,
+  `commune_id` bigint(20) UNSIGNED DEFAULT 0,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 --
 -- Déchargement des données de la table `quartiers`
 --
 
 INSERT INTO `quartiers` (`id`, `nom`, `commune_id`, `etat`, `created_at`, `updated_at`) VALUES
 (1, 'Sagbado', 1, 1, '2025-06-28 14:45:12', '2025-06-28 14:45:12');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `quizmembres`
+--
+
+CREATE TABLE `quizmembres` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `membre_id` bigint(20) UNSIGNED DEFAULT 0,
+  `quizquestion_id` bigint(20) UNSIGNED DEFAULT 0,
+  `quizreponse_id` bigint(20) UNSIGNED DEFAULT 0,
+  `valeur` text DEFAULT NULL,
+  `spotlight` tinyint(1) NOT NULL DEFAULT 0,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `quizquestions`
+--
+
+CREATE TABLE `quizquestions` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `titre` text NOT NULL,
+  `point` varchar(255) DEFAULT NULL,
+  `quiz_id` bigint(20) UNSIGNED DEFAULT 0,
+  `quizquestiontype_id` bigint(20) UNSIGNED DEFAULT 0,
+  `spotlight` tinyint(1) NOT NULL DEFAULT 0,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `quizquestiontypes`
+--
+
+CREATE TABLE `quizquestiontypes` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `titre` varchar(255) NOT NULL,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `quizreponses`
+--
+
+CREATE TABLE `quizreponses` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `text` text NOT NULL,
+  `correcte` tinyint(1) NOT NULL DEFAULT 0,
+  `quizquestion_id` bigint(20) UNSIGNED DEFAULT 0,
+  `spotlight` tinyint(1) NOT NULL DEFAULT 0,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `quizresultats`
+--
+
+CREATE TABLE `quizresultats` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `membre_id` bigint(20) UNSIGNED DEFAULT 0,
+  `quiz_id` bigint(20) UNSIGNED DEFAULT 0,
+  `quizresultatstatut_id` bigint(20) UNSIGNED DEFAULT 0,
+  `score` text DEFAULT NULL,
+  `spotlight` tinyint(1) NOT NULL DEFAULT 0,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `quizresultatstatuts`
+--
+
+CREATE TABLE `quizresultatstatuts` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `titre` varchar(255) NOT NULL,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `quizs`
+--
+
+CREATE TABLE `quizs` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `titre` text DEFAULT NULL,
+  `seuil_reussite` varchar(255) NOT NULL,
+  `formation_id` bigint(20) UNSIGNED DEFAULT 0,
+  `spotlight` tinyint(1) NOT NULL DEFAULT 0,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `recommandationorigines`
+--
+
+CREATE TABLE `recommandationorigines` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `titre` varchar(255) NOT NULL,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table `recommandationorigines`
@@ -1232,6 +3203,58 @@ INSERT INTO `recommandationorigines` (`id`, `titre`, `etat`, `created_at`, `upda
 (1, 'IA', 1, '2025-06-19 13:20:48', '2025-06-19 13:20:48'),
 (2, 'Manuel', 1, '2025-06-19 13:21:01', '2025-06-19 13:21:01');
 
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `recommandationtypes`
+--
+
+CREATE TABLE `recommandationtypes` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `titre` varchar(255) NOT NULL,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `recompenses`
+--
+
+CREATE TABLE `recompenses` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `valeur` varchar(255) DEFAULT NULL,
+  `commentaire` text DEFAULT NULL,
+  `action_id` bigint(20) UNSIGNED DEFAULT 0,
+  `entreprise_id` bigint(20) DEFAULT 0,
+  `ressourcetype_id` bigint(20) UNSIGNED DEFAULT 0,
+  `dateattribution` date DEFAULT NULL,
+  `membre_id` bigint(20) UNSIGNED DEFAULT 0,
+  `source_id` varchar(255) DEFAULT NULL,
+  `spotlight` tinyint(1) NOT NULL DEFAULT 0,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `regions`
+--
+
+CREATE TABLE `regions` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `nom` varchar(255) NOT NULL,
+  `code` varchar(255) DEFAULT NULL,
+  `pays_id` varchar(255) DEFAULT NULL,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 --
 -- Déchargement des données de la table `regions`
 --
@@ -1240,12 +3263,47 @@ INSERT INTO `regions` (`id`, `nom`, `code`, `pays_id`, `etat`, `created_at`, `up
 (1, 'Maritime', 'RM', '8409335f-e085-4597-9cae-359a60a816c6', 1, '2025-06-28 13:13:19', '2025-06-28 13:13:46'),
 (3, 'Plateaux', 'RP', '11f6b6d5-f968-4b3a-9f99-531830286a09', 1, '2025-07-15 09:14:18', '2025-07-25 15:08:22');
 
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `reservations`
+--
+
+CREATE TABLE `reservations` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `observation` text DEFAULT NULL,
+  `reservationstatut_id` bigint(20) UNSIGNED DEFAULT 0,
+  `espace_id` bigint(20) UNSIGNED DEFAULT 0,
+  `datedebut` date DEFAULT NULL,
+  `datefin` date DEFAULT NULL,
+  `montant` bigint(20) DEFAULT 0,
+  `membre_id` bigint(20) UNSIGNED DEFAULT 0,
+  `spotlight` tinyint(1) NOT NULL DEFAULT 0,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 --
 -- Déchargement des données de la table `reservations`
 --
 
 INSERT INTO `reservations` (`id`, `observation`, `reservationstatut_id`, `espace_id`, `datedebut`, `datefin`, `montant`, `membre_id`, `spotlight`, `etat`, `created_at`, `updated_at`) VALUES
 (2, 'toutes les journées du 18 et 19', 1, 2, '2025-09-18', '2025-09-19', 0, 4, 0, 1, '2025-09-10 07:44:24', '2025-09-10 07:44:24');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `reservationstatuts`
+--
+
+CREATE TABLE `reservationstatuts` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `titre` varchar(255) NOT NULL,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table `reservationstatuts`
@@ -1255,12 +3313,107 @@ INSERT INTO `reservationstatuts` (`id`, `titre`, `etat`, `created_at`, `updated_
 (1, 'En attente', 1, '2025-07-31 08:07:45', '2025-07-31 08:07:45'),
 (2, 'Validé', 1, '2025-07-31 08:07:45', '2025-07-31 08:07:45');
 
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `ressourcecomptes`
+--
+
+CREATE TABLE `ressourcecomptes` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `solde` varchar(255) NOT NULL,
+  `membre_id` bigint(20) UNSIGNED DEFAULT 0,
+  `ressourcetype_id` bigint(20) UNSIGNED DEFAULT 0,
+  `entreprise_id` bigint(20) UNSIGNED DEFAULT 0,
+  `user_id` bigint(20) UNSIGNED DEFAULT 0,
+  `spotlight` tinyint(1) NOT NULL DEFAULT 0,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `ressourcetransactions`
+--
+
+CREATE TABLE `ressourcetransactions` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `montant` varchar(255) NOT NULL,
+  `reference` varchar(255) DEFAULT NULL,
+  `ressourcecompte_id` bigint(20) UNSIGNED DEFAULT 0,
+  `datetransaction` date DEFAULT NULL,
+  `operationtype_id` bigint(20) UNSIGNED DEFAULT 0,
+  `spotlight` tinyint(1) NOT NULL DEFAULT 0,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `ressourcetypeoffretypes`
+--
+
+CREATE TABLE `ressourcetypeoffretypes` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `offretype_id` bigint(20) UNSIGNED DEFAULT 0,
+  `ressourcetype_id` bigint(20) UNSIGNED DEFAULT 0,
+  `table_id` varchar(255) DEFAULT NULL,
+  `spotlight` tinyint(1) NOT NULL DEFAULT 0,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `ressourcetypes`
+--
+
+CREATE TABLE `ressourcetypes` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `titre` varchar(255) NOT NULL,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `roles`
+--
+
+CREATE TABLE `roles` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `slug` varchar(255) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `permissions` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`permissions`)),
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 --
 -- Déchargement des données de la table `roles`
 --
 
 INSERT INTO `roles` (`id`, `slug`, `name`, `permissions`, `created_at`, `updated_at`) VALUES
 (1, 'administrateur', 'Administrateur', '{\"platform.systems.attachment\":\"1\",\"platform.systems.roles\":\"1\",\"platform.systems.users\":\"1\",\"platform.index\":\"1\"}', '2025-06-19 16:28:13', '2025-06-19 16:28:13');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `role_users`
+--
+
+CREATE TABLE `role_users` (
+  `user_id` bigint(20) UNSIGNED NOT NULL,
+  `role_id` int(10) UNSIGNED NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table `role_users`
@@ -1269,6 +3422,20 @@ INSERT INTO `roles` (`id`, `slug`, `name`, `permissions`, `created_at`, `updated
 INSERT INTO `role_users` (`user_id`, `role_id`) VALUES
 (6, 1);
 
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `secteurs`
+--
+
+CREATE TABLE `secteurs` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `titre` varchar(255) NOT NULL,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 --
 -- Déchargement des données de la table `secteurs`
 --
@@ -1276,6 +3443,26 @@ INSERT INTO `role_users` (`user_id`, `role_id`) VALUES
 INSERT INTO `secteurs` (`id`, `titre`, `etat`, `created_at`, `updated_at`) VALUES
 (1, 'Technologies et innovation', 1, '2025-08-22 10:50:55', '2025-08-22 10:50:55'),
 (2, 'Incubateur de startups', 1, '2025-08-22 10:51:05', '2025-08-22 10:51:05');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `services`
+--
+
+CREATE TABLE `services` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `titre` varchar(255) NOT NULL,
+  `resume` text DEFAULT NULL,
+  `description` longtext DEFAULT NULL,
+  `langue_id` varchar(255) DEFAULT NULL,
+  `vignette` varchar(255) DEFAULT NULL,
+  `pays_id` varchar(255) DEFAULT NULL,
+  `spotlight` tinyint(1) NOT NULL DEFAULT 0,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table `services`
@@ -1289,6 +3476,21 @@ INSERT INTO `services` (`id`, `titre`, `resume`, `description`, `langue_id`, `vi
 (5, 'Suivi en temps réel de l’impact', 'Mesurez vos performances et votre progression.', NULL, 'f9a16e49-d975-4d63-b201-5aee5888ac44', NULL, '3c4fbe39-dfa8-43c0-b7fd-bb946236543d', 0, 1, '2025-07-21 18:05:04', '2025-09-09 13:35:35'),
 (6, 'Connexion aux marchés & financements', 'Nous ouvrons les portes des opportunités locales et internationales.', NULL, 'f9a16e49-d975-4d63-b201-5aee5888ac44', NULL, '3c4fbe39-dfa8-43c0-b7fd-bb946236543d', 0, 1, '2025-07-21 18:05:35', '2025-09-09 13:33:42');
 
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `sessions`
+--
+
+CREATE TABLE `sessions` (
+  `id` varchar(255) NOT NULL,
+  `user_id` bigint(20) UNSIGNED DEFAULT NULL,
+  `ip_address` varchar(45) DEFAULT NULL,
+  `user_agent` text DEFAULT NULL,
+  `payload` longtext NOT NULL,
+  `last_activity` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 --
 -- Déchargement des données de la table `sessions`
 --
@@ -1296,7 +3498,29 @@ INSERT INTO `services` (`id`, `titre`, `resume`, `description`, `langue_id`, `vi
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
 ('An7zpUsB9u3myWCWVi0XLuKRFqojiNG4flpVBo0K', NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiY2xlaHA4SGpCMUJtTXN5eER6bFhLajJKWVJlUXNmckNPSzJtTk9QMyI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NDE6Imh0dHA6Ly9sb2NhbGhvc3QvY2lqZXQvcHVibGljL2FkbWluL2xvZ2luIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czozOiJ1cmwiO2E6MTp7czo4OiJpbnRlbmRlZCI7czozNToiaHR0cDovL2xvY2FsaG9zdC9jaWpldC9wdWJsaWMvYWRtaW4iO319', 1766057787),
 ('scOBzUwGzPTu33QsbcTMg7nvLrmOeQIbBWkIHgXz', 1, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoiY1ZrYkF3Tmo3YVo1REFMbU5CZHhEeFhuc1Jkb2JzZklWeFcxQk5ZZiI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6Mjc6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9hZG1pbiI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fXM6MzoidXJsIjthOjA6e31zOjUwOiJsb2dpbl93ZWJfNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI7aToxO30=', 1766057934),
-('tJeTaWj98BSyuWy58UtrIVwyXmtzGluUEOwFOzwH', 1, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoiV2ZmY015RmtjY1VSRVRmYUZxNEdVQ3RkZm1oOUVLdzNadGxGVUVkVSI7czozOiJ1cmwiO2E6MDp7fXM6OToiX3ByZXZpb3VzIjthOjE6e3M6MzoidXJsIjtzOjI3OiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYWRtaW4iO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjUwOiJsb2dpbl93ZWJfNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI7aToxO30=', 1766058070);
+('tJeTaWj98BSyuWy58UtrIVwyXmtzGluUEOwFOzwH', 1, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoiV2ZmY015RmtjY1VSRVRmYUZxNEdVQ3RkZm1oOUVLdzNadGxGVUVkVSI7czozOiJ1cmwiO2E6MDp7fXM6OToiX3ByZXZpb3VzIjthOjE6e3M6MzoidXJsIjtzOjIxOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjUwOiJsb2dpbl93ZWJfNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI7aToxO30=', 1766063634);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `sliders`
+--
+
+CREATE TABLE `sliders` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `titre` varchar(255) NOT NULL,
+  `resume` text DEFAULT NULL,
+  `description` longtext DEFAULT NULL,
+  `langue_id` varchar(255) DEFAULT NULL,
+  `vignette` varchar(255) DEFAULT NULL,
+  `slidertype_id` bigint(20) UNSIGNED DEFAULT 0,
+  `lienurl` text DEFAULT NULL,
+  `pays_id` varchar(255) DEFAULT NULL,
+  `spotlight` tinyint(1) NOT NULL DEFAULT 0,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table `sliders`
@@ -1304,6 +3528,20 @@ INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, 
 
 INSERT INTO `sliders` (`id`, `titre`, `resume`, `description`, `langue_id`, `vignette`, `slidertype_id`, `lienurl`, `pays_id`, `spotlight`, `etat`, `created_at`, `updated_at`) VALUES
 (1, 'Incubons l’avenir ensemble', 'Accédez à un accompagnement structuré, intelligent et sans barrières.', NULL, 'f9a16e49-d975-4d63-b201-5aee5888ac44', 'storage/sliders/2025/07/21/687e9730bc2bd_groupe-d-afro-americains-travaillant-ensemble (3).jpg', 1, NULL, '3c4fbe39-dfa8-43c0-b7fd-bb946236543d', 0, 1, '2025-07-21 17:38:24', '2025-09-09 13:26:23');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `slidertypes`
+--
+
+CREATE TABLE `slidertypes` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `titre` varchar(255) NOT NULL,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table `slidertypes`
@@ -1313,12 +3551,45 @@ INSERT INTO `slidertypes` (`id`, `titre`, `etat`, `created_at`, `updated_at`) VA
 (1, 'Image', 1, '2025-07-02 20:54:26', '2025-07-02 20:54:26'),
 (2, 'Vidéo', 1, '2025-07-02 20:54:34', '2025-07-02 20:54:34');
 
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `suivis`
+--
+
+CREATE TABLE `suivis` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `observation` text NOT NULL,
+  `suivistatut_id` bigint(20) UNSIGNED DEFAULT 0,
+  `suivitype_id` bigint(20) UNSIGNED DEFAULT 0,
+  `datesuivi` date DEFAULT NULL,
+  `accompagnement_id` bigint(20) UNSIGNED DEFAULT 0,
+  `spotlight` tinyint(1) NOT NULL DEFAULT 0,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 --
 -- Déchargement des données de la table `suivis`
 --
 
 INSERT INTO `suivis` (`id`, `observation`, `suivistatut_id`, `suivitype_id`, `datesuivi`, `accompagnement_id`, `spotlight`, `etat`, `created_at`, `updated_at`) VALUES
 (1, 'dg srdsrt grsgtr tr', 1, NULL, '2025-07-09', 1, 0, 1, '2025-07-08 19:05:33', '2025-07-08 19:05:33');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `suivistatuts`
+--
+
+CREATE TABLE `suivistatuts` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `titre` varchar(255) NOT NULL,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table `suivistatuts`
@@ -1327,12 +3598,60 @@ INSERT INTO `suivis` (`id`, `observation`, `suivistatut_id`, `suivitype_id`, `da
 INSERT INTO `suivistatuts` (`id`, `titre`, `etat`, `created_at`, `updated_at`) VALUES
 (1, 'Actif', 1, '2025-06-18 13:37:15', '2025-06-18 16:41:02');
 
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `suivitypes`
+--
+
+CREATE TABLE `suivitypes` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `titre` varchar(255) NOT NULL,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `sujets`
+--
+
+CREATE TABLE `sujets` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `titre` varchar(255) NOT NULL,
+  `resume` text DEFAULT NULL,
+  `description` longtext DEFAULT NULL,
+  `vignette` varchar(255) DEFAULT NULL,
+  `forum_id` bigint(20) UNSIGNED DEFAULT 0,
+  `membre_id` bigint(20) UNSIGNED DEFAULT 0,
+  `spotlight` tinyint(1) NOT NULL DEFAULT 0,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 --
 -- Déchargement des données de la table `sujets`
 --
 
 INSERT INTO `sujets` (`id`, `titre`, `resume`, `description`, `vignette`, `forum_id`, `membre_id`, `spotlight`, `etat`, `created_at`, `updated_at`) VALUES
 (1, 'Comment valider son idée de startup avant de lancer ?', 'Comment valider son idée de startup avant de lancer ?', '<p><br></p>', 'storage/sujets/2025/07/10/686fa23377344_Image1.png', 1, 1, 0, 1, '2025-07-10 09:21:23', '2025-08-22 10:40:48');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `tasks`
+--
+
+CREATE TABLE `tasks` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `active` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table `tasks`
@@ -1341,6 +3660,26 @@ INSERT INTO `sujets` (`id`, `titre`, `resume`, `description`, `vignette`, `forum
 INSERT INTO `tasks` (`id`, `name`, `active`, `created_at`, `updated_at`) VALUES
 (3, 'Admin à faire 3', 1, '2025-06-02 20:54:27', '2025-06-02 20:54:27');
 
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `temoignages`
+--
+
+CREATE TABLE `temoignages` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `nom` varchar(255) NOT NULL,
+  `profil` varchar(255) DEFAULT NULL,
+  `commentaire` text DEFAULT NULL,
+  `langue_id` varchar(255) DEFAULT NULL,
+  `vignette` varchar(255) DEFAULT NULL,
+  `pays_id` varchar(255) DEFAULT NULL,
+  `spotlight` tinyint(1) NOT NULL DEFAULT 0,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 --
 -- Déchargement des données de la table `temoignages`
 --
@@ -1348,14 +3687,1733 @@ INSERT INTO `tasks` (`id`, `name`, `active`, `created_at`, `updated_at`) VALUES
 INSERT INTO `temoignages` (`id`, `nom`, `profil`, `commentaire`, `langue_id`, `vignette`, `pays_id`, `spotlight`, `etat`, `created_at`, `updated_at`) VALUES
 (1, 'LOOKY Yokamly', 'Informaticien', 'Grâce au CIJES, j\'ai pu structurer mon entreprise et accéder à des financements qui m\'étaient inaccessibles auparavant. L\'accompagnement des experts a été déterminant.', 'f9a16e49-d975-4d63-b201-5aee5888ac44', 'storage/temoignages/2025/07/21/687ea405b875f_6388000.png', '3c4fbe39-dfa8-43c0-b7fd-bb946236543d', 0, 1, '2025-07-02 22:53:22', '2025-09-09 11:29:13');
 
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `users`
+--
+
+CREATE TABLE `users` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `email_verified_at` timestamp NULL DEFAULT NULL,
+  `password` varchar(255) NOT NULL,
+  `remember_token` varchar(100) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `permissions` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`permissions`)),
+  `supabase_user_id` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 --
 -- Déchargement des données de la table `users`
 --
 
-INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `remember_token`, `created_at`, `updated_at`, `permissions`) VALUES
-(1, 'ruben', 'yokamly@gmail.com', NULL, '$2y$12$zAnRDVer7dh20kI04UfmZu8WHOL4SqQ5DIWK1HzU6LMDT8Uk2Rshm', '6q4nbXFDbvPsjTHiJwbjtPfjIFFmJlpL5s2z8c8UWorYBraUpdpPTUfxM0OI', '2025-06-02 19:57:26', '2025-06-02 19:57:26', '{\"platform.systems.roles\":\"0\",\"platform.systems.users\":\"0\",\"platform.systems.attachment\":\"0\",\"platform.index\":\"0\"}'),
-(2, 'John Doe', 'johndoe@gmail.com', NULL, '$2y$12$bcR3Wh.w9dEjnEJekjC0wOEAuB7vUNuzHm33ShwwLmt3JwyvE3x3C', NULL, '2025-08-22 10:03:46', '2025-08-22 10:03:46', NULL),
-(3, 'Japhet', 'ptchabao@gmail.com', NULL, '$2y$12$py84LZKsnhNW65ljQztnBuStcxHaFGveVMmdVeVWVz3jQ4SmZNw5i', NULL, '2025-08-23 07:30:52', '2025-08-23 07:30:52', NULL),
-(4, 'Joel', 'greatmiraclethebest@gmail.com', NULL, '$2y$12$leigKwENbezLOW9M52Vly.yJu56dd1eq0SYxHB8bbKVZ.DJnKz9Se', NULL, '2025-09-10 06:48:33', '2025-09-10 06:48:33', NULL),
-(5, 'Assion TOMETY', 'assvictorien@gmail.com', NULL, '$2y$12$8YymD5lNowTP0udILZOeRuOjDotHqFVaX2aXYX/ZZoYTAMG77vnSG', NULL, '2025-09-10 06:54:33', '2025-09-11 22:50:36', '{\"platform.systems.attachment\":\"0\",\"platform.systems.roles\":\"0\",\"platform.systems.users\":\"0\",\"platform.index\":\"0\"}'),
-(6, 'Admin', 'admin@gmail.com', NULL, '$2y$12$H/HaNspVr1vY10DWjLqfOewyxknRuYmwgJd4cw/WPj53FSYbD2QEO', NULL, '2025-09-11 08:19:10', '2025-09-11 08:19:10', '{\"platform.systems.attachment\":\"0\",\"platform.systems.roles\":\"0\",\"platform.systems.users\":\"0\",\"platform.index\":\"0\"}');
+INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `remember_token`, `created_at`, `updated_at`, `permissions`, `supabase_user_id`) VALUES
+(1, 'ruben', 'yokamly@gmail.com', NULL, '$2y$12$zAnRDVer7dh20kI04UfmZu8WHOL4SqQ5DIWK1HzU6LMDT8Uk2Rshm', '6q4nbXFDbvPsjTHiJwbjtPfjIFFmJlpL5s2z8c8UWorYBraUpdpPTUfxM0OI', '2025-06-02 19:57:26', '2025-06-02 19:57:26', '{\"platform.systems.roles\":\"0\",\"platform.systems.users\":\"0\",\"platform.systems.attachment\":\"0\",\"platform.index\":\"0\"}', NULL),
+(2, 'John Doe', 'johndoe@gmail.com', NULL, '$2y$12$bcR3Wh.w9dEjnEJekjC0wOEAuB7vUNuzHm33ShwwLmt3JwyvE3x3C', NULL, '2025-08-22 10:03:46', '2025-08-22 10:03:46', NULL, NULL),
+(3, 'Japhet', 'ptchabao@gmail.com', NULL, '$2y$12$py84LZKsnhNW65ljQztnBuStcxHaFGveVMmdVeVWVz3jQ4SmZNw5i', NULL, '2025-08-23 07:30:52', '2025-08-23 07:30:52', NULL, NULL),
+(4, 'Joel', 'greatmiraclethebest@gmail.com', NULL, '$2y$12$leigKwENbezLOW9M52Vly.yJu56dd1eq0SYxHB8bbKVZ.DJnKz9Se', NULL, '2025-09-10 06:48:33', '2025-09-10 06:48:33', NULL, NULL),
+(5, 'Assion TOMETY', 'assvictorien@gmail.com', NULL, '$2y$12$8YymD5lNowTP0udILZOeRuOjDotHqFVaX2aXYX/ZZoYTAMG77vnSG', NULL, '2025-09-10 06:54:33', '2025-09-11 22:50:36', '{\"platform.systems.attachment\":\"0\",\"platform.systems.roles\":\"0\",\"platform.systems.users\":\"0\",\"platform.index\":\"0\"}', NULL),
+(6, 'Admin', 'admin@gmail.com', NULL, '$2y$12$H/HaNspVr1vY10DWjLqfOewyxknRuYmwgJd4cw/WPj53FSYbD2QEO', NULL, '2025-09-11 08:19:10', '2025-09-11 08:19:10', '{\"platform.systems.attachment\":\"0\",\"platform.systems.roles\":\"0\",\"platform.systems.users\":\"0\",\"platform.index\":\"0\"}', NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `veilletypes`
+--
+
+CREATE TABLE `veilletypes` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `titre` varchar(255) NOT NULL,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Index pour les tables déchargées
+--
+
+--
+-- Index pour la table `accompagnementconseillers`
+--
+ALTER TABLE `accompagnementconseillers`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `accompagnementdocuments`
+--
+ALTER TABLE `accompagnementdocuments`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `accompagnementniveaus`
+--
+ALTER TABLE `accompagnementniveaus`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `accompagnements`
+--
+ALTER TABLE `accompagnements`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `accompagnementstatuts`
+--
+ALTER TABLE `accompagnementstatuts`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `accompagnementtypes`
+--
+ALTER TABLE `accompagnementtypes`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `actions`
+--
+ALTER TABLE `actions`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `actualites`
+--
+ALTER TABLE `actualites`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `actualitetypes`
+--
+ALTER TABLE `actualitetypes`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `alertes`
+--
+ALTER TABLE `alertes`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `alertetypes`
+--
+ALTER TABLE `alertetypes`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `attachmentable`
+--
+ALTER TABLE `attachmentable`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `attachmentable_attachmentable_type_attachmentable_id_index` (`attachmentable_type`,`attachmentable_id`),
+  ADD KEY `attachmentable_attachment_id_foreign` (`attachment_id`);
+
+--
+-- Index pour la table `attachments`
+--
+ALTER TABLE `attachments`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `bons`
+--
+ALTER TABLE `bons`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `bonstatuts`
+--
+ALTER TABLE `bonstatuts`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `bontypes`
+--
+ALTER TABLE `bontypes`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `bonutilises`
+--
+ALTER TABLE `bonutilises`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `cache`
+--
+ALTER TABLE `cache`
+  ADD PRIMARY KEY (`key`);
+
+--
+-- Index pour la table `cache_locks`
+--
+ALTER TABLE `cache_locks`
+  ADD PRIMARY KEY (`key`);
+
+--
+-- Index pour la table `chiffres`
+--
+ALTER TABLE `chiffres`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `commentaires`
+--
+ALTER TABLE `commentaires`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `communes`
+--
+ALTER TABLE `communes`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `conseillerentreprises`
+--
+ALTER TABLE `conseillerentreprises`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `conseillerprescriptions`
+--
+ALTER TABLE `conseillerprescriptions`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `conseillers`
+--
+ALTER TABLE `conseillers`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `conseillertypes`
+--
+ALTER TABLE `conseillertypes`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `conseillervalides`
+--
+ALTER TABLE `conseillervalides`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `contacts`
+--
+ALTER TABLE `contacts`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `contacttypes`
+--
+ALTER TABLE `contacttypes`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `conversations`
+--
+ALTER TABLE `conversations`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `conversions`
+--
+ALTER TABLE `conversions`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `credits`
+--
+ALTER TABLE `credits`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `creditstatuts`
+--
+ALTER TABLE `creditstatuts`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `credittypes`
+--
+ALTER TABLE `credittypes`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `diagnosticmodules`
+--
+ALTER TABLE `diagnosticmodules`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `diagnosticmoduletypes`
+--
+ALTER TABLE `diagnosticmoduletypes`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `diagnosticquestioncategories`
+--
+ALTER TABLE `diagnosticquestioncategories`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `diagnosticquestions`
+--
+ALTER TABLE `diagnosticquestions`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `diagnosticquestiontypes`
+--
+ALTER TABLE `diagnosticquestiontypes`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `diagnosticreponses`
+--
+ALTER TABLE `diagnosticreponses`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `diagnosticresultats`
+--
+ALTER TABLE `diagnosticresultats`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `diagnostics`
+--
+ALTER TABLE `diagnostics`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `diagnosticstatuts`
+--
+ALTER TABLE `diagnosticstatuts`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `diagnostictypes`
+--
+ALTER TABLE `diagnostictypes`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `disponibilites`
+--
+ALTER TABLE `disponibilites`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `documents`
+--
+ALTER TABLE `documents`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `documenttypes`
+--
+ALTER TABLE `documenttypes`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `dossierstatuts`
+--
+ALTER TABLE `dossierstatuts`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `echeanciers`
+--
+ALTER TABLE `echeanciers`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `echeancierstatuts`
+--
+ALTER TABLE `echeancierstatuts`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `entreprisemembres`
+--
+ALTER TABLE `entreprisemembres`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `entreprises`
+--
+ALTER TABLE `entreprises`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `entreprisetypes`
+--
+ALTER TABLE `entreprisetypes`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `espaceressources`
+--
+ALTER TABLE `espaceressources`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `espaces`
+--
+ALTER TABLE `espaces`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `espacetypes`
+--
+ALTER TABLE `espacetypes`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `evaluations`
+--
+ALTER TABLE `evaluations`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `evenementinscriptions`
+--
+ALTER TABLE `evenementinscriptions`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `evenementinscriptiontypes`
+--
+ALTER TABLE `evenementinscriptiontypes`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `evenementressources`
+--
+ALTER TABLE `evenementressources`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `evenements`
+--
+ALTER TABLE `evenements`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `evenementtypes`
+--
+ALTER TABLE `evenementtypes`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `experts`
+--
+ALTER TABLE `experts`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `experttypes`
+--
+ALTER TABLE `experttypes`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `expertvalides`
+--
+ALTER TABLE `expertvalides`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `failed_jobs`
+--
+ALTER TABLE `failed_jobs`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `failed_jobs_uuid_unique` (`uuid`);
+
+--
+-- Index pour la table `faqs`
+--
+ALTER TABLE `faqs`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `formationniveaus`
+--
+ALTER TABLE `formationniveaus`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `formationressources`
+--
+ALTER TABLE `formationressources`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `formations`
+--
+ALTER TABLE `formations`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `formationtypes`
+--
+ALTER TABLE `formationtypes`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `forums`
+--
+ALTER TABLE `forums`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `forumtypes`
+--
+ALTER TABLE `forumtypes`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `jobs`
+--
+ALTER TABLE `jobs`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `jobs_queue_index` (`queue`);
+
+--
+-- Index pour la table `job_batches`
+--
+ALTER TABLE `job_batches`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `jours`
+--
+ALTER TABLE `jours`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `langues`
+--
+ALTER TABLE `langues`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `membres`
+--
+ALTER TABLE `membres`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `membrestatuts`
+--
+ALTER TABLE `membrestatuts`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `membretypes`
+--
+ALTER TABLE `membretypes`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `messageforums`
+--
+ALTER TABLE `messageforums`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `messages`
+--
+ALTER TABLE `messages`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `migrations`
+--
+ALTER TABLE `migrations`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `newsletters`
+--
+ALTER TABLE `newsletters`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `newslettertypes`
+--
+ALTER TABLE `newslettertypes`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `notifications`
+--
+ALTER TABLE `notifications`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `notifications_notifiable_type_notifiable_id_index` (`notifiable_type`,`notifiable_id`);
+
+--
+-- Index pour la table `offretypes`
+--
+ALTER TABLE `offretypes`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `operationtypes`
+--
+ALTER TABLE `operationtypes`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `pagelibres`
+--
+ALTER TABLE `pagelibres`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `paiementstatuts`
+--
+ALTER TABLE `paiementstatuts`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `parrainages`
+--
+ALTER TABLE `parrainages`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `partenaireactivitetypes`
+--
+ALTER TABLE `partenaireactivitetypes`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `partenaires`
+--
+ALTER TABLE `partenaires`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `partenairetypes`
+--
+ALTER TABLE `partenairetypes`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `participants`
+--
+ALTER TABLE `participants`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `participantstatuts`
+--
+ALTER TABLE `participantstatuts`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `password_reset_tokens`
+--
+ALTER TABLE `password_reset_tokens`
+  ADD PRIMARY KEY (`email`);
+
+--
+-- Index pour la table `payss`
+--
+ALTER TABLE `payss`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `pieces`
+--
+ALTER TABLE `pieces`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `piecetypes`
+--
+ALTER TABLE `piecetypes`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `plans`
+--
+ALTER TABLE `plans`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `posts`
+--
+ALTER TABLE `posts`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `prefectures`
+--
+ALTER TABLE `prefectures`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `prestationrealisees`
+--
+ALTER TABLE `prestationrealisees`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `prestationrealiseestatuts`
+--
+ALTER TABLE `prestationrealiseestatuts`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `prestationressources`
+--
+ALTER TABLE `prestationressources`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `prestations`
+--
+ALTER TABLE `prestations`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `prestationtypes`
+--
+ALTER TABLE `prestationtypes`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `quartiers`
+--
+ALTER TABLE `quartiers`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `quizmembres`
+--
+ALTER TABLE `quizmembres`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `quizquestions`
+--
+ALTER TABLE `quizquestions`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `quizquestiontypes`
+--
+ALTER TABLE `quizquestiontypes`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `quizreponses`
+--
+ALTER TABLE `quizreponses`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `quizresultats`
+--
+ALTER TABLE `quizresultats`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `quizresultatstatuts`
+--
+ALTER TABLE `quizresultatstatuts`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `quizs`
+--
+ALTER TABLE `quizs`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `recommandationorigines`
+--
+ALTER TABLE `recommandationorigines`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `recommandationtypes`
+--
+ALTER TABLE `recommandationtypes`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `recompenses`
+--
+ALTER TABLE `recompenses`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `regions`
+--
+ALTER TABLE `regions`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `reservations`
+--
+ALTER TABLE `reservations`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `reservationstatuts`
+--
+ALTER TABLE `reservationstatuts`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `ressourcecomptes`
+--
+ALTER TABLE `ressourcecomptes`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `ressourcetransactions`
+--
+ALTER TABLE `ressourcetransactions`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `ressourcetypeoffretypes`
+--
+ALTER TABLE `ressourcetypeoffretypes`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `ressourcetypes`
+--
+ALTER TABLE `ressourcetypes`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `roles`
+--
+ALTER TABLE `roles`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `roles_slug_unique` (`slug`);
+
+--
+-- Index pour la table `role_users`
+--
+ALTER TABLE `role_users`
+  ADD PRIMARY KEY (`user_id`,`role_id`),
+  ADD KEY `role_users_role_id_foreign` (`role_id`);
+
+--
+-- Index pour la table `secteurs`
+--
+ALTER TABLE `secteurs`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `services`
+--
+ALTER TABLE `services`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `sessions`
+--
+ALTER TABLE `sessions`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `sessions_user_id_index` (`user_id`),
+  ADD KEY `sessions_last_activity_index` (`last_activity`);
+
+--
+-- Index pour la table `sliders`
+--
+ALTER TABLE `sliders`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `slidertypes`
+--
+ALTER TABLE `slidertypes`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `suivis`
+--
+ALTER TABLE `suivis`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `suivistatuts`
+--
+ALTER TABLE `suivistatuts`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `suivitypes`
+--
+ALTER TABLE `suivitypes`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `sujets`
+--
+ALTER TABLE `sujets`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `tasks`
+--
+ALTER TABLE `tasks`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `temoignages`
+--
+ALTER TABLE `temoignages`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `users`
+--
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `users_email_unique` (`email`);
+
+--
+-- Index pour la table `veilletypes`
+--
+ALTER TABLE `veilletypes`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- AUTO_INCREMENT pour les tables déchargées
+--
+
+--
+-- AUTO_INCREMENT pour la table `accompagnementconseillers`
+--
+ALTER TABLE `accompagnementconseillers`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT pour la table `accompagnementdocuments`
+--
+ALTER TABLE `accompagnementdocuments`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT pour la table `accompagnementniveaus`
+--
+ALTER TABLE `accompagnementniveaus`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT pour la table `accompagnements`
+--
+ALTER TABLE `accompagnements`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT pour la table `accompagnementstatuts`
+--
+ALTER TABLE `accompagnementstatuts`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT pour la table `accompagnementtypes`
+--
+ALTER TABLE `accompagnementtypes`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT pour la table `actions`
+--
+ALTER TABLE `actions`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `actualites`
+--
+ALTER TABLE `actualites`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT pour la table `actualitetypes`
+--
+ALTER TABLE `actualitetypes`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT pour la table `alertes`
+--
+ALTER TABLE `alertes`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT pour la table `alertetypes`
+--
+ALTER TABLE `alertetypes`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT pour la table `attachmentable`
+--
+ALTER TABLE `attachmentable`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `attachments`
+--
+ALTER TABLE `attachments`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+
+--
+-- AUTO_INCREMENT pour la table `bons`
+--
+ALTER TABLE `bons`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT pour la table `bonstatuts`
+--
+ALTER TABLE `bonstatuts`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT pour la table `bontypes`
+--
+ALTER TABLE `bontypes`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT pour la table `bonutilises`
+--
+ALTER TABLE `bonutilises`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT pour la table `chiffres`
+--
+ALTER TABLE `chiffres`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT pour la table `commentaires`
+--
+ALTER TABLE `commentaires`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `communes`
+--
+ALTER TABLE `communes`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT pour la table `conseillerentreprises`
+--
+ALTER TABLE `conseillerentreprises`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT pour la table `conseillerprescriptions`
+--
+ALTER TABLE `conseillerprescriptions`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT pour la table `conseillers`
+--
+ALTER TABLE `conseillers`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT pour la table `conseillertypes`
+--
+ALTER TABLE `conseillertypes`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT pour la table `conseillervalides`
+--
+ALTER TABLE `conseillervalides`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT pour la table `contacts`
+--
+ALTER TABLE `contacts`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `contacttypes`
+--
+ALTER TABLE `contacttypes`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `conversations`
+--
+ALTER TABLE `conversations`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT pour la table `conversions`
+--
+ALTER TABLE `conversions`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `credits`
+--
+ALTER TABLE `credits`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT pour la table `creditstatuts`
+--
+ALTER TABLE `creditstatuts`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT pour la table `credittypes`
+--
+ALTER TABLE `credittypes`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `diagnosticmodules`
+--
+ALTER TABLE `diagnosticmodules`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+
+--
+-- AUTO_INCREMENT pour la table `diagnosticmoduletypes`
+--
+ALTER TABLE `diagnosticmoduletypes`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT pour la table `diagnosticquestioncategories`
+--
+ALTER TABLE `diagnosticquestioncategories`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `diagnosticquestions`
+--
+ALTER TABLE `diagnosticquestions`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=805;
+
+--
+-- AUTO_INCREMENT pour la table `diagnosticquestiontypes`
+--
+ALTER TABLE `diagnosticquestiontypes`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT pour la table `diagnosticreponses`
+--
+ALTER TABLE `diagnosticreponses`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=189;
+
+--
+-- AUTO_INCREMENT pour la table `diagnosticresultats`
+--
+ALTER TABLE `diagnosticresultats`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=353;
+
+--
+-- AUTO_INCREMENT pour la table `diagnostics`
+--
+ALTER TABLE `diagnostics`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+
+--
+-- AUTO_INCREMENT pour la table `diagnosticstatuts`
+--
+ALTER TABLE `diagnosticstatuts`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT pour la table `diagnostictypes`
+--
+ALTER TABLE `diagnostictypes`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `disponibilites`
+--
+ALTER TABLE `disponibilites`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+
+--
+-- AUTO_INCREMENT pour la table `documents`
+--
+ALTER TABLE `documents`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT pour la table `documenttypes`
+--
+ALTER TABLE `documenttypes`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT pour la table `dossierstatuts`
+--
+ALTER TABLE `dossierstatuts`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `echeanciers`
+--
+ALTER TABLE `echeanciers`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT pour la table `echeancierstatuts`
+--
+ALTER TABLE `echeancierstatuts`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `entreprisemembres`
+--
+ALTER TABLE `entreprisemembres`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- AUTO_INCREMENT pour la table `entreprises`
+--
+ALTER TABLE `entreprises`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT pour la table `entreprisetypes`
+--
+ALTER TABLE `entreprisetypes`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT pour la table `espaceressources`
+--
+ALTER TABLE `espaceressources`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `espaces`
+--
+ALTER TABLE `espaces`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT pour la table `espacetypes`
+--
+ALTER TABLE `espacetypes`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT pour la table `evaluations`
+--
+ALTER TABLE `evaluations`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT pour la table `evenementinscriptions`
+--
+ALTER TABLE `evenementinscriptions`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT pour la table `evenementinscriptiontypes`
+--
+ALTER TABLE `evenementinscriptiontypes`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT pour la table `evenementressources`
+--
+ALTER TABLE `evenementressources`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `evenements`
+--
+ALTER TABLE `evenements`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT pour la table `evenementtypes`
+--
+ALTER TABLE `evenementtypes`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT pour la table `experts`
+--
+ALTER TABLE `experts`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT pour la table `experttypes`
+--
+ALTER TABLE `experttypes`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT pour la table `expertvalides`
+--
+ALTER TABLE `expertvalides`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT pour la table `failed_jobs`
+--
+ALTER TABLE `failed_jobs`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `faqs`
+--
+ALTER TABLE `faqs`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT pour la table `formationniveaus`
+--
+ALTER TABLE `formationniveaus`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT pour la table `formationressources`
+--
+ALTER TABLE `formationressources`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `formations`
+--
+ALTER TABLE `formations`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- AUTO_INCREMENT pour la table `formationtypes`
+--
+ALTER TABLE `formationtypes`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `forums`
+--
+ALTER TABLE `forums`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT pour la table `forumtypes`
+--
+ALTER TABLE `forumtypes`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT pour la table `jobs`
+--
+ALTER TABLE `jobs`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `jours`
+--
+ALTER TABLE `jours`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
+-- AUTO_INCREMENT pour la table `langues`
+--
+ALTER TABLE `langues`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT pour la table `membres`
+--
+ALTER TABLE `membres`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT pour la table `membrestatuts`
+--
+ALTER TABLE `membrestatuts`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT pour la table `membretypes`
+--
+ALTER TABLE `membretypes`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT pour la table `messageforums`
+--
+ALTER TABLE `messageforums`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `messages`
+--
+ALTER TABLE `messages`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT pour la table `migrations`
+--
+ALTER TABLE `migrations`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=124;
+
+--
+-- AUTO_INCREMENT pour la table `newsletters`
+--
+ALTER TABLE `newsletters`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `newslettertypes`
+--
+ALTER TABLE `newslettertypes`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `offretypes`
+--
+ALTER TABLE `offretypes`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `operationtypes`
+--
+ALTER TABLE `operationtypes`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `pagelibres`
+--
+ALTER TABLE `pagelibres`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT pour la table `paiementstatuts`
+--
+ALTER TABLE `paiementstatuts`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `parrainages`
+--
+ALTER TABLE `parrainages`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `partenaireactivitetypes`
+--
+ALTER TABLE `partenaireactivitetypes`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `partenaires`
+--
+ALTER TABLE `partenaires`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT pour la table `partenairetypes`
+--
+ALTER TABLE `partenairetypes`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT pour la table `participants`
+--
+ALTER TABLE `participants`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT pour la table `participantstatuts`
+--
+ALTER TABLE `participantstatuts`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT pour la table `payss`
+--
+ALTER TABLE `payss`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT pour la table `pieces`
+--
+ALTER TABLE `pieces`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- AUTO_INCREMENT pour la table `piecetypes`
+--
+ALTER TABLE `piecetypes`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT pour la table `plans`
+--
+ALTER TABLE `plans`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT pour la table `posts`
+--
+ALTER TABLE `posts`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT pour la table `prefectures`
+--
+ALTER TABLE `prefectures`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT pour la table `prestationrealisees`
+--
+ALTER TABLE `prestationrealisees`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT pour la table `prestationrealiseestatuts`
+--
+ALTER TABLE `prestationrealiseestatuts`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT pour la table `prestationressources`
+--
+ALTER TABLE `prestationressources`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `prestations`
+--
+ALTER TABLE `prestations`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT pour la table `prestationtypes`
+--
+ALTER TABLE `prestationtypes`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT pour la table `quartiers`
+--
+ALTER TABLE `quartiers`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT pour la table `quizmembres`
+--
+ALTER TABLE `quizmembres`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `quizquestions`
+--
+ALTER TABLE `quizquestions`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `quizquestiontypes`
+--
+ALTER TABLE `quizquestiontypes`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `quizreponses`
+--
+ALTER TABLE `quizreponses`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `quizresultats`
+--
+ALTER TABLE `quizresultats`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `quizresultatstatuts`
+--
+ALTER TABLE `quizresultatstatuts`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `quizs`
+--
+ALTER TABLE `quizs`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `recommandationorigines`
+--
+ALTER TABLE `recommandationorigines`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT pour la table `recommandationtypes`
+--
+ALTER TABLE `recommandationtypes`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `recompenses`
+--
+ALTER TABLE `recompenses`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `regions`
+--
+ALTER TABLE `regions`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT pour la table `reservations`
+--
+ALTER TABLE `reservations`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT pour la table `reservationstatuts`
+--
+ALTER TABLE `reservationstatuts`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT pour la table `ressourcecomptes`
+--
+ALTER TABLE `ressourcecomptes`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `ressourcetransactions`
+--
+ALTER TABLE `ressourcetransactions`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `ressourcetypeoffretypes`
+--
+ALTER TABLE `ressourcetypeoffretypes`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `ressourcetypes`
+--
+ALTER TABLE `ressourcetypes`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `roles`
+--
+ALTER TABLE `roles`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT pour la table `secteurs`
+--
+ALTER TABLE `secteurs`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT pour la table `services`
+--
+ALTER TABLE `services`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- AUTO_INCREMENT pour la table `sliders`
+--
+ALTER TABLE `sliders`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT pour la table `slidertypes`
+--
+ALTER TABLE `slidertypes`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT pour la table `suivis`
+--
+ALTER TABLE `suivis`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT pour la table `suivistatuts`
+--
+ALTER TABLE `suivistatuts`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT pour la table `suivitypes`
+--
+ALTER TABLE `suivitypes`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `sujets`
+--
+ALTER TABLE `sujets`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT pour la table `tasks`
+--
+ALTER TABLE `tasks`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT pour la table `temoignages`
+--
+ALTER TABLE `temoignages`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT pour la table `users`
+--
+ALTER TABLE `users`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- AUTO_INCREMENT pour la table `veilletypes`
+--
+ALTER TABLE `veilletypes`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- Contraintes pour les tables déchargées
+--
+
+--
+-- Contraintes pour la table `attachmentable`
+--
+ALTER TABLE `attachmentable`
+  ADD CONSTRAINT `attachmentable_attachment_id_foreign` FOREIGN KEY (`attachment_id`) REFERENCES `attachments` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Contraintes pour la table `role_users`
+--
+ALTER TABLE `role_users`
+  ADD CONSTRAINT `role_users_role_id_foreign` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `role_users_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+COMMIT;

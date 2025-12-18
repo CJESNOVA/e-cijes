@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\File;
 class ImportDatabase extends Command
 {
     protected $signature = 'db:import {file}';
-    protected $description = 'Vider la base et importer un fichier SQL';
+    protected $description = 'Supprimer toutes les tables et importer un fichier SQL';
 
     public function handle()
     {
@@ -20,8 +20,9 @@ class ImportDatabase extends Command
             return 1;
         }
 
-        $this->info('Vider toutes les tables...');
+        $this->info('Suppression de toutes les tables...');
 
+        // Désactive les clés étrangères pour pouvoir supprimer les tables
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
 
         $tables = DB::select('SHOW TABLES');
@@ -30,13 +31,11 @@ class ImportDatabase extends Command
         foreach ($tables as $table) {
             $tableName = $table->{"Tables_in_$dbName"};
             try {
-                DB::statement("TRUNCATE TABLE `$tableName`;");
+                DB::statement("DROP TABLE IF EXISTS `$tableName`;");
             } catch (\Exception $e) {
-                $this->warn("Impossible de vider la table $tableName : ".$e->getMessage());
+                $this->warn("Impossible de supprimer la table $tableName : ".$e->getMessage());
             }
         }
-
-        //DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
         $this->info('Importation du fichier SQL ligne par ligne...');
 
@@ -63,8 +62,9 @@ class ImportDatabase extends Command
             }
         }
 
+        // Réactive les clés étrangères
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-        
+
         $this->info('Import terminé !');
         return 0;
     }
