@@ -45,12 +45,13 @@
                 <div class="row gy-30 flex-column-reverse flex-lg-row">
 
                     <div class="col-xl-8 col-lg-8">
+
+                        @if (count($partenaires) > 0)
 <!--==============================
         Feature Section Two
         ==============================-->
         <section class="feature-section style-2">
             <div class="container">
-        @if (count($partenaires) > 0)
 
         @php
                     $i = 0;
@@ -66,9 +67,11 @@
                     </div>
                     @endif
                 <div class="title-area three text-center">
-                    <div class="sub-title"><span><i class="asterisk"></i></span>@if ($partenaire->partenairetype_id > 0)
+                    <div class="sub-title"><span><i class="asterisk"></i></span>
+                        @if ($partenaire->partenairetype_id > 0)
                             {{ $partenaire->partenairetype->titre }}
-                        @endif</div>
+                        @endif
+                    </div>
                 </div>
                 <div class="row gy-30">
                         @php
@@ -94,10 +97,11 @@
 
                 @endforeach
 
-            </div>
-            @endif
-            </div>
+            <!-- </div>
+            </div> -->
         </section>
+            @endif
+
                     </div>
 
                     <div class="col-xl-4 col-lg-6">

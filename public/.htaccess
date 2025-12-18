@@ -5,37 +5,21 @@
 
     RewriteEngine On
 
-    # ── FORCER HTTPS ──
-    RewriteCond %{HTTPS} off
-    RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [L,R=301]
-
-    # ── Handle Authorization Header ──
+    # Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 
-    # ── Handle X-XSRF-Token Header ──
+    # Handle X-XSRF-Token Header
     RewriteCond %{HTTP:x-xsrf-token} .
     RewriteRule .* - [E=HTTP_X_XSRF_TOKEN:%{HTTP:X-XSRF-Token}]
 
-    # ── Redirect Trailing Slashes If Not A Folder ──
+    # Redirect Trailing Slashes If Not A Folder...
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_URI} (.+)/$
     RewriteRule ^ %1 [L,R=301]
 
-    # ── Send Requests To Front Controller ──
+    # Send Requests To Front Controller...
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]
 </IfModule>
-
-# ── Sécuriser .env ──
-<Files .env>
-    Order allow,deny
-    Deny from all
-</Files>
-
-# ── Bloquer accès aux fichiers sensibles ──
-<FilesMatch "\.(htaccess|htpasswd|ini|log|env)$">
-    Order allow,deny
-    Deny from all
-</FilesMatch>

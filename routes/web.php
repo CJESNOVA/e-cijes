@@ -50,8 +50,8 @@ Route::post('/commentaire/create', [CommentaireController::class, 'store'])->nam
 Route::get('/chiffres.html', [ChiffreController::class, 'liste'])->name('chiffre.liste');
 
 Route::get('/documents.html', [DocumentController::class, 'liste'])->name('document.liste');
-Route::get('/documenttypes.html', [DocumentController::class, 'liste'])->name('document.liste');
-Route::get('/documenttype/{id}-{titre}.html', [DocumenttypeController::class, 'detail'])->name('documenttype.detail');
+//Route::get('/documenttypes.html', [DocumentController::class, 'liste'])->name('document.liste');
+//Route::get('/documenttype/{id}-{titre}.html', [DocumenttypeController::class, 'detail'])->name('documenttype.detail');
 Route::get('/documents/{id}-{titre}.html', [DocumentController::class, 'liste'])->name('document.liste');
 
 Route::get('/partenaires.html', [PartenaireController::class, 'liste'])->name('partenaire.liste');
