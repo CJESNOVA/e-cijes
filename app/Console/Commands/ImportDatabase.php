@@ -24,9 +24,8 @@ class ImportDatabase extends Command
 
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
 
-        $tables = DB::select('SHOW TABLES');
         $dbName = env('DB_DATABASE');
-
+        $tables = DB::select("SHOW TABLES");
         foreach ($tables as $table) {
             $tableName = $table->{"Tables_in_$dbName"};
             DB::statement("TRUNCATE TABLE `$tableName`;");
@@ -36,8 +35,20 @@ class ImportDatabase extends Command
 
         $this->info('Importation du fichier SQL...');
 
-        $sql = File::get($filePath);
-        DB::unprepared($sql);
+        // Lecture du fichier et découpage par point-virgule
+        $sqlContent = File::get($filePath);
+        $statements = array_filter(array_map('trim', explode(';', $sqlContent)));
+
+        foreach ($statements as $statement) {
+            // Ignorer les lignes vides ou les commentaires
+            if ($statement && !str_starts_with($statement, '--') && !str_starts_with($statement, '/*')) {
+                try {
+                    DB::unprepared($statement);
+                } catch (\Exception $e) {
+                    $this->error('Erreur sur la requête : ' . $e->getMessage());
+                }
+            }
+        }
 
         $this->info('Import terminé !');
     }
