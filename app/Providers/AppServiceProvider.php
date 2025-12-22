@@ -29,6 +29,10 @@ class AppServiceProvider extends ServiceProvider
         // Importation du fichier resources/helpers/user_helpers.php
         require_once resource_path("helpers/enleve_accent.php");
 
+        if (app()->environment('production')) {
+            URL::forceScheme('https');
+        }
+
     }
 
     
