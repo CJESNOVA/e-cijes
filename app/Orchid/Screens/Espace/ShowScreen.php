@@ -56,7 +56,7 @@ class ShowScreen extends Screen
                 Sight::make('espacetype.titre', 'Type d\'espace'),
                 Sight::make('vignette', 'Vignette')->render(function ($espace) {
                     if (!$espace->vignette) return '—';
-                    return "<img src='" . asset($espace->vignette) . "' width='80'>";
+                    return "<img src='" . Storage::disk('public')->url($espace->vignette) . "' width='80'>";
                 }),
                 Sight::make('pays_nom', 'Pays'),
                 Sight::make('spotlight', 'Spotlight')->render(fn($espace) => $espace->spotlight ? '✅ Actif' : '❌ Inactif'),

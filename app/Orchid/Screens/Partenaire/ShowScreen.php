@@ -56,7 +56,7 @@ class ShowScreen extends Screen
                 Sight::make('partenairetype.titre', 'Type du partenaire'),
                 Sight::make('vignette', 'Vignette')->render(function ($partenaire) {
                     if (!$partenaire->vignette) return '—';
-                    return "<img src='" . asset($partenaire->vignette) . "' width='80'>";
+                    return "<img src='" . Storage::disk('public')->url($partenaire->vignette) . "' width='80'>";
                 }),
                 Sight::make('langue_nom', 'Langue'),
                 Sight::make('pays_nom', 'Pays'),

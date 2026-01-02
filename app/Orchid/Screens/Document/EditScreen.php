@@ -135,7 +135,7 @@ class EditScreen extends Screen
 {
     $data = $request->get('document');
 
-    if ($request->hasFile('fichier')) {
+    /*if ($request->hasFile('fichier')) {
         $file = $request->file('fichier');
 
         // Stocker dans /storage/app/public/documents/YYYY/MM/DD
@@ -147,7 +147,36 @@ class EditScreen extends Screen
 
         // Enregistrer le chemin dans la base (accessible via asset())
         $data['fichier'] = 'storage/' . $path;
-    }
+    }*/
+        
+
+if ($request->hasFile('vignette')) {
+    $file = $request->file('vignette');
+
+    // Nom de base + extension
+    $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+    $extension = $file->getClientOriginalExtension();
+
+    // 🔹 On nettoie le nom pour Supabase
+    $safeName = \App\Helpers\FileHelper::sanitizeFileName($originalName);
+
+    // Chemin final dans le bucket
+    $path = 'documents/' . time() . '_' . $safeName . '.' . $extension;
+
+    $storage = new \App\Services\SupabaseStorageService();
+
+    // Upload du fichier
+    $storage->upload(
+        $path,
+        file_get_contents($file->getRealPath()),
+        $file->getMimeType()
+    );
+
+    // Stockage du chemin dans la base
+    $data['vignette'] = $path;
+}
+
+
 
     $this->document->fill($data)->save();
 

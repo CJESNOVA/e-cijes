@@ -50,7 +50,7 @@ class ShowScreen extends Screen
                 Sight::make('pageparent.titre', 'Page parent'),
                 Sight::make('vignette', 'Vignette')->render(function ($pagelibre) {
                     if (!$pagelibre->vignette) return '—';
-                    return "<img src='" . asset($pagelibre->vignette) . "' width='80'>";
+                    return "<img src='" . Storage::disk('public')->url($pagelibre->vignette) . "' width='80'>";
                 }),
                 Sight::make('langue_nom', 'Langue'),
                 Sight::make('spotlight', 'Spotlight')->render(fn($pagelibre) => $pagelibre->spotlight ? '✅ Actif' : '❌ Inactif'),

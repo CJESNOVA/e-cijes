@@ -53,7 +53,7 @@ class ShowScreen extends Screen
                 Sight::make('membretype.titre', 'Type du membre'),
                 Sight::make('vignette', 'Vignette')->render(function ($membre) {
                     if (!$membre->vignette) return '—';
-                    return "<img src='" . asset($membre->vignette) . "' width='80'>";
+                    return "<img src='" . Storage::disk('public')->url($membre->vignette) . "' width='80'>";
                 }),
                 Sight::make('membrestatut.titre', 'Statut du membre'),
                 Sight::make('pays_nom', 'Pays'),

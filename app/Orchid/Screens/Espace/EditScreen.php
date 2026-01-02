@@ -155,7 +155,7 @@ class EditScreen extends Screen
 {
     $data = $request->get('espace');
 
-    if ($request->hasFile('vignette')) {
+    /*if ($request->hasFile('vignette')) {
         $file = $request->file('vignette');
 
         // Stocker dans /storage/app/public/espaces/YYYY/MM/DD
@@ -167,7 +167,41 @@ class EditScreen extends Screen
 
         // Enregistrer le chemin dans la base (accessible via asset())
         $data['vignette'] = 'storage/' . $path;
-    }
+    }*/
+
+
+
+if ($request->hasFile('vignette')) {
+    $file = $request->file('vignette');
+
+    // 🔹 Séparer nom et extension
+    $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+    $extension = $file->getClientOriginalExtension();
+
+    // 🔹 Nettoyer le nom (accents, espaces, caractères spéciaux)
+    $safeName = \App\Helpers\FileHelper::sanitizeFileName($originalName);
+
+    // 🔹 Dossier équivalent à espaces/YYYY/MM/DD
+    $directory = 'espaces/' . date('Y/m/d');
+
+    // 🔹 Nom final unique
+    $filename = uniqid() . '_' . $safeName . '.' . $extension;
+
+    // 🔹 Chemin complet dans le bucket
+    $path = $directory . '/' . $filename;
+
+    // 🔹 Upload vers Supabase
+    $storage = new \App\Services\SupabaseStorageService();
+    $storage->upload(
+        $path,
+        file_get_contents($file->getRealPath()),
+        $file->getMimeType()
+    );
+
+    // 🔹 On stocke seulement le chemin relatif
+    $data['vignette'] = $path;
+}
+
 
     $this->espace->fill($data)->save();
 

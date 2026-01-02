@@ -124,7 +124,7 @@ class EditScreen extends Screen
 {
     $data = $request->get('pays');
 
-    if ($request->hasFile('drapeau')) {
+    /*if ($request->hasFile('drapeau')) {
         $file = $request->file('drapeau');
 
         // Stocker dans /storage/app/public/drapeaux/YYYY/MM/DD
@@ -136,7 +136,41 @@ class EditScreen extends Screen
 
         // Enregistrer le chemin dans la base (accessible via asset())
         $data['drapeau'] = 'storage/' . $path;
-    }
+    }*/
+
+        
+
+if ($request->hasFile('drapeau')) {
+    $file = $request->file('drapeau');
+
+    // 🔹 Nom sans extension
+    $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+    $extension = $file->getClientOriginalExtension();
+
+    // 🔹 Nettoyage UTF-8 / Supabase safe
+    $safeName = \App\Helpers\FileHelper::sanitizeFileName($originalName);
+
+    // 🔹 Dossier drapeaux/YYYY/MM/DD
+    $directory = 'drapeaux/' . date('Y/m/d');
+
+    // 🔹 Nom unique
+    $filename = uniqid() . '_' . $safeName . '.' . $extension;
+
+    // 🔹 Chemin final
+    $path = $directory . '/' . $filename;
+
+    // 🔹 Upload vers Supabase
+    $storage = new \App\Services\SupabaseStorageService();
+    $storage->upload(
+        $path,
+        file_get_contents($file->getRealPath()),
+        $file->getMimeType()
+    );
+
+    // 🔹 Sauvegarde en base (chemin relatif Supabase)
+    $data['drapeau'] = $path;
+}
+
 
     $this->pays->fill($data)->save();
 

@@ -41,7 +41,7 @@ class ShowScreen extends Screen
                 Sight::make('expertvalide.titre', 'Validation d\'expert'),
                 Sight::make('fichier', 'Fichier')->render(function ($expert) {
                     if (!$expert->fichier) return '—';
-                    return "<a href='" . asset($expert->fichier) . "' class='btn btn-outline-primary btn-sm' download style='display: inline;'>📄 Télécharger</a>";
+                    return "<a href='" . Storage::disk('public')->url($expert->fichier) . "' class='btn btn-outline-primary btn-sm' download style='display: inline;'>📄 Télécharger</a>";
                 }),
                 Sight::make('spotlight', 'Spotlight')->render(fn($expert) => $expert->spotlight ? '✅ Actif' : '❌ Inactif'),
                 Sight::make('etat', 'État')->render(fn($expert) => $expert->etat ? '✅ Actif' : '❌ Inactif'),

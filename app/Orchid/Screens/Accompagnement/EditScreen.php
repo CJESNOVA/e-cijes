@@ -217,7 +217,7 @@ class EditScreen extends Screen
         'name'        => $entreprise->nom,
         'user_id'     => $user->supabase_user_id,
         'description' => $entreprise->description ?? '',
-        'logo_url'    => $entreprise->vignette ? env('APP_URL') . '/' . ltrim($entreprise->vignette, '/') : null,
+        'logo_url'    => $entreprise->vignette ? env('SUPABASE_BUCKET_URL') . '/' . ltrim($entreprise->vignette, '/') : null,
         'phone'       => $entreprise->telephone ?? '',
         'email'       => $entreprise->email ?? '',
         'address'     => $entreprise->adresse ?? '',

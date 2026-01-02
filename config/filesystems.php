@@ -38,14 +38,27 @@ return [
             'report' => false,
         ],
 
-        'public' => [
+        /*'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
-            'url' => env('APP_URL').'/storage',
+            //'url' => env('APP_URL').'/storage',
+            'url' => env('SUPABASE_BUCKET_URL'),
             'visibility' => 'public',
             'throw' => false,
             'report' => false,
+        ],*/
+
+        'public' => [
+            'driver' => 's3',   // pas 'local'
+            'key' => env('SUPABASE_KEY'),
+            'secret' => env('SUPABASE_SECRET'),
+            'region' => env('SUPABASE_REGION', 'us-east-1'), // tu peux mettre 'local' pour Supabase
+            'bucket' => env('SUPABASE_BUCKET'),
+            'url' => env('SUPABASE_BUCKET_URL'), // ex: https://xyz.supabase.co/storage/v1/object/public/...
+            'endpoint' => env('SUPABASE_URL'),
+            'use_path_style_endpoint' => true, // important pour Supabase
         ],
+
 
         's3' => [
             'driver' => 's3',

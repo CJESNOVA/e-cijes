@@ -41,7 +41,7 @@ class ShowScreen extends Screen
                 Sight::make('forum.titre', 'Forum'),
                 Sight::make('vignette', 'Vignette')->render(function ($sujet) {
                     if (!$sujet->vignette) return '—';
-                    return "<img src='" . asset($sujet->vignette) . "' width='80'>";
+                    return "<img src='" . Storage::disk('public')->url($sujet->vignette) . "' width='80'>";
                 }),
                 Sight::make('membre.nom_complet', 'Membre'),
                 Sight::make('spotlight', 'Spotlight')->render(fn($sujet) => $sujet->spotlight ? '✅ Actif' : '❌ Inactif'),

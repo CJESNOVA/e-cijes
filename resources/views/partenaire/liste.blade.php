@@ -16,7 +16,7 @@
         <!-- Start Breadcrumb Section -->
         <!-- ========================================== -->
         <section class="breadcrumb-section">
-            <div class="bg bg-image" style="background-image: url('{{ env('APP_URL') . $slider->vignette }}')"></div>
+            <div class="bg bg-image" style="background-image: url('{{ env('SUPABASE_BUCKET_URL') . $slider->vignette }}')"></div>
             <div class="container">
                 <div class="title-outer">
                     <div class="page-title">
@@ -86,7 +86,7 @@
                     <div class="col-lg-4 col-md-6 col-sm-6">
                         <div class="feature-single-box">
                             <a href="{{ env('APP_URL') }}partenaire/{{ $partenaire->id }}-{{ getEnleveAccent($partenaire->titre) }}.html">
-                            <img class="img-fluid" src="{{ env('APP_URL') }}timthumb.php?src={{ env('APP_URL') . $partenaire->vignette }}&w=390&h=200&zc=1&q=100" alt="{{ $partenaire->titre }}">
+                            <img class="img-fluid" src="{{ env('APP_URL') }}timthumb.php?src={{ env('SUPABASE_BUCKET_URL') . $partenaire->vignette }}&w=390&h=200&zc=1&q=100" alt="{{ $partenaire->titre }}">
                             <h4 class="title">{{ $partenaire->titre }}</h4>
                             <p class="text">{{ $partenaire->contact }}</p>
                             </a>

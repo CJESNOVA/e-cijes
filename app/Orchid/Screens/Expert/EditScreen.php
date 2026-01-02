@@ -142,7 +142,7 @@ class EditScreen extends Screen
 {
     $data = $request->get('expert');
 
-    if ($request->hasFile('fichier')) {
+    /*if ($request->hasFile('fichier')) {
         $file = $request->file('fichier');
 
         // Stocker dans /storage/app/public/experts/YYYY/MM/DD
@@ -154,7 +154,41 @@ class EditScreen extends Screen
 
         // Enregistrer le chemin dans la base (accessible via asset())
         $data['fichier'] = 'storage/' . $path;
-    }
+    }*/
+
+        
+
+if ($request->hasFile('fichier')) {
+    $file = $request->file('fichier');
+
+    // 🔹 Nom sans extension + extension
+    $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+    $extension = $file->getClientOriginalExtension();
+
+    // 🔹 Nettoyage Supabase-safe (accents, espaces, caractères spéciaux)
+    $safeName = \App\Helpers\FileHelper::sanitizeFileName($originalName);
+
+    // 🔹 Dossier experts/YYYY/MM/DD
+    $directory = 'experts/' . date('Y/m/d');
+
+    // 🔹 Nom unique
+    $filename = uniqid() . '_' . $safeName . '.' . $extension;
+
+    // 🔹 Chemin complet dans le bucket
+    $path = $directory . '/' . $filename;
+
+    // 🔹 Upload vers Supabase
+    $storage = new \App\Services\SupabaseStorageService();
+    $storage->upload(
+        $path,
+        file_get_contents($file->getRealPath()),
+        $file->getMimeType()
+    );
+
+    // 🔹 On stocke uniquement le chemin relatif
+    $data['fichier'] = $path;
+}
+
 
     $this->expert->fill($data)->save();
 

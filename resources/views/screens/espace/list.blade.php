@@ -36,9 +36,9 @@
                                         @if ($espace->vignette)
                                             @php $ext = pathinfo($espace->vignette, PATHINFO_EXTENSION); @endphp
                                             @if(in_array(strtolower($ext), ['jpg','jpeg','png','webp','gif']))
-                                                <img src="{{ asset($espace->vignette) }}" width="50" class="rounded shadow">
+                                                <img src="{{ Storage::disk('public')->url($espace->vignette) }}" width="50" class="rounded shadow">
                                             @else
-                                                <a href="{{ asset($espace->vignette) }}" class="btn btn-outline-primary btn-sm" download>
+                                                <a href="{{ Storage::disk('public')->url($espace->vignette) }}" class="btn btn-outline-primary btn-sm" download>
                                                     📄 Télécharger
                                                 </a>
                                             @endif

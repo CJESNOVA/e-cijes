@@ -32,9 +32,9 @@
                                         @if ($pays->flag_url)
                                             @php $ext = pathinfo($pays->flag_url, PATHINFO_EXTENSION); @endphp
                                             @if(in_array(strtolower($ext), ['jpg','jpeg','png','webp','gif']))
-                                                <img src="{{ asset($pays->flag_url) }}" width="50" class="rounded shadow">
+                                                <img src="{{ Storage::disk('public')->url($pays->flag_url) }}" width="50" class="rounded shadow">
                                             @else
-                                                <a href="{{ asset($pays->flag_url) }}" class="btn btn-outline-primary btn-sm" download>
+                                                <a href="{{ Storage::disk('public')->url($pays->flag_url) }}" class="btn btn-outline-primary btn-sm" download>
                                                     📄 Télécharger
                                                 </a>
                                             @endif

@@ -144,7 +144,7 @@ class EditScreen extends Screen
 {
     $data = $request->get('chiffre');
 
-    if ($request->hasFile('vignette')) {
+    /*if ($request->hasFile('vignette')) {
         $file = $request->file('vignette');
 
         // Stocker dans /storage/app/public/chiffres/YYYY/MM/DD
@@ -156,7 +156,30 @@ class EditScreen extends Screen
 
         // Enregistrer le chemin dans la base (accessible via asset())
         $data['vignette'] = 'storage/' . $path;
-    }
+    }*/
+
+if ($request->hasFile('vignette')) {
+
+    $file = $request->file('vignette');
+
+    $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+    $extension = $file->getClientOriginalExtension();
+
+    // 🔹 On utilise notre helper
+    $safeName = \App\Helpers\FileHelper::sanitizeFileName($originalName);
+
+    $path = 'chiffres/' . time() . '_' . $safeName . '.' . $extension;
+
+    $storage = new \App\Services\SupabaseStorageService();
+
+    $storage->upload(
+        $path,
+        file_get_contents($file->getRealPath()),
+        $file->getMimeType()
+    );
+
+    $data['vignette'] = $path;
+}
 
     $this->chiffre->fill($data)->save();
 

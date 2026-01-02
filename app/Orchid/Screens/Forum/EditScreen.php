@@ -167,7 +167,7 @@ class EditScreen extends Screen
 {
     $data = $request->get('forum');
 
-    if ($request->hasFile('vignette')) {
+    /*if ($request->hasFile('vignette')) {
         $file = $request->file('vignette');
 
         // Stocker dans /storage/app/public/forums/YYYY/MM/DD
@@ -179,7 +179,41 @@ class EditScreen extends Screen
 
         // Enregistrer le chemin dans la base (accessible via asset())
         $data['vignette'] = 'storage/' . $path;
-    }
+    }*/
+
+        
+
+if ($request->hasFile('vignette')) {
+    $file = $request->file('vignette');
+
+    // 🔹 Nom du fichier sans extension
+    $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+    $extension = $file->getClientOriginalExtension();
+
+    // 🔹 Nettoyage Supabase / UTF-8 safe
+    $safeName = \App\Helpers\FileHelper::sanitizeFileName($originalName);
+
+    // 🔹 Dossier forums/YYYY/MM/DD
+    $directory = 'forums/' . date('Y/m/d');
+
+    // 🔹 Nom unique
+    $filename = uniqid() . '_' . $safeName . '.' . $extension;
+
+    // 🔹 Chemin final dans le bucket
+    $path = $directory . '/' . $filename;
+
+    // 🔹 Upload Supabase
+    $storage = new \App\Services\SupabaseStorageService();
+    $storage->upload(
+        $path,
+        file_get_contents($file->getRealPath()),
+        $file->getMimeType()
+    );
+
+    // 🔹 Stocker uniquement le chemin relatif
+    $data['vignette'] = $path;
+}
+
 
     $this->forum->fill($data)->save();
 

@@ -59,7 +59,7 @@ class ShowScreen extends Screen
                 Sight::make('actualitetype.titre', 'Type de l\'actualité'),
                 Sight::make('vignette', 'Vignette')->render(function ($actualite) {
                     if (!$actualite->vignette) return '—';
-                    return "<img src='" . asset($actualite->vignette) . "' width='80'>";
+                    return "<img src='" . Storage::disk('public')->url($actualite->vignette) . "' width='80'>";
                 }),
                 Sight::make('langue_nom', 'Langue'),
                 Sight::make('pays_nom', 'Pays'),

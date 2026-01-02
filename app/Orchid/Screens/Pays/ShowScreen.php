@@ -37,7 +37,7 @@ class ShowScreen extends Screen
                 Sight::make('etat', 'État')->render(fn($pays) => $pays->etat ? '✅ Actif' : '❌ Inactif'),
                 Sight::make('drapeau', 'Drapeau')->render(function ($pays) {
                     if (!$pays->drapeau) return '—';
-                    return "<img src='" . asset($pays->drapeau) . "' width='80'>";
+                    return "<img src='" . Storage::disk('public')->url($pays->drapeau) . "' width='80'>";
                 }),
                 Sight::make('created_at', 'Créé le'),
                 Sight::make('updated_at', 'Modifié le'),

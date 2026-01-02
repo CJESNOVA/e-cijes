@@ -14,7 +14,7 @@
         <!-- Start Breadcrumb Section -->
         <!-- ========================================== -->
         <section class="breadcrumb-section">
-            <div class="bg bg-image" style="background-image: url('{{ env('APP_URL') . $slider->vignette }}')"></div>
+            <div class="bg bg-image" style="background-image: url('{{ env('SUPABASE_BUCKET_URL') . $slider->vignette }}')"></div>
             <div class="container">
                 <div class="title-outer">
                     <div class="page-title">
@@ -47,7 +47,7 @@
                             <div class="blog-list-card style-2">
 								@if ($service->vignette != '')
                                 <div class="image overlay-anim1">
-                                    <a href="#"><img src="{{ env('APP_URL') . $service->vignette }}" alt="{{ $service->titre }}"></a>
+                                    <a href="#"><img src="{{ env('SUPABASE_BUCKET_URL') . $service->vignette }}" alt="{{ $service->titre }}"></a>
                                 </div>
 								@endif
                                 <div class="card-content">

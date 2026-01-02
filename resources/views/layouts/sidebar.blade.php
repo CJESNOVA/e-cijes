@@ -35,7 +35,7 @@
                                         @foreach ($actualites1 as $actualite)
                                         @if ($actualite->vignette != '')
                                         <div class="post">
-                                            <a href="{{ env('APP_URL') }}actualite/{{ $actualite->id }}-{{ getEnleveAccent($actualite->titre) }}.html"><img src="{{ env('APP_URL') }}timthumb.php?src={{ env('APP_URL') . $actualite->vignette }}&w=88&h=88&zc=1&q=100" alt="{{ $actualite->titre }}"></a>
+                                            <a href="{{ env('APP_URL') }}actualite/{{ $actualite->id }}-{{ getEnleveAccent($actualite->titre) }}.html"><img src="{{ env('APP_URL') }}timthumb.php?src={{ env('SUPABASE_BUCKET_URL') . $actualite->vignette }}&w=88&h=88&zc=1&q=100" alt="{{ $actualite->titre }}"></a>
                                             <div class="post-content">
                                                 <a href="{{ env('APP_URL') }}actualite/{{ $actualite->id }}-{{ getEnleveAccent($actualite->titre) }}.html">{{ $actualite->titre }}</a>
                                                 <p>{{ \Carbon\Carbon::parse($actualite->dateactualite)->translatedFormat('d F Y') }}</p>

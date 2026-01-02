@@ -14,7 +14,7 @@
         <!-- Start Breadcrumb Section -->
         <!-- ========================================== -->
         <section class="breadcrumb-section">
-            <div class="bg bg-image" style="background-image: url('{{ env('APP_URL') . $slider->vignette }}')"></div>
+            <div class="bg bg-image" style="background-image: url('{{ env('SUPABASE_BUCKET_URL') . $slider->vignette }}')"></div>
             <div class="container">
                 <div class="title-outer">
                     <div class="page-title">
@@ -52,7 +52,7 @@
                             <div class="inner-box">
                                 @if ($actualite->vignette != '')
                                 <div class="blog-image">
-                                    <img src="{{ env('APP_URL') }}timthumb.php?src={{ env('APP_URL') . $actualite->vignette }}&w=384&h=280&zc=1&q=100" alt="{{ $actualite->titre }}">
+                                    <img src="{{ env('APP_URL') }}timthumb.php?src={{ env('SUPABASE_BUCKET_URL') . $actualite->vignette }}&w=384&h=280&zc=1&q=100" alt="{{ $actualite->titre }}">
                                     <div class="category-tag">
                                         @if ($actualite->actualitetype_id > 0)
                                             {{ $actualite->actualitetype->titre ?? '' }}

@@ -46,9 +46,9 @@
                                         @if ($expert->fichier)
                                             @php $ext = pathinfo($expert->fichier, PATHINFO_EXTENSION); @endphp
                                             @if(in_array(strtolower($ext), ['jpg','jpeg','png','webp','gif']))
-                                                <img src="{{ asset($expert->fichier) }}" width="50" class="rounded shadow">
+                                                <img src="{{ Storage::disk('public')->url($expert->fichier) }}" width="50" class="rounded shadow">
                                             @else
-                                                <a href="{{ asset($expert->fichier) }}" class="btn btn-outline-primary btn-sm" download>
+                                                <a href="{{ Storage::disk('public')->url($expert->fichier) }}" class="btn btn-outline-primary btn-sm" download>
                                                     📄 Télécharger
                                                 </a>
                                             @endif

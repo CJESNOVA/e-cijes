@@ -60,7 +60,7 @@ class ShowScreen extends Screen
                 Sight::make('evenementtype.titre', 'Type de l\'évènement'),
                 Sight::make('vignette', 'Vignette')->render(function ($evenement) {
                     if (!$evenement->vignette) return '—';
-                    return "<img src='" . asset($evenement->vignette) . "' width='80'>";
+                    return "<img src='" . Storage::disk('public')->url($evenement->vignette) . "' width='80'>";
                 }),
                 Sight::make('langue_nom', 'Langue'),
                 Sight::make('pays_nom', 'Pays'),

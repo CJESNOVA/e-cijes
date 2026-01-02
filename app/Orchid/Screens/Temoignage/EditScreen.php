@@ -148,7 +148,7 @@ class EditScreen extends Screen
 {
     $data = $request->get('temoignage');
 
-    if ($request->hasFile('vignette')) {
+    /*if ($request->hasFile('vignette')) {
         $file = $request->file('vignette');
 
         // Stocker dans /storage/app/public/temoignages/YYYY/MM/DD
@@ -160,7 +160,41 @@ class EditScreen extends Screen
 
         // Enregistrer le chemin dans la base (accessible via asset())
         $data['vignette'] = 'storage/' . $path;
-    }
+    }*/
+
+        
+
+if ($request->hasFile('vignette')) {
+    $file = $request->file('vignette');
+
+    // 🔹 Nom du fichier sans extension
+    $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+    $extension = $file->getClientOriginalExtension();
+
+    // 🔹 Nettoyage UTF-8 / caractères spéciaux
+    $safeName = \App\Helpers\FileHelper::sanitizeFileName($originalName);
+
+    // 🔹 Dossier temoignages/YYYY/MM/DD
+    $directory = 'temoignages/' . date('Y/m/d');
+
+    // 🔹 Nom final unique
+    $filename = uniqid() . '_' . $safeName . '.' . $extension;
+
+    // 🔹 Chemin complet
+    $path = $directory . '/' . $filename;
+
+    // 🔹 Upload vers Supabase Storage
+    $storage = new \App\Services\SupabaseStorageService();
+    $storage->upload(
+        $path,
+        file_get_contents($file->getRealPath()),
+        $file->getMimeType()
+    );
+
+    // 🔹 Sauvegarde en base (chemin relatif Supabase)
+    $data['vignette'] = $path;
+}
+
 
     $this->temoignage->fill($data)->save();
 

@@ -38,7 +38,7 @@ class ShowScreen extends Screen
                 Sight::make('piecetype.titre', 'Type de la pièce'),
                 Sight::make('fichier', 'Fichier')->render(function ($piece) {
                     if (!$piece->fichier) return '—';
-                    return "<a href='" . asset($piece->fichier) . "' class='btn btn-outline-primary btn-sm' download style='display: inline;'>📄 Télécharger</a>";
+                    return "<a href='" . Storage::disk('public')->url($piece->fichier) . "' class='btn btn-outline-primary btn-sm' download style='display: inline;'>📄 Télécharger</a>";
                 }),
                 Sight::make('entreprise.nom', 'Entreprise'),
                 Sight::make('spotlight', 'Spotlight')->render(fn($piece) => $piece->spotlight ? '✅ Actif' : '❌ Inactif'),

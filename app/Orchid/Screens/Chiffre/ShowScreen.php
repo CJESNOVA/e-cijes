@@ -52,7 +52,7 @@ class ShowScreen extends Screen
                 Sight::make('chiffre', 'Chiffre'),
                 Sight::make('vignette', 'Vignette')->render(function ($chiffre) {
                     if (!$chiffre->vignette) return '—';
-                    return "<img src='" . asset($chiffre->vignette) . "' width='80'>";
+                    return "<img src='" . Storage::disk('public')->url($chiffre->vignette) . "' width='80'>";
                 }),
                 Sight::make('langue_nom', 'Langue'),
                 Sight::make('pays_nom', 'Pays'),

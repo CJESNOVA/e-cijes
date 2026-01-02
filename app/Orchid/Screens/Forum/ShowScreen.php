@@ -58,7 +58,7 @@ class ShowScreen extends Screen
                 Sight::make('secteur.titre', 'Secteur'),
                 Sight::make('vignette', 'Vignette')->render(function ($forum) {
                     if (!$forum->vignette) return '—';
-                    return "<img src='" . asset($forum->vignette) . "' width='80'>";
+                    return "<img src='" . Storage::disk('public')->url($forum->vignette) . "' width='80'>";
                 }),
                 Sight::make('langue_nom', 'Langue'),
                 Sight::make('pays_nom', 'Pays'),

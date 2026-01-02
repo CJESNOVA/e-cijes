@@ -59,7 +59,7 @@ class ShowScreen extends Screen
                 Sight::make('secteur.titre', 'Secteur'),
                 Sight::make('vignette', 'Vignette')->render(function ($entreprise) {
                     if (!$entreprise->vignette) return '—';
-                    return "<img src='" . asset($entreprise->vignette) . "' width='80'>";
+                    return "<img src='" . Storage::disk('public')->url($entreprise->vignette) . "' width='80'>";
                 }),
                 Sight::make('supabase_startup_id', 'Startup Id'),
                 Sight::make('spotlight', 'Spotlight')->render(fn($entreprise) => $entreprise->spotlight ? '✅ Actif' : '❌ Inactif'),
