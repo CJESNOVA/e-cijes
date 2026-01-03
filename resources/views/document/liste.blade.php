@@ -16,7 +16,7 @@
         <!-- Start Breadcrumb Section -->
         <!-- ========================================== -->
         <section class="breadcrumb-section">
-            <div class="bg bg-image" style="background-image: url('{{ env('SUPABASE_BUCKET_URL') . $slider->vignette }}')"></div>
+            <div class="bg bg-image" style="background-image: url('{{ env('SUPABASE_BUCKET_URL') . '/' . $slider->vignette }}')"></div>
             <div class="container">
                 <div class="title-outer">
                     <div class="page-title">
@@ -106,7 +106,7 @@
 												</td>
 												<td>
                                                 @if ($document->fichier != '')
-                                                <a href="{{ env('SUPABASE_BUCKET_URL') . $document->fichier }}" target="_blank" class="btn btn-xs btn-light text-1 text-uppercase">{{ __('telecharger') }}</a>
+                                                <a href="{{ env('SUPABASE_BUCKET_URL') . '/' . $document->fichier }}" target="_blank" class="btn btn-xs btn-light text-1 text-uppercase">{{ __('telecharger') }}</a>
                                                 @endif
 												</td>
 											</tr>

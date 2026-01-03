@@ -12,7 +12,7 @@
         <!-- Start Breadcrumb Section -->
         <!-- ========================================== -->
         <section class="breadcrumb-section">
-            <div class="bg bg-image" style="background-image: url('{{ env('SUPABASE_BUCKET_URL') . $slider->vignette }}')"></div>
+            <div class="bg bg-image" style="background-image: url('{{ env('SUPABASE_BUCKET_URL') . '/' . $slider->vignette }}')"></div>
             <div class="container">
                 <div class="title-outer">
                     <div class="page-title">
