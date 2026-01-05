@@ -11,7 +11,6 @@
 
 @section('contenu')
 
-<!-- {{ App::getLocale() }} -->
 
         <!-- Start Breadcrumb Section -->
         <!-- ========================================== -->
