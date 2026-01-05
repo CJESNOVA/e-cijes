@@ -86,7 +86,7 @@
                     <div class="col-lg-4 col-md-6 col-sm-6">
                         <div class="feature-single-box">
                             <a href="{{ env('APP_URL') }}partenaire/{{ $partenaire->id }}-{{ getEnleveAccent($partenaire->titre) }}.html">
-                            <img class="img-fluid" src="{{ env('APP_URL') }}timthumb.php?src={{ env('SUPABASE_BUCKET_URL') . '/' . $partenaire->vignette }}&w=390&h=200&zc=1&q=100" alt="{{ $partenaire->titre }}">
+                            <img class="img-fluid" src="{{ env('SUPABASE_BUCKET_URL') . '/' . $partenaire->vignette }}" alt="{{ $partenaire->titre }}">
                             <h4 class="title">{{ $partenaire->titre }}</h4>
                             <p class="text">{{ $partenaire->contact }}</p>
                             </a>

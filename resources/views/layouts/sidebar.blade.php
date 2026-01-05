@@ -8,7 +8,7 @@
                             </div>
 
 @php
-    $services1 = DB::table('services')->where('etat', 1)->where('spotlight', 0)->where('langue_id', __('id'))->limit(5)->get();
+    $services1 = \Illuminate\Support\Facades\DB::table('services')->where('etat', 1)->where('spotlight', 0)->where('langue_id', __('id'))->limit(5)->get();
 @endphp
                             @if (count($services1) > 0)
                             <div class="sidebar-category-list">
@@ -25,7 +25,7 @@
 
 
 @php
-    $actualites1 = DB::table('actualites')->where('etat', 1)->where('spotlight', 0)->where('langue_id', __('id'))->limit(5)->get();
+    $actualites1 = \Illuminate\Support\Facades\DB::table('actualites')->where('etat', 1)->where('spotlight', 0)->where('langue_id', __('id'))->limit(5)->get();
 @endphp
                             @if (count($actualites1) > 0)
                             <div class="sidebar-latest-posts">
@@ -35,7 +35,7 @@
                                         @foreach ($actualites1 as $actualite)
                                         @if ($actualite->vignette != '')
                                         <div class="post">
-                                            <a href="{{ env('APP_URL') }}actualite/{{ $actualite->id }}-{{ getEnleveAccent($actualite->titre) }}.html"><img src="{{ env('APP_URL') }}timthumb.php?src={{ env('SUPABASE_BUCKET_URL') . '/' . $actualite->vignette }}&w=88&h=88&zc=1&q=100" alt="{{ $actualite->titre }}"></a>
+                                            <a href="{{ env('APP_URL') }}actualite/{{ $actualite->id }}-{{ getEnleveAccent($actualite->titre) }}.html"><img src="{{ env('SUPABASE_BUCKET_URL') . '/' . $actualite->vignette }}" alt="{{ $actualite->titre }}"></a>
                                             <div class="post-content">
                                                 <a href="{{ env('APP_URL') }}actualite/{{ $actualite->id }}-{{ getEnleveAccent($actualite->titre) }}.html">{{ $actualite->titre }}</a>
                                                 <p>{{ \Carbon\Carbon::parse($actualite->dateactualite)->translatedFormat('d F Y') }}</p>

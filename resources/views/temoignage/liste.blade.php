@@ -65,7 +65,7 @@
                             <div class="content-inner">
                                 <div class="card-header">
                                     @if ($temoignage->vignette != '')
-                                    <img src="{{ env('APP_URL') }}timthumb.php?src={{ env('SUPABASE_BUCKET_URL') . '/' . $temoignage->vignette }}&w=70&h=70&zc=1&q=100" alt="{{ $temoignage->nom }}" class="user-image">
+                                    <img src="{{ env('SUPABASE_BUCKET_URL') . '/' . $temoignage->vignette }}" alt="{{ $temoignage->nom }}" class="user-image">
                                     @endif
                                     <div class="user-details">
                                         <h5 class="user-name">{{ $temoignage->nom }}</h5>

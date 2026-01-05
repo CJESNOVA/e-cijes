@@ -17,6 +17,9 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Session;
 
+use App\Http\Controllers\MediaController;
+
+
 /*Route::get('/language/{lang}', function ($lang) {
     if (in_array($lang, ['en', 'fr'])) {
         Session::put('locale', $lang);
@@ -69,6 +72,10 @@ Route::get('/faqs.html', [FaqController::class, 'liste'])->name('faq.liste');
 Route::get('/faq/{id}-{titre}.html', [FaqController::class, 'detail'])->name('faq.detail');
 
 
+Route::get(
+    'media/resize/{w}/{h}/{path}',
+    [MediaController::class, 'resize']
+)->where('path', '.*');
 
 
 

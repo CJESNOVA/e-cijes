@@ -52,7 +52,7 @@
                             <div class="inner-box">
                                 @if ($actualite->vignette != '')
                                 <div class="blog-image">
-                                    <img src="{{ env('APP_URL') }}timthumb.php?src={{ env('SUPABASE_BUCKET_URL') . '/' . $actualite->vignette }}&w=384&h=280&zc=1&q=100" alt="{{ $actualite->titre }}">
+                                    <img src="{{ env('SUPABASE_BUCKET_URL') . '/' . $actualite->vignette }}" alt="{{ $actualite->titre }}">
                                     <div class="category-tag">
                                         @if ($actualite->actualitetype_id > 0)
                                             {{ $actualite->actualitetype->titre ?? '' }}
@@ -65,7 +65,7 @@
                                         <span class="name">{{ \Carbon\Carbon::parse($actualite->dateactualite)->translatedFormat('d F Y') }} - 
                                         
                                         @php 
-                                        $commentaires = DB::table('commentaires')->where('etat', 1)->where('actualite_id', $actualite->id)->orderBy('id', 'desc')->get();
+                                        $commentaires = \Illuminate\Support\Facades\DB::table('commentaires')->where('etat', 1)->where('actualite_id', $actualite->id)->orderBy('id', 'desc')->get();
                                         @endphp
                                         <span><i class="far fa-comments"></i> <a href="#">{{ count($commentaires) }} {{ __('commentaire_last2') }}</a></span> </span>
                                     </div>

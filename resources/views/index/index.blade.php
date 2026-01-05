@@ -81,7 +81,7 @@
                     <div class="col-lg-6">
                         <div class="about-image-wrapper mr-60 lg-mr-30 md-mr-0 direction-rtl">
                             <div class="about-image overlay-anim2 img-anim-left wow fadeInLeft">
-                                <img src="{{ env('APP_URL') }}timthumb.php?src={{ env('SUPABASE_BUCKET_URL') . '/' . $pagelibre->vignette }}&w=516&h=425&zc=1&q=100" alt="{{ $pagelibre->titre }}" />
+                                <img src="{{ env('SUPABASE_BUCKET_URL') . '/' . $pagelibre->vignette }}" alt="{{ $pagelibre->titre }}" />
                             </div>
                             <div class="shape d-none d-xxl-block"><img src="{{ env('APP_URL') }}site/assets/images/about/home4-dot-shape.png" alt="..."></div>
                             <!--<div class="about-single-card direction-ltr">
@@ -284,7 +284,7 @@
                                             <div class="inner-box">
                                                 @if ($temoignage->vignette != '')
                                                 <div class="image-box">
-                                                    <img class="br-10" src="{{ env('APP_URL') }}timthumb.php?src={{ env('SUPABASE_BUCKET_URL') . '/' . $temoignage->vignette }}&w=312&h=380&zc=1&q=100" alt="{{ $temoignage->nom }}">
+                                                    <img class="br-10" src="{{ env('SUPABASE_BUCKET_URL') . '/' . $temoignage->vignette }}" alt="{{ $temoignage->nom }}">
                                                 </div>
                                                 @endif
                                                 <div class="content">
@@ -347,7 +347,7 @@
                                         <div class="swiper-slide">
                                             <div class="brand-item">
                                                 <a class="image" href="{{ env('APP_URL') }}partenaire/{{ $partenaire->id }}-{{ getEnleveAccent($partenaire->titre) }}.html">
-                                                    <img src="{{ env('APP_URL') }}timthumb.php?src={{ env('SUPABASE_BUCKET_URL') . '/' . $partenaire->vignette }}&w=125&h=50&zc=1&q=100" alt="{{ $partenaire->titre }}">
+                                                    <img src="{{ env('SUPABASE_BUCKET_URL') . '/' . $partenaire->vignette }}" alt="{{ $partenaire->titre }}">
                                                 </a>
                                             </div>
                                         </div>
@@ -415,7 +415,7 @@
                                 <div class="inner-box">
                                     @if ($actualite->vignette != '')
                                     <div class="blog-image">
-                                        <img src="{{ env('APP_URL') }}timthumb.php?src={{ env('SUPABASE_BUCKET_URL') . '/' . $actualite->vignette }}&w=550&h=412&zc=1&q=100" alt="{{ $actualite->titre }}">
+                                        <img src="{{ env('SUPABASE_BUCKET_URL') . '/' . $actualite->vignette }}" alt="{{ $actualite->titre }}">
                                         @if ($actualite->actualitetype_id > 0)
                                         <div class="category-tag">
                                             {{ $actualite->actualitetype->titre ?? '' }}

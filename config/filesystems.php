@@ -54,7 +54,7 @@ return [
             'secret' => env('SUPABASE_SECRET'),
             'region' => env('SUPABASE_REGION', 'us-east-1'), // tu peux mettre 'local' pour Supabase
             'bucket' => env('SUPABASE_BUCKET'),
-            'url' => env('SUPABASE_BUCKET_URL') . '/'.'/', // ex: https://xyz.supabase.co/storage/v1/object/public/...
+            'url' => env('SUPABASE_BUCKET_URL') . '/', // ex: https://xyz.supabase.co/storage/v1/object/public/...
             'endpoint' => env('SUPABASE_URL'),
             'use_path_style_endpoint' => true, // important pour Supabase
         ],

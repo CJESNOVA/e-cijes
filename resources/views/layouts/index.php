@@ -36,7 +36,7 @@
 							<a href="{{ $grosplan->url }}" class="btn btn-primary btn-modern font-weight-bold text-3 py-3 btn-px-5 appear-animation" style="margin-top:20px;" data-appear-animation="fadeInUpShorter" data-appear-animation-delay="1800" data-plugin-options="{'minWindowWidth': 0}">{{ __('voirplus') }} <i class="fas fa-arrow-right ms-2"></i></a>
 						@elseif ($grosplan->table_id > 0)
 							@php
-								$tabletype = DB::select(
+								$tabletype = \Illuminate\Support\Facades\DB::select(
 									'select * from tabletypes where id = ' .
 										$grosplan->tabletype_id .
 										'',
@@ -47,7 +47,7 @@
 								$tabletitre = 'titre';
 								$table_titre = ucfirst($tabletype[0]->titre);
 
-								//$table_s = DB::select('select * from '.$tables.' where id = '.$grosplan->table_id.'');
+								//$table_s = \Illuminate\Support\Facades\DB::select('select * from '.$tables.' where id = '.$grosplan->table_id.'');
 								//echo $table_s[0]->titre;
 
 							@endphp
@@ -55,7 +55,7 @@
 							<a href="{{ env('APP_URL') }}{{ $table_ }}/{{ $grosplan->table_id }}-{{ getEnleveAccent($grosplan->titre) }}.html" class="btn btn-primary btn-modern font-weight-bold text-3 py-3 btn-px-5 appear-animation" style="margin-top:20px;" data-appear-animation="fadeInUpShorter" data-appear-animation-delay="1800" data-plugin-options="{'minWindowWidth': 0}">{{ __('voirplus') }} <i class="fas fa-arrow-right ms-2"></i></a>
 						@elseif ($grosplan->tabletype_id > 0)
 							@php
-								$tabletype = DB::select(
+								$tabletype = \Illuminate\Support\Facades\DB::select(
 									'select * from tabletypes where id = ' .
 										$grosplan->tabletype_id .
 										'',
@@ -66,7 +66,7 @@
 								$tabletitre = 'titre';
 								$table_titre = ucfirst($tabletype[0]->titre);
 
-								//$table_s = DB::select('select * from '.$tables.' where id = '.$grosplan->table_id.'');
+								//$table_s = \Illuminate\Support\Facades\DB::select('select * from '.$tables.' where id = '.$grosplan->table_id.'');
 								//echo $table_s[0]->titre;
 
 							@endphp
@@ -144,7 +144,7 @@
 				<div class="col-md-6 mb-6 mb-md-0 appear-animation" data-appear-animation="fadeInLeftShorter" data-appear-animation-delay="200">
 					<div class="row align-items-center justify-content-center justify-content-md-start">
 						<div class="col-4">
-							<img class="img-fluid mb-4 mb-lg-0" src="{{ env('APP_URL') }}timthumb.php?src={{ env('SUPABASE_BUCKET_URL') . '/' . $pagelibre2->vignette }}&w=586&h=586&zc=1&q=100" alt="{{ $pagelibre2->titre }}">
+							<img class="img-fluid mb-4 mb-lg-0" src="{{ env('SUPABASE_BUCKET_URL') . '/' . $pagelibre2->vignette }}" alt="{{ $pagelibre2->titre }}">
 						</div>
 						<div class="col-lg-8">
 							<h2 class="font-weight-bold text-5 line-height-5 mb-1"><a href="{{ env('APP_URL') }}page/{{ $pagelibre2->id }}-{{ getEnleveAccent($pagelibre2->titre) }}.html">{{ $pagelibre2->titre }}</a></h2>
@@ -157,7 +157,7 @@
 				<div class="col-md-6 mb-6 mb-md-0 appear-animation" data-appear-animation="fadeInLeftShorter" data-appear-animation-delay="200">
 					<div class="row align-items-center justify-content-center justify-content-md-start">
 						<div class="col-4">
-							<img class="img-fluid mb-4 mb-lg-0" src="{{ env('APP_URL') }}timthumb.php?src={{ env('SUPABASE_BUCKET_URL') . '/' . $pagelibre3->vignette }}&w=586&h=586&zc=1&q=100" alt="{{ $pagelibre3->titre }}">
+							<img class="img-fluid mb-4 mb-lg-0" src="{{ env('SUPABASE_BUCKET_URL') . '/' . $pagelibre3->vignette }}" alt="{{ $pagelibre3->titre }}">
 						</div>
 						<div class="col-lg-8">
 							<h2 class="font-weight-bold text-5 line-height-5 mb-1"><a href="{{ env('APP_URL') }}page/{{ $pagelibre3->id }}-{{ getEnleveAccent($pagelibre3->titre) }}.html">{{ $pagelibre3->titre }}</a></h2>
@@ -183,7 +183,7 @@
 					<a href="{{ env('APP_URL') }}page/{{ $pagelibre4->id }}-{{ getEnleveAccent($pagelibre4->titre) }}.html" class="btn btn-primary btn-px-5 btn-py-2 text-2">{{ __('lireplus') }}</a>
 				</div>
 				<div class="col-9 offset-lg-1 col-lg-5 order-1 order-lg-2 scale-2">
-					<img class="img-fluid box-shadow-3 my-2 border-radius" src="{{ env('APP_URL') }}timthumb.php?src={{ env('SUPABASE_BUCKET_URL') . '/' . $pagelibre4->vignette }}&w=586&h=624&zc=1&q=100" alt="{{ $pagelibre4->titre }}">
+					<img class="img-fluid box-shadow-3 my-2 border-radius" src="{{ env('SUPABASE_BUCKET_URL') . '/' . $pagelibre4->vignette }}" alt="{{ $pagelibre4->titre }}">
 				</div>
 			</div>
 		</div>
@@ -253,7 +253,7 @@
 								@if ($actualite->vignette != '')
 								<div class="post-image">
 									<a href="{{ env('APP_URL') }}actualite/{{ $actualite->id }}-{{ getEnleveAccent($actualite->titre) }}.html">
-										<img src="{{ env('APP_URL') }}timthumb.php?src={{ env('SUPABASE_BUCKET_URL') . '/' . $actualite->vignette }}&w=550&h=412&zc=1&q=100" class="img-fluid img-thumbnail img-thumbnail-no-borders rounded-0" alt="{{ $actualite->titre }}" />
+										<img src="{{ env('SUPABASE_BUCKET_URL') . '/' . $actualite->vignette }}" class="img-fluid img-thumbnail img-thumbnail-no-borders rounded-0" alt="{{ $actualite->titre }}" />
 									</a>
 								</div>
 								@endif
@@ -285,7 +285,7 @@
 									<div class="post-meta">
 										<span><i class="far fa-calenda"></i> {{ \Carbon\Carbon::parse($actualite->date)->translatedFormat('d F Y') }} </span>
                                         @php 
-                                        $commentaires = DB::table('commentaires')->where('etat', 1)->where('actualite_id', $actualite->id)->orderBy('id', 'desc')->get();
+                                        $commentaires = \Illuminate\Support\Facades\DB::table('commentaires')->where('etat', 1)->where('actualite_id', $actualite->id)->orderBy('id', 'desc')->get();
                                         @endphp
 										<span><i class="far fa-comments"></i> <a href="#">{{ count($commentaires) }} {{ __('commentaire_last2') }}</a></span>
 										<span class="d-block mt-2"><a href="{{ env('APP_URL') }}actualite/{{ $actualite->id }}-{{ getEnleveAccent($actualite->titre) }}.html" class="btn btn-xs btn-light text-1 text-uppercase">{{ __('liresuite') }}</a></span>
@@ -344,7 +344,7 @@
 							@if ($partenaire->vignette != '')
 								<div class="text-center" style="margin:5px;">
 									<a href="{{ env('APP_URL') }}partenaire/{{ $partenaire->id }}-{{ getEnleveAccent($partenaire->titre) }}.html">
-									<img class="d-inline-block" src="{{ env('APP_URL') }}timthumb.php?src={{ env('SUPABASE_BUCKET_URL') . '/' . $partenaire->vignette }}&w=220&h=200&zc=1&q=100" alt="{{ $partenaire->titre }}"  />
+									<img class="d-inline-block" src="{{ env('SUPABASE_BUCKET_URL') . '/' . $partenaire->vignette }}" alt="{{ $partenaire->titre }}"  />
 									</a>
 								</div>
 								@endif
@@ -375,7 +375,7 @@
 									<div class="row">
 									@if ($temoignage->vignette != '')
 										<div class="col-8 col-sm-4 col-lg-2 text-center pt-5">
-											<img src="{{ env('APP_URL') }}timthumb.php?src={{ env('SUPABASE_BUCKET_URL') . '/' . $temoignage->vignette }}&w=120&h=120&zc=1&q=100" alt class="img-fluid rounded-circle" />
+											<img src="{{ env('SUPABASE_BUCKET_URL') . '/' . $temoignage->vignette }}" alt class="img-fluid rounded-circle" />
 										</div>
 										@endif
 										<div class="col-12 col-sm-12 col-lg-10">

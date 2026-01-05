@@ -57,7 +57,7 @@
                         <div class="service-single-box">
                             <div class="inner-box">
                                 @if ($service->vignette != '')
-                                <img src="{{ env('APP_URL') }}timthumb.php?src={{ env('SUPABASE_BUCKET_URL') . '/' . $service->vignette }}&w=384&h=280&zc=1&q=100" alt="{{ $service->titre }}">
+                                <img src="{{ env('SUPABASE_BUCKET_URL') . '/' . $service->vignette }}" alt="{{ $service->titre }}">
                                 @endif
                                 <div class="border mt-50 xs-mt-40 mb-30"></div>
                                 <h4 class="title">{{ $service->titre }}</h4>

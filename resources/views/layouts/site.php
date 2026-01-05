@@ -138,7 +138,7 @@
                                                     </li>
     
                                                     @php
-                                                        $menus = DB::table('menus')
+                                                        $menus = \Illuminate\Support\Facades\DB::table('menus')
                                                             ->where('parent', 0)
                                                             ->where('etat', 1)
                                                             ->orderBy('ordre', 'asc')
@@ -154,7 +154,7 @@
                                                             </li>
                                                         @elseif ($menu->table_id > 0)
                                                             @php
-                                                                $tabletype = DB::select(
+                                                                $tabletype = \Illuminate\Support\Facades\DB::select(
                                                                     'select * from tabletypes where id = ' .
                                                                         $menu->tabletype_id .
                                                                         '',
@@ -165,7 +165,7 @@
                                                                 $tabletitre = 'titre';
                                                                 $table_titre = ucfirst($tabletype[0]->titre);
     
-                                                                //$table_s = DB::select('select * from '.$tables.' where id = '.$menu->table_id.'');
+                                                                //$table_s = \Illuminate\Support\Facades\DB::select('select * from '.$tables.' where id = '.$menu->table_id.'');
                                                                 //echo $table_s[0]->titre;
     
                                                             @endphp
@@ -177,7 +177,7 @@
                                                             </li>
                                                         @elseif ($menu->tabletype_id > 0)
                                                             @php
-                                                                $tabletype = DB::select(
+                                                                $tabletype = \Illuminate\Support\Facades\DB::select(
                                                                     'select * from tabletypes where id = ' .
                                                                         $menu->tabletype_id .
                                                                         '',
@@ -188,7 +188,7 @@
                                                                 $tabletitre = 'titre';
                                                                 $table_titre = ucfirst($tabletype[0]->titre);
     
-                                                                //$table_s = DB::select('select * from '.$tables.' where id = '.$menu->table_id.'');
+                                                                //$table_s = \Illuminate\Support\Facades\DB::select('select * from '.$tables.' where id = '.$menu->table_id.'');
                                                                 //echo $table_s[0]->titre;
     
                                                             @endphp
@@ -200,7 +200,7 @@
                                                             </li>
                                                         @else
                                                             @php
-                                                                $menu2s = DB::table('menus')
+                                                                $menu2s = \Illuminate\Support\Facades\DB::table('menus')
                                                                     ->where('parent', $menu->id)
                                                                     ->where('etat', 1)
                                                                     ->orderBy('ordre', 'asc')
@@ -223,7 +223,7 @@
                                                                                 </li>
                                                                             @elseif ($menu2->table_id > 0)
                                                                                 @php
-                                                                                    $tabletype = DB::select(
+                                                                                    $tabletype = \Illuminate\Support\Facades\DB::select(
                                                                                         'select * from tabletypes where id = ' .
                                                                                             $menu2->tabletype_id .
                                                                                             '',
@@ -236,7 +236,7 @@
                                                                                         $tabletype[0]->titre,
                                                                                     );
     
-                                                                                    //$table_s = DB::select('select * from '.$tables.' where id = '.$menu2->table_id.'');
+                                                                                    //$table_s = \Illuminate\Support\Facades\DB::select('select * from '.$tables.' where id = '.$menu2->table_id.'');
                                                                                     //echo $table_s[0]->titre;
     
                                                                                 @endphp
@@ -248,7 +248,7 @@
                                                                                 </li>
                                                                             @elseif ($menu2->tabletype_id > 0)
                                                                                 @php
-                                                                                    $tabletype = DB::select(
+                                                                                    $tabletype = \Illuminate\Support\Facades\DB::select(
                                                                                         'select * from tabletypes where id = ' .
                                                                                             $menu2->tabletype_id .
                                                                                             '',
@@ -261,7 +261,7 @@
                                                                                         $tabletype[0]->titre,
                                                                                     );
     
-                                                                                    //$table_s = DB::select('select * from '.$tables.' where id = '.$menu2->table_id.'');
+                                                                                    //$table_s = \Illuminate\Support\Facades\DB::select('select * from '.$tables.' where id = '.$menu2->table_id.'');
                                                                                     //echo $table_s[0]->titre;
     
                                                                                 @endphp
@@ -274,7 +274,7 @@
                                                                             @else
     
                                                                             @php
-                                                                                $menu3s = DB::table('menus')
+                                                                                $menu3s = \Illuminate\Support\Facades\DB::table('menus')
                                                                                     ->where('parent', $menu2->id)
                                                                                     ->where('etat', 1)
                                                                                     ->orderBy('ordre', 'asc')
@@ -297,7 +297,7 @@
                                                                                                 </li>
                                                                                             @elseif ($menu3->table_id > 0)
                                                                                                 @php
-                                                                                                    $tabletype = DB::select(
+                                                                                                    $tabletype = \Illuminate\Support\Facades\DB::select(
                                                                                                         'select * from tabletypes where id = ' .
                                                                                                             $menu3->tabletype_id .
                                                                                                             '',
@@ -310,7 +310,7 @@
                                                                                                         $tabletype[0]->titre,
                                                                                                     );
     
-                                                                                                    //$table_s = DB::select('select * from '.$tables.' where id = '.$menu3->table_id.'');
+                                                                                                    //$table_s = \Illuminate\Support\Facades\DB::select('select * from '.$tables.' where id = '.$menu3->table_id.'');
                                                                                                     //echo $table_s[0]->titre;
     
                                                                                                 @endphp
@@ -322,7 +322,7 @@
                                                                                                 </li>
                                                                                             @elseif ($menu3->tabletype_id > 0)
                                                                                                 @php
-                                                                                                    $tabletype = DB::select(
+                                                                                                    $tabletype = \Illuminate\Support\Facades\DB::select(
                                                                                                         'select * from tabletypes where id = ' .
                                                                                                             $menu3->tabletype_id .
                                                                                                             '',
@@ -335,7 +335,7 @@
                                                                                                         $tabletype[0]->titre,
                                                                                                     );
     
-                                                                                                    //$table_s = DB::select('select * from '.$tables.' where id = '.$menu3->table_id.'');
+                                                                                                    //$table_s = \Illuminate\Support\Facades\DB::select('select * from '.$tables.' where id = '.$menu3->table_id.'');
                                                                                                     //echo $table_s[0]->titre;
     
                                                                                                 @endphp

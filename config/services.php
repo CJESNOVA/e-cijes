@@ -39,6 +39,7 @@ return [
         'url' => env('SUPABASE_URL'),
         'bucket' => env('SUPABASE_BUCKET'),
         'service_key' => env('SUPABASE_SERVICE_ROLE_KEY'),
+        'bucket_url' => env('SUPABASE_BUCKET_URL'),
     ],
 
 
