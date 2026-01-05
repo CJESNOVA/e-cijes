@@ -6,6 +6,9 @@
 
 
 @section('contenu')
+@php 
+use Illuminate\Support\Facades\DB;
+@endphp
 
 <div role="main" class="main">
 	@if (count($grosplans) > 0)
@@ -36,7 +39,7 @@
 							<a href="{{ $grosplan->url }}" class="btn btn-primary btn-modern font-weight-bold text-3 py-3 btn-px-5 appear-animation" style="margin-top:20px;" data-appear-animation="fadeInUpShorter" data-appear-animation-delay="1800" data-plugin-options="{'minWindowWidth': 0}">{{ __('voirplus') }} <i class="fas fa-arrow-right ms-2"></i></a>
 						@elseif ($grosplan->table_id > 0)
 							@php
-								$tabletype = \Illuminate\Support\Facades\DB::select(
+								$tabletype = DB::select(
 									'select * from tabletypes where id = ' .
 										$grosplan->tabletype_id .
 										'',
@@ -47,7 +50,7 @@
 								$tabletitre = 'titre';
 								$table_titre = ucfirst($tabletype[0]->titre);
 
-								//$table_s = \Illuminate\Support\Facades\DB::select('select * from '.$tables.' where id = '.$grosplan->table_id.'');
+								//$table_s = DB::select('select * from '.$tables.' where id = '.$grosplan->table_id.'');
 								//echo $table_s[0]->titre;
 
 							@endphp
@@ -55,7 +58,7 @@
 							<a href="{{ env('APP_URL') }}{{ $table_ }}/{{ $grosplan->table_id }}-{{ getEnleveAccent($grosplan->titre) }}.html" class="btn btn-primary btn-modern font-weight-bold text-3 py-3 btn-px-5 appear-animation" style="margin-top:20px;" data-appear-animation="fadeInUpShorter" data-appear-animation-delay="1800" data-plugin-options="{'minWindowWidth': 0}">{{ __('voirplus') }} <i class="fas fa-arrow-right ms-2"></i></a>
 						@elseif ($grosplan->tabletype_id > 0)
 							@php
-								$tabletype = \Illuminate\Support\Facades\DB::select(
+								$tabletype = DB::select(
 									'select * from tabletypes where id = ' .
 										$grosplan->tabletype_id .
 										'',
@@ -66,7 +69,7 @@
 								$tabletitre = 'titre';
 								$table_titre = ucfirst($tabletype[0]->titre);
 
-								//$table_s = \Illuminate\Support\Facades\DB::select('select * from '.$tables.' where id = '.$grosplan->table_id.'');
+								//$table_s = DB::select('select * from '.$tables.' where id = '.$grosplan->table_id.'');
 								//echo $table_s[0]->titre;
 
 							@endphp
@@ -285,7 +288,7 @@
 									<div class="post-meta">
 										<span><i class="far fa-calenda"></i> {{ \Carbon\Carbon::parse($actualite->date)->translatedFormat('d F Y') }} </span>
                                         @php 
-                                        $commentaires = \Illuminate\Support\Facades\DB::table('commentaires')->where('etat', 1)->where('actualite_id', $actualite->id)->orderBy('id', 'desc')->get();
+                                        $commentaires = DB::table('commentaires')->where('etat', 1)->where('actualite_id', $actualite->id)->orderBy('id', 'desc')->get();
                                         @endphp
 										<span><i class="far fa-comments"></i> <a href="#">{{ count($commentaires) }} {{ __('commentaire_last2') }}</a></span>
 										<span class="d-block mt-2"><a href="{{ env('APP_URL') }}actualite/{{ $actualite->id }}-{{ getEnleveAccent($actualite->titre) }}.html" class="btn btn-xs btn-light text-1 text-uppercase">{{ __('liresuite') }}</a></span>

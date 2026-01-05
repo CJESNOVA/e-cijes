@@ -10,6 +10,9 @@
 
 
 @section('contenu')
+@php 
+use Illuminate\Support\Facades\DB;
+@endphp
 
         <!-- Start Breadcrumb Section -->
         <!-- ========================================== -->
@@ -65,7 +68,7 @@
                                         <span class="name">{{ \Carbon\Carbon::parse($actualite->dateactualite)->translatedFormat('d F Y') }} - 
                                         
                                         @php 
-                                        $commentaires = \Illuminate\Support\Facades\DB::table('commentaires')->where('etat', 1)->where('actualite_id', $actualite->id)->orderBy('id', 'desc')->get();
+                                        $commentaires = DB::table('commentaires')->where('etat', 1)->where('actualite_id', $actualite->id)->orderBy('id', 'desc')->get();
                                         @endphp
                                         <span><i class="far fa-comments"></i> <a href="#">{{ count($commentaires) }} {{ __('commentaire_last2') }}</a></span> </span>
                                     </div>

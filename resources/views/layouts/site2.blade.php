@@ -39,6 +39,9 @@
 </head>
 
 <body id="body">
+@php 
+use Illuminate\Support\Facades\DB;
+@endphp
 
     <div class="page-wrapper overflow-visible">
 
@@ -61,9 +64,9 @@
 
 
 @php
-    $pagelibre1 = \Illuminate\Support\Facades\DB::table('pagelibres')->where('etat', 1)->first();
-    //$pagelibre1 = \Illuminate\Support\Facades\DB::table('pagelibres')->where('etat', 1)->where('spotlight', 1)->where('langue_id', __('id'))->first();
-    //$pagelibre2 = \Illuminate\Support\Facades\DB::table('pagelibres')->where('id', 1)->where('etat', 1)->where('spotlight', 0)->where('langue_id', __('id'))->first();->where('langue_id', __('id'))
+    $pagelibre1 = DB::table('pagelibres')->where('etat', 1)->first();
+    //$pagelibre1 = DB::table('pagelibres')->where('etat', 1)->where('spotlight', 1)->where('langue_id', __('id'))->first();
+    //$pagelibre2 = DB::table('pagelibres')->where('id', 1)->where('etat', 1)->where('spotlight', 0)->where('langue_id', __('id'))->first();->where('langue_id', __('id'))
 @endphp
         <!--==============================
         Header Area

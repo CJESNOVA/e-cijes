@@ -1,3 +1,7 @@
+@php 
+use Illuminate\Support\Facades\DB;
+@endphp
+
 <div class="sidebar-widget blog-sidebar pl-15 lg-pl-0">
                             <div class="widget-box sidebar-search">
                                 <form method="get" action="{{ route('index.recherche') }}" class="sidebar__search-form">
@@ -8,7 +12,7 @@
                             </div>
 
 @php
-    $services1 = \Illuminate\Support\Facades\DB::table('services')->where('etat', 1)->where('spotlight', 0)->where('langue_id', __('id'))->limit(5)->get();
+    $services1 = DB::table('services')->where('etat', 1)->where('spotlight', 0)->where('langue_id', __('id'))->limit(5)->get();
 @endphp
                             @if (count($services1) > 0)
                             <div class="sidebar-category-list">
@@ -25,7 +29,7 @@
 
 
 @php
-    $actualites1 = \Illuminate\Support\Facades\DB::table('actualites')->where('etat', 1)->where('spotlight', 0)->where('langue_id', __('id'))->limit(5)->get();
+    $actualites1 = DB::table('actualites')->where('etat', 1)->where('spotlight', 0)->where('langue_id', __('id'))->limit(5)->get();
 @endphp
                             @if (count($actualites1) > 0)
                             <div class="sidebar-latest-posts">
