@@ -10,6 +10,9 @@
 
 
 @section('contenu')
+@php 
+use Illuminate\Support\Facades\DB;
+@endphp
 
         <!-- Start Breadcrumb Section -->
         <!-- ========================================== -->
