@@ -18,6 +18,7 @@
                             <tr>
                                 <th class="px-3 py-2">#</th>
                                 <th class="px-3 py-2">Titre</th>
+                                <th class="px-3 py-2">Vignette</th>
                                 <th class="px-3 py-2">Type</th>
                                 <th class="px-3 py-2">Module parent</th>
                                 <th class="px-3 py-2">Pays</th>
@@ -34,6 +35,20 @@
                                 <tr>
                                     <td class="px-3 py-2">{{ $diagnosticmodule->id }}</td>
                                     <td class="px-3 py-2">{{ $diagnosticmodule->titre }}</td>
+                                    <td class="px-3 py-2">
+                                        @if ($diagnosticmodule->vignette)
+                                            @php $ext = pathinfo($diagnosticmodule->vignette, PATHINFO_EXTENSION); @endphp
+                                            @if(in_array(strtolower($ext), ['jpg','jpeg','png','webp','gif']))
+                                                <img src="{{ Storage::disk('public')->url($diagnosticmodule->vignette) }}" width="50" class="rounded shadow">
+                                            @else
+                                                <a href="{{ Storage::disk('public')->url($diagnosticmodule->vignette) }}" class="btn btn-outline-primary btn-sm" download>
+                                                    📄 Télécharger
+                                                </a>
+                                            @endif
+                                        @else
+                                            —
+                                        @endif
+                                    </td>
                                     <td class="px-3 py-2">
                                         @if ($diagnosticmodule->diagnosticmoduletype_id > 0)
                                             {{ $diagnosticmodule->diagnosticmoduletype->titre ?? '' }}

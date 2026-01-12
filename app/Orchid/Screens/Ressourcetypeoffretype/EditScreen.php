@@ -3,32 +3,24 @@
 namespace App\Orchid\Screens\Ressourcetypeoffretype;
 
 use Orchid\Screen\Screen;
-
 use App\Models\Ressourcetypeoffretype;
+use App\Models\Ressourcetype;
+use App\Models\Offretype;
+use App\Models\Prestationtype;
+use App\Models\Formationtype;
+use App\Models\Evenementtype;
+use App\Models\Espacetype;
 use Illuminate\Http\Request;
-use Orchid\Screen\Fields\Input;
-use Orchid\Screen\Fields\DateTimer;
-use Orchid\Screen\Fields\TextArea;
 use Orchid\Screen\Fields\Select;
-use Orchid\Screen\Fields\Quill;
+use Orchid\Screen\Fields\Input;
 use Orchid\Support\Facades\Layout;
 use Orchid\Screen\Actions\Button;
 use Orchid\Support\Facades\Alert;
 
 class EditScreen extends Screen
 {
-    /**
-     * @var Ressourcetypeoffretype
-     */
     public $ressourcetypeoffretype;
 
-    /**
-     * Query data.
-     *
-     * @param Ressourcetypeoffretype $ressourcetypeoffretype
-     *
-     * @return array
-     */
     public function query(Ressourcetypeoffretype $ressourcetypeoffretype): array
     {
         return [
@@ -36,38 +28,25 @@ class EditScreen extends Screen
         ];
     }
 
-    /**
-     * The name of the screen displayed in the header.
-     *
-     * @return string|null
-     */
     public function name(): ?string
     {
-        return $this->ressourcetypeoffretype->exists ? 'Modification du type de paiement' : 'Créer un type de paiement';
+        return $this->ressourcetypeoffretype->exists ? 'Modification de l\'association' : 'Créer une association';
     }
 
-    /**
-     * The description is displayed on the user's screen under the heading
-     */
     public function description(): ?string
     {
-        return "Tous les types des paiements enregistrés";
+        return 'Association d\'un type de ressource à un type d\'offre';
     }
 
-    /**
-     * The screen's action buttons.
-     *
-     * @return \Orchid\Screen\Action[]
-     */
-    public function commandBar(): iterable
+    public function commandBar(): array
     {
         return [
-            Button::make('Créer un type de paiement')
-                ->icon('pencil')
+            Button::make('Créer')
+                ->icon('plus')
                 ->method('createOrUpdate')
                 ->canSee(!$this->ressourcetypeoffretype->exists),
 
-            Button::make('Modifier le type de paiement')
+            Button::make('Mettre à jour')
                 ->icon('note')
                 ->method('createOrUpdate')
                 ->canSee($this->ressourcetypeoffretype->exists),
@@ -79,64 +58,62 @@ class EditScreen extends Screen
         ];
     }
 
-    /**
-     * The screen's layout elements.
-     *
-     * @return \Orchid\Screen\Layout[]|string[]
-     */
-    public function layout(): iterable
+    public function layout(): array
     {
         return [
             Layout::rows([
-
                 Select::make('ressourcetypeoffretype.ressourcetype_id')
-                    ->title('Type de ressource')
-                    ->placeholder('Choisir le type')
-                    ->fromModel(\App\Models\Ressourcetype::class, 'titre')
-                    ->empty('Choisir', 0),
+                    ->title('Ressource Type')
+                    ->placeholder('Choisir la ressource')
+                    ->fromModel(Ressourcetype::class, 'titre')
+                    ->empty('Choisir', 0)
+                    ->required()
+                    ->help('Sélectionnez le type de ressource à associer.'),
 
                 Select::make('ressourcetypeoffretype.offretype_id')
                     ->title('Type d\'offre')
-                    ->placeholder('Choisir le type')
-                    ->fromModel(\App\Models\Offretype::class, 'titre')
-                    ->empty('Choisir', 0),
+                    ->placeholder('Choisir le type d\'offre')
+                    ->fromModel(Offretype::class, 'titre')
+                    ->empty('Choisir', 0)
+                    ->required()
+                    ->help('Sélectionnez le type d\'offre auquel associer cette ressource.'),
 
                 Input::make('ressourcetypeoffretype.table_id')
-                    ->title('Id offre')
-                    ->placeholder('Saisir id du type offre'),
-
-
-            ])
+                    ->title('Table ID')
+                    ->placeholder('Entrez l\'ID de la table')
+                    ->required()
+                    ->help('Entrez manuellement l\'ID correspondant au type d\'offre sélectionné.'),
+            ]),
         ];
     }
-    
 
-    /**
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\RedirectResponse
-     */
     public function createOrUpdate(Request $request)
-{
-    $data = $request->get('ressourcetypeoffretype');
-
-    $this->ressourcetypeoffretype->fill($data)->save();
-
-    Alert::info('Type de paiement enregistré avec succès.');
-
-    return redirect()->route('platform.ressourcetypeoffretype.list');
-}
-
-    /**
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function remove()
     {
-        $this->ressourcetypeoffretype->delete();
+        $validated = $request->validate([
+            'ressourcetypeoffretype.ressourcetype_id' => 'required|exists:ressourcetypes,id',
+            'ressourcetypeoffretype.offretype_id' => 'required|in:1,2,3,4',
+            'ressourcetypeoffretype.table_id' => 'required|integer|min:1',
+        ]);
 
-        Alert::info('Vous avez supprimé le type de paiement avec succès.');
+        $data = $request->get('ressourcetypeoffretype');
+        
+        // Valeurs par défaut pour les champs cachés
+        $data['spotlight'] = 0;
+        $data['etat'] = 1;
+
+        $this->ressourcetypeoffretype->fill($data)->save();
+
+        Alert::info('Association enregistrée avec succès.');
 
         return redirect()->route('platform.ressourcetypeoffretype.list');
     }
 
+    public function remove()
+    {
+        $this->ressourcetypeoffretype->delete();
+
+        Alert::info('Association supprimée avec succès.');
+
+        return redirect()->route('platform.ressourcetypeoffretype.list');
+    }
 }

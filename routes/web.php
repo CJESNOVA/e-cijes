@@ -11,6 +11,7 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\PartenaireController;
 use App\Http\Controllers\TemoignageController;
 use App\Http\Controllers\FaqController;
+use App\Http\Controllers\RessourcetypeoffretypeController;
 
 use Illuminate\Support\Facades\Route;
 
@@ -76,6 +77,9 @@ Route::get(
     'media/resize/{w}/{h}/{path}',
     [MediaController::class, 'resize']
 )->where('path', '.*');
+
+// Route AJAX pour charger les options du champ table_id
+Route::get('admin/ressourcetypeoffretype/load-options', [RessourcetypeoffretypeController::class, 'loadTableOptions']);
 
 
 

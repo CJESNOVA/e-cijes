@@ -17,6 +17,7 @@
                         <thead class="bg-gray-100 text-gray-700">
                             <tr>
                                 <th class="px-3 py-2">#</th>
+                                <th class="px-3 py-2">Numéro ID</th>
                                 <th class="px-3 py-2">Vignette</th>
                                 <th class="px-3 py-2">Nom et prénom(s)</th>
                                 <th class="px-3 py-2">Type</th>
@@ -32,6 +33,9 @@
                             @foreach($membres as $membre)
                                 <tr>
                                     <td class="px-3 py-2">{{ $membre->id }}</td>
+                                    <td class="px-3 py-2">
+                                        <span class="badge bg-primary text-white">{{ $membre->numero_identifiant }}</span>
+                                    </td>
                                     <td class="px-3 py-2">
                                         @if ($membre->vignette)
                                             @php $ext = pathinfo($membre->vignette, PATHINFO_EXTENSION); @endphp

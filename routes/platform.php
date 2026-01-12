@@ -31,6 +31,7 @@ use App\Orchid\Screens\Parametres\ReservationstatutScreen;
 use App\Orchid\Screens\Parametres\ParticipantstatutScreen;
 use App\Orchid\Screens\Parametres\DossierstatutScreen;
 use App\Orchid\Screens\Parametres\EntreprisetypeScreen;
+use App\Orchid\Screens\Parametres\EntrepriseprofilScreen;
 use App\Orchid\Screens\Parametres\PrestationtypeScreen;
 use App\Orchid\Screens\Parametres\PiecetypeScreen;
 use App\Orchid\Screens\Parametres\SuivitypeScreen;
@@ -54,12 +55,15 @@ use App\Orchid\Screens\Parametres\RecommandationorigineScreen;
 use App\Orchid\Screens\Parametres\FormationniveauScreen;
 use App\Orchid\Screens\Parametres\FormationtypeScreen;
 use App\Orchid\Screens\Parametres\NewslettertypeScreen;
+use App\Orchid\Screens\Cotisation\CotisationScreen;
+use App\Orchid\Screens\Parametres\CotisationtypeScreen;
 //use App\Orchid\Screens\Parametres\LangueScreen;
 use App\Orchid\Screens\Parametres\ActualitetypeScreen;
 use App\Orchid\Screens\Parametres\EvenementinscriptiontypeScreen;
 use App\Orchid\Screens\Parametres\SlidertypeScreen;
 use App\Orchid\Screens\Parametres\ContacttypeScreen;
 use App\Orchid\Screens\Parametres\MembretypeScreen;
+use App\Orchid\Screens\Parametres\MembrecategorieScreen;
 use App\Orchid\Screens\Parametres\JourScreen;
 use App\Orchid\Screens\Parametres\CredittypeScreen;
 use App\Orchid\Screens\Parametres\EcheancierstatutScreen;
@@ -137,6 +141,7 @@ use App\Models\Parrainage;
 use App\Models\Conversion;
 use App\Models\Prestationressource;
 use App\Models\Formationressource;
+use App\Models\Cotisationressource;
 use App\Models\Espaceressource;
 use App\Models\Evenementressource;
 use App\Models\Ressourcetypeoffretype;
@@ -148,6 +153,7 @@ use App\Models\Quizmembre;
 use App\Models\Quizresultat;
 use App\Models\Action;
 use App\Models\Recompense;
+use App\Models\Reductiontype;
 
 use Illuminate\Http\Request;
 
@@ -331,6 +337,14 @@ Route::screen('entreprisetype', EntreprisetypeScreen::class)
             ->push('Types d\'entreprises');
     });
 
+Route::screen('entrepriseprofil', EntrepriseprofilScreen::class)
+    ->name('platform.entrepriseprofil')
+    ->breadcrumbs(function (Trail $trail){
+        return $trail
+            ->parent('platform.index')
+            ->push('Profils d\'entreprises');
+    });
+
 Route::screen('prestationtype', PrestationtypeScreen::class)
     ->name('platform.prestationtype')
     ->breadcrumbs(function (Trail $trail){
@@ -385,6 +399,14 @@ Route::screen('membretype', MembretypeScreen::class)
         return $trail
             ->parent('platform.index')
             ->push('Types de membres');
+    });
+
+Route::screen('membrecategorie', MembrecategorieScreen::class)
+    ->name('platform.membrecategorie')
+    ->breadcrumbs(function (Trail $trail){
+        return $trail
+            ->parent('platform.index')
+            ->push('Catégories de membres');
     });
 
 Route::screen('forumtype', ForumtypeScreen::class)
@@ -546,6 +568,15 @@ Route::screen('newslettertype', NewslettertypeScreen::class)
             ->parent('platform.index')
             ->push('Type des newsletters');
     });
+
+Route::screen('cotisationtype', CotisationtypeScreen::class)
+    ->name('platform.cotisationtype')
+    ->breadcrumbs(function (Trail $trail){
+        return $trail
+            ->parent('platform.index')
+            ->push('Types de cotisations');
+    });
+
 
 /*Route::screen('langue', LangueScreen::class)
     ->name('platform.langue.list')
@@ -1237,6 +1268,35 @@ Route::post('entreprisemembres/toggleSpotlight', [App\Orchid\Screens\Entreprisem
 Route::post('entreprisemembres/toggleEtat', [App\Orchid\Screens\Entreprisemembre\ListScreen::class, 'toggleEtat'])->name('platform.entreprisemembre.toggleEtat');
 Route::post('entreprisemembres/delete', [App\Orchid\Screens\Entreprisemembre\ListScreen::class, 'delete'])->name('platform.entreprisemembre.delete');
 
+//cotisations//////////////////////
+Route::screen('cotisation/{cotisation?}', \App\Orchid\Screens\Cotisation\EditScreen::class)->name('platform.cotisation.edit')
+    ->breadcrumbs(function (Trail $trail, $cotisation = null) {
+        $trail->parent('platform.cotisation.list');
+        if ($cotisation && $cotisation->exists) {
+            $trail->push('Modifier la cotisation', route('platform.cotisation.edit', $cotisation));
+        } else {
+            $trail->push('Créer une cotisation', route('platform.cotisation.edit'));
+        }
+    });
+Route::screen('cotisations', \App\Orchid\Screens\Cotisation\CotisationScreen::class)->name('platform.cotisation.list')
+    ->breadcrumbs(fn (Trail $trail) => $trail
+        ->parent('platform.index')
+        ->push('Cotisations', route('platform.cotisation.list')));
+
+// Alias pour la compatibilité
+Route::screen('cotisation', \App\Orchid\Screens\Cotisation\CotisationScreen::class)->name('platform.cotisation')
+    ->breadcrumbs(fn (Trail $trail) => $trail
+        ->parent('platform.index')
+        ->push('Cotisations', route('platform.cotisation')));
+Route::screen('cotisations/{cotisation}/show', \App\Orchid\Screens\Cotisation\ShowScreen::class)->name('platform.cotisation.show')
+    ->breadcrumbs(function (Trail $trail, $cotisation) {
+        return $trail
+            ->parent('platform.cotisation.list') 
+            ->push('Détail de la cotisation');
+    });
+Route::post('cotisations/toggleEtat', [\App\Orchid\Screens\Cotisation\CotisationScreen::class, 'toggleEtat'])->name('platform.cotisation.toggleEtat');
+Route::post('cotisations/delete', [\App\Orchid\Screens\Cotisation\CotisationScreen::class, 'delete'])->name('platform.cotisation.delete');
+
 //accompagnement//////////////////////
 Route::screen('accompagnement/{accompagnement?}', App\Orchid\Screens\Accompagnement\EditScreen::class)->name('platform.accompagnement.edit')
     ->breadcrumbs(function (Trail $trail, $accompagnement = null) {
@@ -1548,6 +1608,9 @@ Route::screen('ressourcetypeoffretypes/{ressourcetypeoffretype}/show', App\Orchi
 Route::post('ressourcetypeoffretypes/toggleSpotlight', [App\Orchid\Screens\Ressourcetypeoffretype\ListScreen::class, 'toggleSpotlight'])->name('platform.ressourcetypeoffretype.toggleSpotlight');
 Route::post('ressourcetypeoffretypes/toggleEtat', [App\Orchid\Screens\Ressourcetypeoffretype\ListScreen::class, 'toggleEtat'])->name('platform.ressourcetypeoffretype.toggleEtat');
 Route::post('ressourcetypeoffretypes/delete', [App\Orchid\Screens\Ressourcetypeoffretype\ListScreen::class, 'delete'])->name('platform.ressourcetypeoffretype.delete');
+
+// Route AJAX pour charger les options du champ table_id
+Route::get('ressourcetypeoffretype/load-options', [App\Http\Controllers\RessourcetypeoffretypeController::class, 'loadTableOptions'])->name('platform.ressourcetypeoffretype.loadOptions');
 
 //disponibilite//////////////////////
 Route::screen('disponibilite/{disponibilite?}', App\Orchid\Screens\Disponibilite\EditScreen::class)->name('platform.disponibilite.edit')
@@ -2150,6 +2213,30 @@ Route::post('formationressources/toggleSpotlight', [App\Orchid\Screens\Formation
 Route::post('formationressources/toggleEtat', [App\Orchid\Screens\Formationressource\ListScreen::class, 'toggleEtat'])->name('platform.formationressource.toggleEtat');
 Route::post('formationressources/delete', [App\Orchid\Screens\Formationressource\ListScreen::class, 'delete'])->name('platform.formationressource.delete');
 
+//cotisationressource//////////////////////
+Route::screen('cotisationressource/{cotisationressource?}', App\Orchid\Screens\Cotisationressource\EditScreen::class)->name('platform.cotisationressource.edit')
+    ->breadcrumbs(function (Trail $trail, $cotisationressource = null) {
+        $trail->parent('platform.cotisationressource.list');
+        if ($cotisationressource && $cotisationressource->exists) {
+            $trail->push('Modifier le paiement de la cotisation', route('platform.cotisationressource.edit', $cotisationressource));
+        } else {
+            $trail->push('Créer un paiement de la cotisation', route('platform.cotisationressource.edit'));
+        }
+    });
+Route::screen('cotisationressources', App\Orchid\Screens\Cotisationressource\ListScreen::class)->name('platform.cotisationressource.list')
+    ->breadcrumbs(fn (Trail $trail) => $trail
+        ->parent('platform.index')
+        ->push('Paiements des cotisations', route('platform.cotisationressource.list')));
+Route::screen('cotisationressources/{cotisationressource}/show', App\Orchid\Screens\Cotisationressource\ShowScreen::class)->name('platform.cotisationressource.show')
+    ->breadcrumbs(function (Trail $trail, $cotisationressource) {
+        return $trail
+            ->parent('platform.cotisationressource.list') 
+            ->push('Détail du paiement de la cotisation');
+    });
+Route::post('cotisationressources/toggleSpotlight', [App\Orchid\Screens\Cotisationressource\ListScreen::class, 'toggleSpotlight'])->name('platform.cotisationressource.toggleSpotlight');
+Route::post('cotisationressources/toggleEtat', [App\Orchid\Screens\Cotisationressource\ListScreen::class, 'toggleEtat'])->name('platform.cotisationressource.toggleEtat');
+Route::post('cotisationressources/delete', [App\Orchid\Screens\Cotisationressource\ListScreen::class, 'delete'])->name('platform.cotisationressource.delete');
+
 //espaceressource//////////////////////
 Route::screen('espaceressource/{espaceressource?}', App\Orchid\Screens\Espaceressource\EditScreen::class)->name('platform.espaceressource.edit')
     ->breadcrumbs(function (Trail $trail, $espaceressource = null) {
@@ -2390,6 +2477,29 @@ Route::screen('recompenses/{recompense}/show', App\Orchid\Screens\Recompense\Sho
 Route::post('recompenses/toggleSpotlight', [App\Orchid\Screens\Recompense\ListScreen::class, 'toggleSpotlight'])->name('platform.recompense.toggleSpotlight');
 Route::post('recompenses/toggleEtat', [App\Orchid\Screens\Recompense\ListScreen::class, 'toggleEtat'])->name('platform.recompense.toggleEtat');
 Route::post('recompenses/delete', [App\Orchid\Screens\Recompense\ListScreen::class, 'delete'])->name('platform.recompense.delete');
+
+//reductiontype//////////////////////
+Route::screen('reductiontype/create', App\Orchid\Screens\Parametres\ReductiontypeEditScreen::class)->name('platform.reductiontype.create')
+    ->breadcrumbs(function (Trail $trail) {
+        $trail->parent('platform.reductiontype');
+        $trail->push('Créer un type de réduction');
+    });
+
+Route::screen('reductiontype/{reductiontype}/edit', App\Orchid\Screens\Parametres\ReductiontypeEditScreen::class)->name('platform.reductiontype.edit')
+    ->breadcrumbs(function (Trail $trail, $reductiontype) {
+        $trail->parent('platform.reductiontype');
+        $trail->push('Modifier le type de réduction');
+    });
+
+Route::screen('reductiontype/{reductiontype?}', App\Orchid\Screens\Parametres\ReductiontypeScreen::class)->name('platform.reductiontype')
+    ->breadcrumbs(function (Trail $trail, $reductiontype = null) {
+        $trail->parent('platform.index');
+        if ($reductiontype && $reductiontype->exists) {
+            $trail->push('Modifier le type de reduction', route('platform.reductiontype', $reductiontype));
+        } else {
+            $trail->push('Types de reductions', route('platform.reductiontype'));
+        }
+    });
 
 
 

@@ -5,6 +5,7 @@ namespace App\Orchid\Screens\Diagnosticmodule;
 use App\Models\Diagnosticmodule;
 use App\Models\Pays;
 use App\Models\Langue;
+use Illuminate\Support\Facades\Storage;
 
 use Orchid\Screen\Screen;
 use Orchid\Support\Facades\Layout;
@@ -52,6 +53,10 @@ class ShowScreen extends Screen
                 Sight::make('position', 'Position'),
                 Sight::make('description', 'Description')->render(function ($diagnosticmodule) {
                     return new HtmlString($diagnosticmodule->description); // ✅ Affiche HTML sans échapper
+                }),
+                Sight::make('vignette', 'Vignette')->render(function ($diagnosticmodule) {
+                    if (!$diagnosticmodule->vignette) return '—';
+                    return "<img src='" . Storage::disk('public')->url($diagnosticmodule->vignette) . "' width='80'>";
                 }),
                 Sight::make('diagnosticmoduletype.titre', 'Type'),
                 Sight::make('moduleparent.titre', 'Module parent'),

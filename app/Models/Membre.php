@@ -18,6 +18,7 @@ class Membre extends Model
      * @var array
      */
     protected $fillable = [
+        'numero_identifiant',
         'nom',
         'prenom',
         'email',
@@ -53,6 +54,32 @@ class Membre extends Model
     public function getNomCompletAttribute()
     {
         return trim("{$this->prenom} {$this->nom}");
+    }
+
+    /**
+     * Génère un numéro d'identifiant unique
+     */
+    public static function generateNumeroIdentifiant()
+    {
+        do {
+            $numero = 'MBR' . date('Y') . str_pad(mt_rand(1, 99999), 5, '0', STR_PAD_LEFT);
+        } while (self::where('numero_identifiant', $numero)->exists());
+        
+        return $numero;
+    }
+
+    /**
+     * Boot the model
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($membre) {
+            if (empty($membre->numero_identifiant)) {
+                $membre->numero_identifiant = self::generateNumeroIdentifiant();
+            }
+        });
     }
 
 

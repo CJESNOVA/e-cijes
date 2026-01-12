@@ -4,10 +4,12 @@ namespace App\Orchid\Screens\Parametres;
 
 use Orchid\Screen\Screen;
 use Orchid\Screen\Fields\Input;
+use Orchid\Screen\Fields\Select;
 use Orchid\Support\Facades\Layout;
 use Orchid\Screen\Actions\ModalToggle;
 
 use App\Models\Membretype;
+use App\Models\Membrecategorie;
 use Illuminate\Http\Request;
 
 use Orchid\Screen\TD;
@@ -25,7 +27,7 @@ class MembretypeScreen extends Screen
     public function query(): iterable
     {
         return [
-            'membretypes' => Membretype::latest()->paginate(20),
+            'membretypes' => Membretype::with('membrecategorie')->latest()->paginate(20),
         ];
     }
 
@@ -81,6 +83,11 @@ class MembretypeScreen extends Screen
             Layout::table('membretypes', [
                 TD::make('titre'),
 
+                TD::make('membrecategorie.titre', 'Catégorie')
+                    ->render(function (Membretype $membretype) {
+                        return $membretype->membrecategorie ? $membretype->membrecategorie->titre : 'Non définie';
+                    }),
+
                 TD::make('etat', 'État')
                     ->render(function (Membretype $membretype) {
                         return Button::make($membretype->etat ? 'Désactiver' : 'Activer')
@@ -118,6 +125,12 @@ class MembretypeScreen extends Screen
                     ->title('Titre')
                     ->placeholder('Entrez le nom du type de membre')
                     ->help('Le nom du type de membre à créer.'),
+
+                Select::make('membretype.membrecategorie_id')
+                    ->title('Catégorie de membre')
+                    ->options(Membrecategorie::where('etat', 1)->pluck('titre', 'id'))
+                    ->placeholder('Sélectionnez une catégorie')
+                    ->help('Choisissez la catégorie associée à ce type de membre.'),
             ]))
                 ->title('Créer un type de membre')
                 ->applyButton('Ajouter un type de membre'),
@@ -129,6 +142,12 @@ class MembretypeScreen extends Screen
                 Input::make('membretype.titre')
                     ->title('Titre')
                     ->required(),
+
+                Select::make('membretype.membrecategorie_id')
+                    ->title('Catégorie de membre')
+                    ->options(Membrecategorie::where('etat', 1)->pluck('titre', 'id'))
+                    ->placeholder('Sélectionnez une catégorie')
+                    ->help('Choisissez la catégorie associée à ce type de membre.'),
             ]))
                 ->async('asyncMembretype')
                 ->applyButton('Mettre à jour'),
@@ -146,10 +165,12 @@ class MembretypeScreen extends Screen
         // Validate form data, save membretype to database, etc.
         $request->validate([
             'membretype.titre' => 'required|max:255',
+            'membretype.membrecategorie_id' => 'nullable|integer',
         ]);
 
         $membretype = new Membretype();
         $membretype->titre = $request->input('membretype.titre');
+        $membretype->membrecategorie_id = $request->input('membretype.membrecategorie_id', 0);
         $membretype->save();
     }
 
@@ -176,10 +197,12 @@ class MembretypeScreen extends Screen
     {
         $request->validate([
             'membretype.titre' => 'required|max:255',
+            'membretype.membrecategorie_id' => 'nullable|integer',
         ]);
 
         $membretype = Membretype::findOrFail($request->input('membretype.id'));
         $membretype->titre = $request->input('membretype.titre');
+        $membretype->membrecategorie_id = $request->input('membretype.membrecategorie_id', 0);
         $membretype->save();
     }
 

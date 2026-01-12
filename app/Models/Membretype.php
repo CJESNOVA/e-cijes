@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Orchid\Screen\AsSource;
+use App\Models\Membrecategorie;
 
 class Membretype extends Model
 {
@@ -14,6 +15,12 @@ class Membretype extends Model
 
     protected $fillable = [
         'titre',
+        'membrecategorie_id',
         'etat',
     ];
+
+    public function membrecategorie()
+    {
+        return $this->belongsTo(Membrecategorie::class, 'membrecategorie_id');
+    }
 }

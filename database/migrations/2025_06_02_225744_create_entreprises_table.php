@@ -20,6 +20,9 @@ return new class extends Migration
             $table->longText('description')->nullable();
             $table->string('vignette')->nullable();
             $table->unsignedBigInteger('entreprisetype_id')->nullable()->default(0);
+            $table->unsignedBigInteger('entrepriseprofil_id')->nullable()->default(0);
+            $table->boolean('est_membre_cijes')->default(0);
+            $table->year('annee_creation')->nullable();
             $table->unsignedBigInteger('secteur_id')->nullable()->default(0);
             $table->unsignedBigInteger('pays_id')->nullable()->default(0);
             $table->string('supabase_startup_id')->nullable();

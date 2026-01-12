@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Orchid\Screen\AsSource;
 use Orchid\Attachment\Attachable;
+use App\Models\Entreprisetype;
+use App\Models\Entrepriseprofil;
 
 class Entreprise extends Model
 {
@@ -21,9 +23,12 @@ class Entreprise extends Model
         'telephone',
         'adresse',
         'description',
+        'entreprisetype_id',
+        'entrepriseprofil_id',
+        'est_membre_cijes',
+        'annee_creation',
         'secteur_id',
         'vignette',
-        'entreprisetype_id',
         'pays_id',
         'supabase_startup_id',
         'spotlight',
@@ -40,9 +45,24 @@ class Entreprise extends Model
         return $this->belongsTo(Entreprisetype::class);
     }
 
+    public function entrepriseprofil()
+    {
+        return $this->belongsTo(Entrepriseprofil::class);
+    }
+
     public function pays()
     {
         return $this->belongsTo(Pays::class);
+    }
+
+    public function getEstMembreCijesAttribute($value)
+    {
+        return $value ? 'Oui' : 'Non';
+    }
+
+    public function setEstMembreCijesAttribute($value)
+    {
+        $this->attributes['est_membre_cijes'] = is_bool($value) ? $value : in_array(strtolower($value), ['oui', 'yes', '1', true]);
     }
 
 }

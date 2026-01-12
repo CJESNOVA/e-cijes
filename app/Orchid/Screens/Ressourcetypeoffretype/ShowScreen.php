@@ -12,7 +12,7 @@ class ShowScreen extends Screen
 {
     public function query(Ressourcetypeoffretype $ressourcetypeoffretype): iterable
     {
-        $ressourcetypeoffretype->load(['ressourcetype', 'offretype', 'table']); 
+        $ressourcetypeoffretype->load(['ressourcetype', 'offretype']);
 
         return [
             'ressourcetypeoffretype' => $ressourcetypeoffretype,
@@ -21,21 +21,24 @@ class ShowScreen extends Screen
 
     public function name(): ?string
     {
-        return 'Détail du type de paiement';
+        return 'Détail de l\'association';
     }
 
     public function description(): ?string
     {
-        return 'Fiche complète du type de paiement sélectionnée';
+        return 'Fiche complète de l\'association ressource-type';
     }
 
     public function layout(): iterable
     {
         return [
             Layout::legend('ressourcetypeoffretype', [
-                Sight::make('ressourcetype.titre', 'Type de ressource'),
-                Sight::make('offretype.titre', 'Type d\'offre'),
-                Sight::make('table_id', 'Id table'),
+                Sight::make('id', 'ID'),
+                Sight::make('ressourcetype.titre', 'Type de ressource')
+                    ->render(fn($ressourcetypeoffretype) => $ressourcetypeoffretype->ressourcetype ? $ressourcetypeoffretype->ressourcetype->titre : '—'),
+                Sight::make('offre_type_nom', 'Type d\'offre'),
+                Sight::make('type_offre_nom_complet', 'Type concret'),
+                Sight::make('table_id', 'ID du type concret'),
                 Sight::make('spotlight', 'Spotlight')->render(fn($ressourcetypeoffretype) => $ressourcetypeoffretype->spotlight ? '✅ Actif' : '❌ Inactif'),
                 Sight::make('etat', 'État')->render(fn($ressourcetypeoffretype) => $ressourcetypeoffretype->etat ? '✅ Actif' : '❌ Inactif'),
                 Sight::make('created_at', 'Créé le'),

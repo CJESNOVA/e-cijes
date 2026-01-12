@@ -3,6 +3,7 @@
 namespace App\Orchid\Screens\Pays;
 
 use App\Models\Pays;
+use Illuminate\Support\Facades\Storage;
 use Orchid\Screen\Screen;
 use Orchid\Support\Facades\Layout;
 use Orchid\Screen\Sight;

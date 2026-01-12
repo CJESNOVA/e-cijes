@@ -4,6 +4,7 @@ namespace App\Orchid\Screens\Membre;
 
 use App\Models\Membre;
 use App\Models\Pays;
+use Illuminate\Support\Facades\Storage;
 use Orchid\Screen\Screen;
 use Orchid\Support\Facades\Layout;
 use Orchid\Screen\Sight;
@@ -46,6 +47,7 @@ class ShowScreen extends Screen
     {
         return [
             Layout::legend('membre', [
+                Sight::make('numero_identifiant', 'Numéro d\'identifiant'),
                 Sight::make('nom', 'Nom'),
                 Sight::make('prenom', 'Prénom(s)'),
                 Sight::make('user_id', 'User'),

@@ -120,6 +120,12 @@ class EditScreen extends Screen
                     //->popover('Saisir la description')
                     ->placeholder('Saisir la description'),
 
+                Input::make('vignette')
+                    ->type('file')
+                    ->title('Vignette (image)')// ou PDF
+                    ->accept('image/*')//,.pdf
+                    ->help('Uploader un fichier image (1 seul fichier).'),// ou PDF
+
                 Select::make('diagnosticmodule.diagnosticmoduletype_id')
                     ->title('Type')
                     ->placeholder('Choisir le type')
@@ -158,6 +164,46 @@ class EditScreen extends Screen
     public function createOrUpdate(Request $request)
 {
     $data = $request->get('diagnosticmodule');
+
+
+    /*if ($request->hasFile('vignette')) {
+        $file = $request->file('vignette');
+
+        // Stocker dans /storage/app/public/diagnosticmodules/YYYY/MM/DD
+        $path = $file->storeAs(
+            'diagnosticmodules/' . date('Y/m/d'),
+            uniqid() . '_' . $file->getClientOriginalName(),
+            'public'
+        );
+
+        // Enregistrer le chemin dans la base (accessible via asset())
+        $data['vignette'] = 'storage/' . $path;
+    }*/
+
+
+if ($request->hasFile('vignette')) {
+    $file = $request->file('vignette');
+
+    $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+    $extension = $file->getClientOriginalExtension();
+
+    // 🔹 Nettoyage du nom pour Supabase Storage
+    $safeName = \App\Helpers\FileHelper::sanitizeFileName($originalName);
+
+    // Chemin final dans le bucket
+    $path = 'diagnosticmodules/' . time() . '_' . $safeName . '.' . $extension;
+
+    $storage = new \App\Services\SupabaseStorageService();
+    $storage->upload(
+        $path,
+        file_get_contents($file->getRealPath()),
+        $file->getMimeType()
+    );
+
+    // Stocke le chemin dans la base
+    $data['vignette'] = $path;
+}
+
 
     $this->diagnosticmodule->fill($data)->save();
 

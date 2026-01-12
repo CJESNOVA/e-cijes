@@ -4,6 +4,7 @@ namespace App\Orchid\Screens\Entreprise;
 
 use App\Models\Entreprise;
 use App\Models\Pays;
+use Illuminate\Support\Facades\Storage;
 use Orchid\Screen\Screen;
 use Orchid\Support\Facades\Layout;
 use Orchid\Screen\Sight;
@@ -13,7 +14,7 @@ class ShowScreen extends Screen
 {
     public function query(Entreprise $entreprise): iterable
     {
-        $entreprise->load(['secteur', 'entreprisetype']);
+        $entreprise->load(['secteur', 'entreprisetype', 'entrepriseprofil']);
 
         // Charger tous les pays depuis Supabase
         $paysModel = new Pays();
@@ -56,6 +57,9 @@ class ShowScreen extends Screen
                     return new HtmlString($entreprise->description); // ✅ Affiche HTML sans échapper
                 }),
                 Sight::make('entreprisetype.titre', 'Type de l\'entreprise'),
+                Sight::make('entrepriseprofil.titre', 'Profil de l\'entreprise'),
+                Sight::make('est_membre_cijes', 'Membre CIJES')->render(fn($entreprise) => $entreprise->est_membre_cijes ? '✅ Oui' : '❌ Non'),
+                Sight::make('annee_creation', 'Année de création'),
                 Sight::make('secteur.titre', 'Secteur'),
                 Sight::make('vignette', 'Vignette')->render(function ($entreprise) {
                     if (!$entreprise->vignette) return '—';

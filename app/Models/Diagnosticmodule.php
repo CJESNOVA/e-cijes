@@ -19,6 +19,7 @@ class Diagnosticmodule extends Model
         'titre',
         'position',
         'description',
+        'vignette',
         'diagnosticmoduletype_id',
         'parent',
         'langue_id',

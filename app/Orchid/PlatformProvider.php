@@ -127,6 +127,8 @@ class PlatformProvider extends OrchidServiceProvider
         Menu::make('Entreprises')->route('platform.entreprise.list'),
         Menu::make('Membres de l\'entreprise')->route('platform.entreprisemembre.list'),
         Menu::make('Pièces')->route('platform.piece.list'),
+        Menu::make('Cotisations')->route('platform.cotisation.list'),
+        Menu::make('Paiements des cotisations')->route('platform.cotisationressource.list'),
                 ]),
 
             Menu::make('Diagnostics')
@@ -239,6 +241,7 @@ class PlatformProvider extends OrchidServiceProvider
                     Menu::make('Statuts des diagnostics')->route('platform.diagnosticstatut'),
 
                     Menu::make('Types d\'entreprises')->route('platform.entreprisetype'),
+                    Menu::make('Profils d\'entreprises')->route('platform.entrepriseprofil'),
                     Menu::make('Types de prestations')->route('platform.prestationtype'),
                     Menu::make('Types de pieces')->route('platform.piecetype'),
                     Menu::make('Types de suivis')->route('platform.suivitype'),
@@ -256,6 +259,7 @@ class PlatformProvider extends OrchidServiceProvider
                     Menu::make('Types de sliders')->route('platform.slidertype'),
                     Menu::make('Types de contacts')->route('platform.contacttype'),
                     Menu::make('Types de membres')->route('platform.membretype'),
+                    Menu::make('Catégories de membres')->route('platform.membrecategorie'),
                     Menu::make('Types de credits')->route('platform.credittype'),
                     Menu::make('Profil émotionnel')->route('platform.diagnostictype'),
                     Menu::make('Types des modules du diagnostic')->route('platform.diagnosticmoduletype'),
@@ -279,10 +283,12 @@ class PlatformProvider extends OrchidServiceProvider
                     Menu::make('Validation de conseillers')->route('platform.conseillervalide'),
                     Menu::make('Types de conseillers')->route('platform.conseillertype'),
                     Menu::make('Types des newsletters')->route('platform.newslettertype'),
+                    Menu::make('Types de cotisations')->route('platform.cotisationtype'),
 
                     Menu::make('Types d\'accompagnements')->route('platform.accompagnementtype'),
                     Menu::make('Types des questions du quiz')->route('platform.quizquestiontype'),
                     Menu::make('Statuts des resultats du quiz')->route('platform.quizresultatstatut'),
+                    Menu::make('Types de réductions')->route('platform.reductiontype'),
 
                     //->title('Tools'),
                     // Tu peux ajouter d’autres sous-menus ici :

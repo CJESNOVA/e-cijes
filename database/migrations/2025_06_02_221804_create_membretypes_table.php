@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('membretypes', function (Blueprint $table) {
             $table->id();
             $table->string('titre');
+            $table->unsignedBigInteger('membrecategorie_id')->nullable()->default(0);
             $table->boolean('etat')->default(1);
             $table->timestamps();
         });

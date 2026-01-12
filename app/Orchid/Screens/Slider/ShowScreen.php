@@ -5,6 +5,7 @@ namespace App\Orchid\Screens\Slider;
 use App\Models\Slider;
 use App\Models\Pays;
 use App\Models\Langue;
+use Illuminate\Support\Facades\Storage;
 
 use Orchid\Screen\Screen;
 use Orchid\Support\Facades\Layout;

@@ -20,6 +20,9 @@
                                 <th class="px-3 py-2">Vignette</th>
                                 <th class="px-3 py-2">Raison sociale</th>
                                 <th class="px-3 py-2">Type</th>
+                                <th class="px-3 py-2">Profil</th>
+                                <th class="px-3 py-2">Membre CIJES</th>
+                                <th class="px-3 py-2">Année</th>
                                 <th class="px-3 py-2">Secteur</th>
                                 <th class="px-3 py-2">Pays</th>
                                 <th class="px-3 py-2">Startup Id</th>
@@ -55,6 +58,19 @@
                                         @if ($entreprise->entreprisetype_id > 0)
                                             {{ $entreprise->entreprisetype->titre ?? '' }}
                                         @endif
+                                    </td>
+                                    <td class="px-3 py-2">
+                                        @if ($entreprise->entrepriseprofil_id > 0)
+                                            {{ $entreprise->entrepriseprofil->titre ?? '' }}
+                                        @endif
+                                    </td>
+                                    <td class="px-3 py-2">
+                                        <span class="badge {{ $entreprise->est_membre_cijes ? 'bg-success' : 'bg-secondary' }} text-white">
+                                            {{ $entreprise->est_membre_cijes ? 'Oui' : 'Non' }}
+                                        </span>
+                                    </td>
+                                    <td class="px-3 py-2">
+                                        {{ $entreprise->annee_creation ?? '—' }}
                                     </td>
                                     <td class="px-3 py-2">
                                         @if ($entreprise->secteur_id > 0)

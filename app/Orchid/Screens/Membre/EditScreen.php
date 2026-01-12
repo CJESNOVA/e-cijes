@@ -94,6 +94,11 @@ class EditScreen extends Screen
 
         return [
             Layout::rows([
+                Input::make('membre.numero_identifiant')
+                    ->title('Numéro d\'identifiant')
+                    ->readonly()
+                    ->help('Numéro d\'identifiant unique généré automatiquement.'),
+
                 Input::make('membre.nom')
                     ->title('Nom')
                     ->required()

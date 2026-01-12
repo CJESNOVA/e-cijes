@@ -14,14 +14,14 @@ class ListScreen extends Screen
 {
     public function query(): iterable
     {
-        // 1. Charger les régions locales
-        $entreprises = Entreprise::all();
+        // 1. Charger les entreprises avec leurs relations
+        $entreprises = Entreprise::with(['entreprisetype', 'entrepriseprofil', 'secteur'])->get();
 
         // 2. Récupérer les pays depuis Supabase
         $paysModel = new Pays();
         $payss = collect($paysModel->all()); // collection d'objets Supabase
 
-        // 3. Associer chaque région avec son pays
+        // 3. Associer chaque entreprise avec son pays
         $entreprises->transform(function ($entreprise) use ($payss) {
             $entreprise->pays = $payss->firstWhere('id', $entreprise->pays_id);
             return $entreprise;

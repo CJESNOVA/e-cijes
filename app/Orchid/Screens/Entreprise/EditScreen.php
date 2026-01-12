@@ -13,6 +13,7 @@ use Orchid\Screen\Fields\DateTimer;
 use Orchid\Screen\Fields\TextArea;
 use Orchid\Screen\Fields\Select;
 use Orchid\Screen\Fields\Quill;
+use Orchid\Screen\Fields\Switcher;
 use Orchid\Support\Facades\Layout;
 use Orchid\Screen\Actions\Button;
 use Orchid\Support\Facades\Alert;
@@ -135,6 +136,23 @@ class EditScreen extends Screen
                     //->help('Spécifiez un type d\'entreprise.')
                     ->fromModel(\App\Models\Entreprisetype::class, 'titre')
                     ->empty('Choisir', 0),
+
+                Select::make('entreprise.entrepriseprofil_id')
+                    ->title('Profil d\'entreprise')
+                    ->placeholder('Choisir le profil')
+                    ->fromModel(\App\Models\Entrepriseprofil::class, 'titre')
+                    ->empty('Choisir', 0),
+
+                Switcher::make('entreprise.est_membre_cijes')
+                    ->title('Membre CIJES')
+                    ->placeholder('Est-ce une entreprise membre CIJES ?')
+                    ->help('Cochez si l\'entreprise est membre du CIJES'),
+
+                DateTimer::make('entreprise.annee_creation')
+                    ->title('Année de création')
+                    ->format('Y')
+                    ->placeholder('Sélectionner l\'année de création')
+                    ->help('Année de création de l\'entreprise'),
 
                 Select::make('entreprise.secteur_id')
                     ->title('Secteur')

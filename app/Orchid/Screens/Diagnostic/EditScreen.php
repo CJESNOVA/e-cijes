@@ -3,6 +3,7 @@
 namespace App\Orchid\Screens\Diagnostic;
 
 use Orchid\Screen\Screen;
+use Orchid\Screen\Fields\Picture;
 
 use App\Models\Diagnostic;
 use Illuminate\Http\Request;
