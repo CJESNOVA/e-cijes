@@ -1,5 +1,7 @@
 <?php
 
+//php artisan db:import ma_base.sql
+
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
