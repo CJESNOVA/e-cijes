@@ -21,7 +21,7 @@ return new class extends Migration
             $table->unsignedBigInteger('expert_id')->nullable()->default(0);
             $table->unsignedBigInteger('formationniveau_id')->nullable()->default(0);
             $table->unsignedBigInteger('formationtype_id')->nullable()->default(0);
-            $table->unsignedBigInteger('pays_id')->nullable()->default(0);
+            $table->string('pays_id')->nullable()->default(0);
             $table->boolean('spotlight')->default(0);
             $table->boolean('etat')->default(1);
             $table->timestamps();

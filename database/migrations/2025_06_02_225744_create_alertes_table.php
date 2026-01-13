@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('titre');
             $table->text('contenu')->nullable();
             $table->text('lienurl')->nullable();
-            $table->unsignedBigInteger('langue_id')->nullable()->default(0);
+            $table->string('langue_id')->nullable()->default(0);
             $table->unsignedBigInteger('alertetype_id')->nullable()->default(0);
             $table->unsignedBigInteger('recompense_id')->nullable()->default(0);
             $table->date('datealerte')->nullable();

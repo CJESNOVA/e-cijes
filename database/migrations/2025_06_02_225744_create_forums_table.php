@@ -16,12 +16,12 @@ return new class extends Migration
             $table->string('titre');
             $table->text('resume')->nullable();
             $table->longText('description')->nullable();
-            $table->unsignedBigInteger('langue_id')->nullable()->default(0);
+            $table->string('langue_id')->nullable()->default(0);
             $table->string('vignette')->nullable();
             $table->unsignedBigInteger('forumtype_id')->nullable()->default(0);
             $table->unsignedBigInteger('secteur_id')->nullable()->default(0);
             $table->date('dateforum')->nullable();
-            $table->unsignedBigInteger('pays_id')->nullable()->default(0);
+            $table->string('pays_id')->nullable()->default(0);
             $table->boolean('spotlight')->default(0);
             $table->boolean('etat')->default(1);
             $table->timestamps();

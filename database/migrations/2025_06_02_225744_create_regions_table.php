@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('nom');
             $table->string('code')->nullable();
-            $table->unsignedBigInteger('pays_id')->nullable()->default(0);
+            $table->string('pays_id')->nullable()->default(0);
             $table->boolean('etat')->default(1);
             $table->timestamps();
         });

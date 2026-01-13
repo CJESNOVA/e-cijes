@@ -18,7 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('diagnosticmodule_id')->nullable()->default(0);
             $table->unsignedBigInteger('diagnosticquestiontype_id')->nullable()->default(0);
             $table->unsignedBigInteger('diagnosticquestioncategorie_id')->nullable()->default(0);
-            $table->unsignedBigInteger('langue_id')->nullable()->default(0);
+            $table->string('langue_id')->nullable()->default(0);
             $table->boolean('obligatoire')->default(0);
             $table->unsignedBigInteger('parent')->nullable()->default(0);
             $table->boolean('spotlight')->default(0);

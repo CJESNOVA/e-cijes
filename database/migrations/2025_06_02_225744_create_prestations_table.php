@@ -19,7 +19,7 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->unsignedBigInteger('entreprise_id')->nullable()->default(0);
             $table->unsignedBigInteger('prestationtype_id')->nullable()->default(0);
-            $table->unsignedBigInteger('pays_id')->nullable()->default(0);
+            $table->string('pays_id')->nullable()->default(0);
             $table->boolean('spotlight')->default(0);
             $table->boolean('etat')->default(1);
             $table->timestamps();

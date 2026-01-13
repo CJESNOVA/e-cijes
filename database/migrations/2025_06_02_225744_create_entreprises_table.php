@@ -24,7 +24,7 @@ return new class extends Migration
             $table->boolean('est_membre_cijes')->default(0);
             $table->year('annee_creation')->nullable();
             $table->unsignedBigInteger('secteur_id')->nullable()->default(0);
-            $table->unsignedBigInteger('pays_id')->nullable()->default(0);
+            $table->string('pays_id')->nullable()->default(0);
             $table->string('supabase_startup_id')->nullable();
             $table->boolean('spotlight')->default(0);
             $table->boolean('etat')->default(1);

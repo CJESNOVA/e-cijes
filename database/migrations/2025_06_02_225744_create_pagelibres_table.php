@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('titre');
             $table->text('resume')->nullable();
             $table->longText('description')->nullable();
-            $table->unsignedBigInteger('langue_id')->nullable()->default(0);
+            $table->string('langue_id')->nullable()->default(0);
             $table->string('vignette')->nullable();
             $table->unsignedBigInteger('parent')->nullable()->default(0);
             $table->boolean('spotlight')->default(0);

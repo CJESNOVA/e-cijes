@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('titre');
             $table->integer('position')->nullable()->default(0);
             $table->integer('score')->nullable();
-            $table->unsignedBigInteger('langue_id')->nullable()->default(0);
+            $table->string('langue_id')->nullable()->default(0);
             $table->unsignedBigInteger('diagnosticquestion_id')->nullable()->default(0);
             $table->boolean('spotlight')->default(0);
             $table->boolean('etat')->default(1);
