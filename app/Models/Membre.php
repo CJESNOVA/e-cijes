@@ -51,6 +51,13 @@ class Membre extends Model
         return $this->belongsTo(Pays::class);
     }
 
+    public function entreprises()
+    {
+        return $this->belongsToMany(Entreprise::class, 'entreprisemembres', 'membre_id', 'entreprise_id')
+            ->withPivot('fonction', 'bio', 'etat')
+            ->withTimestamps();
+    }
+
     public function getNomCompletAttribute()
     {
         return trim("{$this->prenom} {$this->nom}");

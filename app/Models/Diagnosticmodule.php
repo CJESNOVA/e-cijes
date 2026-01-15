@@ -49,4 +49,9 @@ class Diagnosticmodule extends Model
         return $this->belongsTo(Pays::class);
     }
 
+    public function questions()
+    {
+        return $this->hasMany(Diagnosticquestion::class, 'diagnosticmodule_id');
+    }
+
 }

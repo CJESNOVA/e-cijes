@@ -53,4 +53,9 @@ class Diagnosticquestion extends Model
         return $this->belongsTo(Diagnosticquestion::class, 'parent');
     }
 
+    public function reponses()
+    {
+        return $this->hasMany(Diagnosticreponse::class, 'diagnosticquestion_id');
+    }
+
 }

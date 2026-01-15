@@ -55,6 +55,13 @@ class Entreprise extends Model
         return $this->belongsTo(Pays::class);
     }
 
+    public function membres()
+    {
+        return $this->belongsToMany(Membre::class, 'entreprisemembres', 'entreprise_id', 'membre_id')
+            ->withPivot('fonction', 'bio', 'etat')
+            ->withTimestamps();
+    }
+
     public function getEstMembreCijesAttribute($value)
     {
         return $value ? 'Oui' : 'Non';

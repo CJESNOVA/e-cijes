@@ -31,4 +31,9 @@ class Diagnosticreponse extends Model
         return $this->belongsTo(Diagnosticquestion::class);
     }
 
+    public function resultats()
+    {
+        return $this->hasMany(Diagnosticresultat::class, 'diagnosticreponse_id');
+    }
+
 }
