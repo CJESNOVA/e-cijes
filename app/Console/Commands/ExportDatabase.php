@@ -8,13 +8,14 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use App\Services\SupabaseStorageService;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 
 class ExportDatabase extends Command
 {
     protected $signature = 'db:export {filename?}';
-    protected $description = 'Exporter la base de données en fichier SQL';
+    protected $description = 'Exporter la base de données en fichier SQL vers Supabase Storage';
 
     public function handle()
     {
@@ -42,13 +43,10 @@ class ExportDatabase extends Command
             $host = config('database.connections.mysql.host');
             $port = config('database.connections.mysql.port', '3306');
 
-            // Créer le répertoire backups s'il n'existe pas
-            $backupDir = storage_path('app/backups');
-            if (!File::exists($backupDir)) {
-                File::makeDirectory($backupDir, 0755, true);
-            }
-
-            $filePath = $backupDir . '/' . $filename;
+            // Créer un fichier temporaire
+            $tempFile = tempnam(sys_get_temp_dir(), 'db_export_');
+            $filePath = $tempFile . '.sql';
+            rename($tempFile, $filePath);
 
             // Construire la commande mysqldump
             $command = [
@@ -80,12 +78,17 @@ class ExportDatabase extends Command
                 throw new ProcessFailedException($process);
             }
 
-            // Écrire le contenu dans le fichier
+            // Écrire le contenu dans le fichier temporaire
             File::put($filePath, $process->getOutput());
 
+            // Uploader vers Supabase
+            $this->uploadToSupabase($filePath, $filename);
+
+            // Supprimer le fichier temporaire
+            unlink($filePath);
+
             $this->info('✅ Exportation réussie !');
-            $this->info('📁 Fichier : ' . $filePath);
-            $this->info('📊 Taille : ' . $this->formatBytes(filesize($filePath)));
+            $this->info('📁 Fichier : ' . $filename);
 
         } catch (\Exception $e) {
             // Alternative avec PDO si mysqldump n'est pas disponible
@@ -96,11 +99,96 @@ class ExportDatabase extends Command
         return 0;
     }
 
+    private function uploadToSupabase($filePath, $filename)
+    {
+        try {
+            // Vérifier si Supabase est configuré
+            if (!env('SUPABASE_URL') || !env('SUPABASE_SERVICE_ROLE_KEY') || !env('SUPABASE_BUCKET')) {
+                // Fallback vers le stockage local
+                $this->info('⚠️  Supabase non configuré, sauvegarde locale...');
+                return $this->saveLocally($filePath, $filename);
+            }
+
+            // Vérifier si c'est une URL locale
+            if (str_contains(env('SUPABASE_URL'), '127.0.0.1') || str_contains(env('SUPABASE_URL'), 'localhost')) {
+                $this->warn('⚠️  URL Supabase locale détectée !');
+                $this->warn('📍  Pour le stockage Supabase, utilisez l\'URL de production : https://votre-projet.supabase.co');
+                $this->warn('🔄  Fallback vers sauvegarde locale...');
+                return $this->saveLocally($filePath, $filename);
+            }
+
+            // Utiliser le service Supabase existant
+            $storage = new SupabaseStorageService();
+            
+            // Lire le contenu du fichier
+            $fileContent = File::get($filePath);
+            $fileSize = strlen($fileContent);
+            
+            // Uploader vers Supabase Storage
+            $result = $storage->upload(
+                $filename,
+                $fileContent,
+                'application/sql'
+            );
+
+            if (!isset($result['Key']) || !$result['Key']) {
+                throw new \Exception('Erreur upload Supabase: ' . json_encode($result));
+            }
+
+            $this->info('☁️  Upload Supabase réussi !');
+            $this->info('📁 Fichier : ' . $filename);
+            $this->info('📊 Taille : ' . $this->formatBytes($fileSize));
+            $this->info('🔗 URL : ' . env('SUPABASE_URL') . '/storage/v1/object/' . env('SUPABASE_BUCKET') . '/' . $filename);
+
+        } catch (\Exception $e) {
+            $this->error('❌ Erreur upload Supabase : ' . $e->getMessage());
+            $this->info('🔄 Fallback vers sauvegarde locale...');
+            return $this->saveLocally($filePath, $filename);
+        }
+    }
+
+    private function saveLocally($filePath, $filename)
+    {
+        try {
+            // Utiliser SupabaseStorageService pour stocker dans /mysql/
+            $storage = new SupabaseStorageService();
+            
+            // Lire le contenu du fichier
+            $fileContent = File::get($filePath);
+            $fileSize = strlen($fileContent);
+            
+            // Uploader vers Supabase dans le dossier mysql/
+            $path = 'mysql/' . $filename;
+            $result = $storage->upload(
+                $path,
+                $fileContent,
+                'application/sql'
+            );
+
+            if (!isset($result['Key']) || !$result['Key']) {
+                throw new \Exception('Erreur upload Supabase (mysql/): ' . json_encode($result));
+            }
+
+            $this->info('✅ Sauvegarde dans Supabase Storage (mysql/) réussie !');
+            $this->info('📁 Fichier : ' . $filename);
+            $this->info('📊 Taille : ' . $this->formatBytes($fileSize));
+            $this->info('🔗 URL : ' . env('SUPABASE_URL') . '/storage/v1/object/' . env('SUPABASE_BUCKET') . '/' . $path);
+
+            return $path;
+
+        } catch (\Exception $e) {
+            $this->error('❌ Erreur sauvegarde Supabase (mysql/): ' . $e->getMessage());
+            throw $e;
+        }
+    }
+
     private function exportWithPDO($filename)
     {
         try {
-            $backupDir = storage_path('app/backups');
-            $filePath = $backupDir . '/' . $filename;
+            // Créer un fichier temporaire
+            $tempFile = tempnam(sys_get_temp_dir(), 'db_export_pdo_');
+            $filePath = $tempFile . '.sql';
+            rename($tempFile, $filePath);
 
             // Récupérer toutes les tables
             $tables = DB::select('SHOW TABLES');
@@ -140,11 +228,17 @@ class ExportDatabase extends Command
 
             $sql .= "\nSET FOREIGN_KEY_CHECKS=1;";
 
+            // Écrire dans le fichier temporaire
             File::put($filePath, $sql);
 
+            // Uploader vers Supabase
+            $this->uploadToSupabase($filePath, $filename);
+
+            // Supprimer le fichier temporaire
+            unlink($filePath);
+
             $this->info('✅ Exportation PDO réussie !');
-            $this->info('📁 Fichier : ' . $filePath);
-            $this->info('📊 Taille : ' . $this->formatBytes(filesize($filePath)));
+            $this->info('📁 Fichier : ' . $filename);
 
         } catch (\Exception $e) {
             $this->error('❌ Erreur lors de l\'exportation PDO : ' . $e->getMessage());
