@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API de Diagnostic Complet - Documentation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .card h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+        
+        .card h3 {
+            color: #333;
+            margin: 25px 0 15px 0;
+            font-size: 1.4em;
+        }
+        
+        .endpoint {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+        }
+        
+        .method {
+            display: inline-block;
+            background: #28a745;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            margin-right: 10px;
+        }
+        
+        .param {
+            background: #e9ecef;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        
+        .param strong {
+            color: #495057;
+        }
+        
+        pre {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 20px;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+        
+        code {
+            background: #e9ecef;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .example {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .example h4 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+        
+        .success {
+            color: #28a745;
+            font-weight: bold;
+        }
+        
+        .error {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        
+        .warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        
+        .warning h4 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+        
+        .structure {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .structure-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            border-left: 3px solid #667eea;
+        }
+        
+        .structure-item h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .copy-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px 0;
+            font-size: 0.9em;
+        }
+        
+        .copy-btn:hover {
+            background: #5a6fd8;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 30px;
+            color: #6c757d;
+            border-top: 1px solid #dee2e6;
+            margin-top: 50px;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .header {
+                padding: 30px 15px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 API de Diagnostic Complet</h1>
+            <p>Récupérez toutes les données de diagnostic pour un utilisateur</p>
+        </div>
+
+        <div class="card">
+            <h2>� Authentification</h2>
+            
+            <h3>📝 Description</h3>
+            <p>L'API est maintenant sécurisée avec des tokens Bearer. Vous devez d'abord vous authentifier pour obtenir un token, puis l'inclure dans vos appels API.</p>
+            
+            <h3>🔑 Obtenir un token</h3>
+            <div class="endpoint">
+                <span class="method">POST</span>
+                <code>/api/v1/auth/login</code>
+            </div>
+            
+            <div class="param">
+                <strong>Corps de la requête (JSON) :</strong>
+                <pre><code>{
+  "email": "votre@email.com",
+  "password": "votre_mot_de_passe"
+}</code></pre>
+            </div>
+            
+            <h3>✅ Réponse de connexion</h3>
+            <pre><code>{
+  "success": true,
+  "message": "Authentification réussie",
+  "data": {
+    "user": {
+      "id": 123,
+      "email": "votre@email.com",
+      "name": "Nom Utilisateur"
+    },
+    "token": "1|abc123def456...",
+    "token_type": "Bearer"
+  }
+}</code></pre>
+            
+            <h3>🔒 Utiliser le token</h3>
+            <p>Ajoutez le token dans l'en-tête Authorization :</p>
+            <pre><code>Authorization: Bearer 1|abc123def456...</code></pre>
+        </div>
+
+        <div class="card">
+            <h2>� Endpoint Principal</h2>
+            <div class="endpoint">
+                <span class="method">GET</span>
+                <code>/api/v1/diagnostic/complet/{email}</code>
+                <span style="color: #dc3545; margin-left: 10px;">🔐 Protégé</span>
+            </div>
+            
+            <h3>📝 Description</h3>
+            <p>Cette API permet de récupérer toutes les données de diagnostic pour un utilisateur donné via son email, incluant :</p>
+            <ul style="margin-left: 20px; margin-top: 10px;">
+                <li>Informations du membre associé à l'email</li>
+                <li>Toutes les entreprises liées au membre</li>
+                <li>Tous les diagnostics effectués (membre + entreprises)</li>
+                <li>Modules, questions, réponses et scores détaillés</li>
+                <li>Statistiques calculées automatiquement</li>
+            </ul>
+
+            <h3>🔧 Paramètres</h3>
+            <div class="param">
+                <strong>email</strong> (string, obligatoire) : Email de l'utilisateur dont on veut récupérer les diagnostics
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>📊 Format de Réponse</h2>
+            
+            <h3>✅ Succès (200 OK)</h3>
+            <pre><code>{
+  "success": true,
+  "message": "Données de diagnostic récupérées avec succès",
+  "data": {
+    "user_email": "user@example.com",
+    "user_id": 123,
+    "membre": {
+      "id": 456,
+      "numero_identifiant": "MBR202412345",
+      "nom": "Dupont",
+      "prenom": "Jean",
+      "email": "jean.dupont@example.com",
+      "telephone": "+33612345678",
+      "nom_complet": "Jean Dupont",
+      "entreprises": [
+        {
+          "id": 789,
+          "nom": "Entreprise A",
+          "email": "contact@entreprise-a.com",
+          "telephone": "+33687654321",
+          "adresse": "123 Rue de l'Entreprise",
+          "description": "Description de l'entreprise",
+          "annee_creation": 2020,
+          "est_membre_cijes": "Oui",
+          "diagnostics": [
+            {
+              "id": 1,
+              "score_global": 85,
+              "commentaire": "Bon diagnostic",
+              "etat": 1,
+              "spotlight": 0,
+              "type": "Diagnostic complet",
+              "statut": "Terminé",
+              "accompagnement": "Accompagnement standard",
+              "modules": [
+                {
+                  "id": 1,
+                  "titre": "Module 1",
+                  "description": "Description du module",
+                  "position": 1,
+                  "questions": [
+                    {
+                      "id": 1,
+                      "titre": "Question 1",
+                      "position": 1,
+                      "obligatoire": 1,
+                      "type": "Choix multiple",
+                      "categorie": "Catégorie A",
+                      "reponse": {
+                        "id": 1,
+                        "titre": "Réponse A",
+                        "score": 10,
+                        "position": 1
+                      },
+                      "reponse_texte": "Texte de la réponse",
+                      "reponse_ids": "1,2"
+                    }
+                  ],
+                  "statistiques": {
+                    "score_total": 75,
+                    "score_maximum": 100,
+                    "pourcentage": 75.0,
+                    "questions_repondues": 5,
+                    "nombre_questions": 5
+                  }
+                }
+              ],
+              "statistiques_globales": {
+                "score_total": 85,
+                "nombre_modules": 2,
+                "nombre_total_questions": 10,
+                "questions_repondues_total": 10
+              }
+            }
+          ]
+        }
+      ],
+      "diagnostics": [
+        // Diagnostics directs du membre (même structure)
+      ]
+    }
+  }
+}</code></pre>
+
+            <h3>❌ Erreur Utilisateur non trouvé (404)</h3>
+            <pre><code>{
+  "success": false,
+  "message": "Aucun utilisateur trouvé avec cet email",
+  "data": null
+}</code></pre>
+
+            <h3>❌ Erreur Serveur (500)</h3>
+            <pre><code>{
+  "success": false,
+  "message": "Erreur lors de la récupération des données: [message d'erreur]",
+  "data": null
+}</code></pre>
+        </div>
+
+        <div class="card">
+            <h2>🔗 Structure des Données</h2>
+            
+            <div class="structure">
+                <div class="structure-item">
+                    <h4>👤 Membre</h4>
+                    <ul>
+                        <li>Informations de base du membre</li>
+                        <li>Liste des entreprises liées</li>
+                        <li>Diagnostics directs du membre</li>
+                    </ul>
+                </div>
+                
+                <div class="structure-item">
+                    <h4>🏢 Entreprise</h4>
+                    <ul>
+                        <li>Informations complètes</li>
+                        <li>Diagnostics spécifiques</li>
+                        <li>Données de contact</li>
+                    </ul>
+                </div>
+                
+                <div class="structure-item">
+                    <h4>📋 Diagnostic</h4>
+                    <ul>
+                        <li>Score global</li>
+                        <li>Modules et questions</li>
+                        <li>Statistiques détaillées</li>
+                    </ul>
+                </div>
+                
+                <div class="structure-item">
+                    <h4>📝 Module</h4>
+                    <ul>
+                        <li>Liste des questions</li>
+                        <li>Statistiques par module</li>
+                        <li>Scores calculés</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>💡 Exemples d'Utilisation</h2>
+            
+            <div class="example">
+                <h4>🔧 Avec cURL (avec token)</h4>
+                <pre><code># 1. Obtenir un token
+curl -X POST "http://localhost/cijet/public/api/v1/auth/login" \
+     -H "Content-Type: application/json" \
+     -d '{
+       "email": "votre@email.com",
+       "password": "votre_mot_de_passe"
+     }'
+
+# 2. Utiliser le token pour appeler l'API
+curl -X GET "http://localhost/cijet/public/api/v1/diagnostic/complet/user@example.com" \
+     -H "Accept: application/json" \
+     -H "Content-Type: application/json" \
+     -H "Authorization: Bearer 1|abc123def456..."</code></pre>
+                <button class="copy-btn" onclick="copyToClipboard(this.previousElementSibling.textContent)">📋 Copier</button>
+            </div>
+
+            <div class="example">
+                <h4>🌐 En JavaScript (fetch avec authentification)</h4>
+                <pre><code>// 1. Fonction pour s'authentifier et obtenir un token
+const login = async (email, password) => {
+  const response = await fetch('http://localhost/cijet/public/api/v1/auth/login', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      email: email,
+      password: password
+    })
+  });
+  
+  const data = await response.json();
+  return data.success ? data.data.token : null;
+};
+
+// 2. Utiliser le token pour appeler l'API de diagnostic
+const fetchDiagnosticData = async (userEmail, token) => {
+  const response = await fetch(
+    \`http://localhost/cijet/public/api/v1/diagnostic/complet/\${userEmail}\`,
+    {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': \`Bearer \${token}\`
+      }
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error(\`HTTP error! status: \${response.status}\`);
+  }
+
+  return await response.json();
+};
+
+// 3. Exemple d'utilisation complet
+const getDiagnosticWithAuth = async () => {
+  try {
+    // Étape 1: Connexion
+    const token = await login('votre@email.com', 'votre_mot_de_passe');
+    if (!token) {
+      console.error('Échec de l\'authentification');
+      return;
+    }
+
+    // Étape 2: Récupération des données
+    const data = await fetchDiagnosticData('user@example.com', token);
+    
+    if (data.success) {
+      console.log('Données de diagnostic:', data.data);
+    } else {
+      console.error('Erreur:', data.message);
+    }
+  } catch (error) {
+    console.error('Erreur réseau:', error);
+  }
+};
+
+// Appeler la fonction
+getDiagnosticWithAuth();</code></pre>
+                <button class="copy-btn" onclick="copyToClipboard(this.previousElementSibling.textContent)">📋 Copier</button>
+            </div>
+
+            <div class="example">
+                <h4>⚛️ En React (avec hooks et authentification)</h4>
+                <pre><code>import React, { useState, useEffect } from 'react';
+
+const DiagnosticAPI = ({ userEmail }) => {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [token, setToken] = useState(null);
+
+  // Fonction de login
+  const login = async (email, password) => {
+    try {
+      const response = await fetch('http://localhost/cijet/public/api/v1/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email, password })
+      });
+
+      const result = await response.json();
+      if (result.success) {
+        setToken(result.data.token);
+        localStorage.setItem('api_token', result.data.token);
+        return result.data.token;
+      } else {
+        throw new Error(result.message);
+      }
+    } catch (err) {
+      setError(err.message);
+      return null;
+    }
+  };
+
+  useEffect(() => {
+    const fetchDiagnosticData = async () => {
+      if (!userEmail) return;
+      
+      try {
+        setLoading(true);
+        setError(null);
+
+        // Vérifier si on a déjà un token
+        let currentToken = token || localStorage.getItem('api_token');
+        
+        if (!currentToken) {
+          // Si pas de token, essayer de se connecter avec des identifiants par défaut
+          currentToken = await login('votre@email.com', 'votre_mot_de_passe');
+          if (!currentToken) return;
+        }
+
+        const response = await fetch(
+          `http://localhost/cijet/public/api/v1/diagnostic/complet/${userEmail}`,
+          {
+            method: 'GET',
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${currentToken}`
+            }
+          }
+        );
+
+        if (!response.ok) {
+          if (response.status === 401) {
+            // Token expiré, on essaie de se reconnecter
+            const newToken = await login('votre@email.com', 'votre_mot_de_passe');
+            if (newToken) {
+              // Réessayer avec le nouveau token
+              const retryResponse = await fetch(
+                `http://localhost/cijet/public/api/v1/diagnostic/complet/${userEmail}`,
+                {
+                  method: 'GET',
+                  headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${newToken}`
+                  }
+                }
+              );
+              
+              const result = await retryResponse.json();
+              if (result.success) {
+                setData(result.data);
+              } else {
+                setError(result.message);
+              }
+            }
+          } else {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+        } else {
+          const result = await response.json();
+          if (result.success) {
+            setData(result.data);
+          } else {
+            setError(result.message);
+          }
+        }
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDiagnosticData();
+  }, [userEmail, token]);
+
+  if (loading) return <div>Chargement...</div>;
+  if (error) return <div>Erreur: {error}</div>;
+  if (!data) return <div>Aucune donnée</div>;
+
+  return (
+    <div className="diagnostic-results">
+      <h2>Diagnostic pour {data.membre.nom_complet}</h2>
+      <p>Email utilisateur: {data.user_email}</p>
+      <p>Score global: {data.membre.diagnostics?.[0]?.score_global || 'N/A'}</p>
+      
+      <h3>Entreprises ({data.membre.entreprises.length})</h3>
+      {data.membre.entreprises.map(entreprise => (
+        <div key={entreprise.id}>
+          <h4>{entreprise.nom}</h4>
+          <p>Diagnostics: {entreprise.diagnostics?.length || 0}</p>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+// Utilisation
+const App = () => {
+  return (
+    <div>
+      <DiagnosticAPI userEmail="user@example.com" />
+    </div>
+  );
+};
+
+export default DiagnosticAPI;</code></pre>
+                <button class="copy-btn" onclick="copyToClipboard(this.previousElementSibling.textContent)">📋 Copier</button>
+            </div>
+
+            <div class="example">
+                <h4>⚛️ En React (version custom hook)</h4>
+                <pre><code>import { useState, useEffect } from 'react';
+
+// Custom hook pour l'API de diagnostic
+const useDiagnosticAPI = (userEmail) => {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const fetchDiagnostic = async (email) => {
+    if (!email) return;
+    
+    try {
+      setLoading(true);
+      setError(null);
+      
+      const response = await fetch(
+        `http://localhost/cijet/public/api/v1/diagnostic/complet/${encodeURIComponent(email)}`,
+        {
+          method: 'GET',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+
+      const result = await response.json();
+      
+      if (result.success) {
+        setData(result.data);
+      } else {
+        setError(result.message);
+      }
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchDiagnostic(userEmail);
+  }, [userEmail]);
+
+  return { data, loading, error, refetch: () =&gt; fetchDiagnostic(userEmail) };
+};
+
+// Utilisation du hook
+const DiagnosticComponent = () => {
+  const [email, setEmail] = useState('user@example.com');
+  const { data, loading, error, refetch } = useDiagnosticAPI(email);
+
+  const handleSubmit = (e) =&gt; {
+    e.preventDefault();
+    refetch();
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;form onSubmit={handleSubmit}&gt;
+        &lt;input
+          type="email"
+          value={email}
+          onChange={(e) =&gt; setEmail(e.target.value)}
+          placeholder="Email de l'utilisateur"
+        /&gt;
+        &lt;button type="submit"&gt;Charger les diagnostics&lt;/button&gt;
+      &lt;/form&gt;
+
+      {loading && &lt;div&gt;Chargement en cours...&lt;/div&gt;}
+      {error && &lt;div style={{ color: 'red' }}&gt;Erreur: {error}&lt;/div&gt;}
+      
+      {data && (
+        &lt;div&gt;
+          &lt;h3&gt;Diagnostic pour {data.membre.nom_complet}&lt;/h3&gt;
+          &lt;p&gt;Email utilisateur: {data.user_email}&lt;/p&gt;
+          &lt;p&gt;Nombre d'entreprises: {data.membre.entreprises.length}&lt;/p&gt;
+          
+          {data.membre.entreprises.map(entreprise =&gt; (
+            &lt;div key={entreprise.id} style={{ margin: '20px 0', padding: '15px', border: '1px solid #ddd' }}&gt;
+              &lt;h4&gt;{entreprise.nom}&lt;/h4&gt;
+              &lt;p&gt;Email: {entreprise.email}&lt;/p&gt;
+              &lt;p&gt;Téléphone: {entreprise.telephone}&lt;/p&gt;
+              
+              {entreprise.diagnostics && entreprise.diagnostics.map(diagnostic =&gt; (
+                &lt;div key={diagnostic.id} style={{ marginLeft: '20px' }}&gt;
+                  &lt;h5&gt;Diagnostic #{diagnostic.id}&lt;/h5&gt;
+                  &lt;p&gt;Score global: {diagnostic.score_global}&lt;/p&gt;
+                  &lt;p&gt;Statut: {diagnostic.statut}&lt;/p&gt;
+                  &lt;p&gt;Modules: {diagnostic.modules ? diagnostic.modules.length : 0}&lt;/p&gt;
+                &lt;/div&gt;
+              ))}
+            &lt;/div&gt;
+          ))}
+        &lt;/div&gt;
+      )}
+    &lt;/div&gt;
+  );
+};
+
+export default DiagnosticComponent;</code></pre>
+                <button class="copy-btn" onclick="copyToClipboard(this.previousElementSibling.textContent)">📋 Copier</button>
+            </div>
+
+            <div class="example">
+                <h4>🐍 En Python (requests)</h4>
+                <pre><code>import requests
+
+url = "http://localhost/cijet/public/api/v1/diagnostic/complet/user@example.com"
+headers = {
+    "Accept": "application/json",
+    "Content-Type": "application/json"
+}
+
+try:
+    response = requests.get(url, headers=headers)
+    data = response.json()
+    
+    if data['success']:
+        print("Données de diagnostic:", data['data'])
+    else:
+        print("Erreur:", data['message'])
+        
+except requests.exceptions.RequestException as e:
+    print("Erreur réseau:", e)</code></pre>
+                <button class="copy-btn" onclick="copyToClipboard(this.previousElementSibling.textContent)">📋 Copier</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>⚠️ Notes Importantes</h2>
+            
+            <div class="warning">
+                <h4>🚀 Performance</h4>
+                <p>L'API récupère toutes les données en une seule fois, ce qui peut être volumineux pour des utilisateurs avec beaucoup de diagnostics.</p>
+            </div>
+
+            <div class="warning">
+                <h4>📄 Pagination</h4>
+                <p>Actuellement non implémentée, mais pourrait être ajoutée pour les grands ensembles de données.</p>
+            </div>
+
+            <div class="warning">
+                <h4>🔐 Authentification</h4>
+                <p>Vous pouvez ajouter un middleware d'authentification si nécessaire pour sécuriser l'API.</p>
+            </div>
+
+            <div class="warning">
+                <h4>💾 Cache</h4>
+                <p>Considérez l'ajout de cache pour les données qui ne changent pas fréquemment.</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>🔗 Relations Utilisées</h2>
+            <ul style="margin-left: 20px;">
+                <li><code>User</code> (recherche par email) → <code>Membre</code> (via <code>user_id</code>)</li>
+                <li><code>Membre</code> ↔ <code>Entreprise</code> (via table <code>entreprisemembres</code>)</li>
+                <li><code>Diagnostic</code> → <code>Membre</code> et <code>Diagnostic</code> → <code>Entreprise</code></li>
+                <li><code>Diagnosticresultat</code> → <code>Diagnostic</code></li>
+                <li><code>Diagnosticresultat</code> → <code>Diagnosticquestion</code></li>
+                <li><code>Diagnosticresultat</code> → <code>Diagnosticreponse</code></li>
+                <li><code>Diagnosticquestion</code> → <code>Diagnosticmodule</code></li>
+            </ul>
+        </div>
+
+        <div class="footer">
+            <p>📚 Documentation de l'API de Diagnostic Complet</p>
+            <p>Générée automatiquement • Dernière mise à jour : <span id="date"></span></p>
+        </div>
+    </div>
+
+    <script>
+        // Afficher la date actuelle
+        document.getElementById('date').textContent = new Date().toLocaleDateString('fr-FR', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+
+        // Fonction pour copier dans le presse-papiers
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(function() {
+                // Afficher une notification temporaire
+                const btn = event.target;
+                const originalText = btn.textContent;
+                btn.textContent = '✅ Copié!';
+                btn.style.background = '#28a745';
+                
+                setTimeout(function() {
+                    btn.textContent = originalText;
+                    btn.style.background = '#667eea';
+                }, 2000);
+            }).catch(function(err) {
+                console.error('Erreur lors de la copie :', err);
+            });
+        }
+
+        // Animation smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>
