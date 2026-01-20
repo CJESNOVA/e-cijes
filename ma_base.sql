@@ -3,11 +3,29 @@
 -- Base de données : `cijet`
 --
 
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `accompagnementaxes`
+--
+
+DROP TABLE IF EXISTS `accompagnementaxes`;
+CREATE TABLE `accompagnementaxes` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `diagnosticmodule_id` bigint(20) UNSIGNED NOT NULL,
+  `titre` varchar(255) NOT NULL,
+  `description` longtext DEFAULT NULL,
+  `spotlight` tinyint(1) NOT NULL DEFAULT 0,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 --
 -- Déchargement des données de la table `accompagnementaxes`
 --
 
-REPLACE INTO `accompagnementaxes` (`id`, `diagnosticmodule_id`, `titre`, `description`, `spotlight`, `etat`, `created_at`, `updated_at`) VALUES
+INSERT INTO `accompagnementaxes` (`id`, `diagnosticmodule_id`, `titre`, `description`, `spotlight`, `etat`, `created_at`, `updated_at`) VALUES
 (1, 23, 'Posture du dirigeant et responsabilité personnelle', '🎯 Bloc 1 – Posture du dirigeant & responsabilité personnelle\r\nCe bloc permet de mesurer :\r\n● la capacité du dirigeant à assumer pleinement son rôle de décideur final,\r\n\r\n● son aptitude à dissocier émotions, relations personnelles et décisions professionnelles,\r\n\r\n● sa faculté à poser un cadre clair et cohérent, y compris avec les proches et la famille impliqués dans l’entreprise,\r\n\r\n● sa capacité à faire respecter les règles sans exception,\r\n\r\n● son niveau d’exemplarité personnelle dans l’application des règles et exigences,\r\n\r\n● sa manière de se positionner lui-même comme acteur responsable de l’entreprise, notamment à travers sa rémunération.', 0, 1, '2026-01-17 12:21:28', '2026-01-17 12:21:28'),
 (2, 24, 'Stabilité émotionnelle et maturité décisionnelle du dirigeant', '🎯 OBJECTIF DU BLOC 2 \r\nCe bloc permet de mesurer :\r\n● la stabilité émotionnelle réelle du dirigeant,\r\n\r\n● sa capacité à décider sans être dominé par ses émotions,\r\n\r\n● son mode de raisonnement face aux problèmes,\r\n\r\n● sa maturité décisionnelle, pas son intelligence théorique.', 0, 1, '2026-01-17 12:23:12', '2026-01-17 12:23:12'),
 (3, 25, 'Maîtrise du cadre juridique, fiscal et social', '🎯 Ce bloc 3 permet de mesurer :\r\n● la capacité du dirigeant à comprendre le cadre juridique, fiscal et social de son entreprise,\r\n\r\n● son niveau de maîtrise fonctionnelle des obligations essentielles, sans expertise technique,\r\n\r\n● sa faculté à poser les bonnes questions aux experts,\r\n\r\n● sa capacité à anticiper les risques liés aux retards, oublis ou manquements,\r\n\r\n● son aptitude à piloter les points critiques, même lorsqu’il délègue l’exécution.\r\nCe bloc évalue si le dirigeant subit la conformité ou s’il la comprend suffisamment pour sécuriser son entreprise.', 0, 1, '2026-01-17 12:24:09', '2026-01-17 12:24:09'),
@@ -32,11 +50,34 @@ REPLACE INTO `accompagnementaxes` (`id`, `diagnosticmodule_id`, `titre`, `descri
 (22, 11, 'Interprétation des scores - Bloc 7', 'Tu n’utilises presque pas les outils numériques. Tu passes à côté d’un gain de temps, de clients et d’efficacité.\r\nTu commences à utiliser le digital, mais tu peux aller plus loin. Forme-toi ou automatise certaines tâches.\r\nTu utilises déjà de bons outils, mais il reste des marges de progrès pour renforcer ta visibilité ou ton efficacité.\r\nBravo ! Tu es bien équipé•e pour gagner du temps, toucher plus de clients et mieux piloter ton activité.', 0, 1, '2026-01-17 14:03:38', '2026-01-17 14:03:38'),
 (23, 12, 'Interprétation des scores - Bloc 8', 'Tu restes sur place. Il est temps de penser à l’avenir, aux nouveaux clients, partenaires ou opportunités.\r\nTu as des idées ou des contacts, mais tu ne les actives pas encore vraiment. Priorité : stratégie de croissance.\r\nTu as une vision, des démarches et des actions. Continue à structurer ton plan et consolide tes relations clés.\r\nTu vises loin et tu t’en donnes les moyens. Tu es en bonne voie pour devenir une entreprise leader ou à fort impact.', 0, 1, '2026-01-17 14:03:38', '2026-01-17 14:03:38');
 
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `diagnosticmodules`
+--
+
+DROP TABLE IF EXISTS `diagnosticmodules`;
+CREATE TABLE `diagnosticmodules` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `titre` varchar(255) NOT NULL,
+  `position` int(11) DEFAULT 0,
+  `description` longtext DEFAULT NULL,
+  `vignette` varchar(255) DEFAULT NULL,
+  `diagnosticmoduletype_id` bigint(20) UNSIGNED DEFAULT 0,
+  `parent` bigint(20) UNSIGNED DEFAULT 0,
+  `langue_id` varchar(255) DEFAULT '0',
+  `pays_id` varchar(255) DEFAULT '0',
+  `spotlight` tinyint(1) NOT NULL DEFAULT 0,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 --
 -- Déchargement des données de la table `diagnosticmodules`
 --
 
-REPLACE INTO `diagnosticmodules` (`id`, `titre`, `position`, `description`, `vignette`, `diagnosticmoduletype_id`, `parent`, `langue_id`, `pays_id`, `spotlight`, `etat`, `created_at`, `updated_at`) VALUES
+INSERT INTO `diagnosticmodules` (`id`, `titre`, `position`, `description`, `vignette`, `diagnosticmoduletype_id`, `parent`, `langue_id`, `pays_id`, `spotlight`, `etat`, `created_at`, `updated_at`) VALUES
 (1, 'Profil du porteur de projet ou de l’entrepreneur débutant', 1, '<p>Identifier les forces personnelles, la maturité entrepreneuriale, la résilience émotionnelle, la capacité d’organisation et la vision stratégique du porteur de projet.</p>', NULL, 1, 0, 'f9a16e49-d975-4d63-b201-5aee5888ac44', '8409335f-e085-4597-9cae-359a60a816c6', 0, 0, '2025-07-29 09:50:21', '2025-07-29 13:02:09'),
 (2, 'A. Posture entrepreneuriale et soft skills', 1, '<p><br></p>', NULL, 1, 1, 'f9a16e49-d975-4d63-b201-5aee5888ac44', '8409335f-e085-4597-9cae-359a60a816c6', 0, 0, '2025-07-29 13:14:05', '2025-07-29 13:15:29'),
 (3, 'B. Intelligence émotionnelle et résilience', 2, NULL, NULL, 1, 1, 'f9a16e49-d975-4d63-b201-5aee5888ac44', '8409335f-e085-4597-9cae-359a60a816c6', 0, 0, '2025-07-29 13:15:14', '2025-07-29 13:15:14'),
@@ -75,11 +116,53 @@ REPLACE INTO `diagnosticmodules` (`id`, `titre`, `position`, `description`, `vig
 (36, 'BLOC 14 — CONSCIENCE DU RÔLE DU DIRIGEANT', 14, '', NULL, 1, 0, 'f9a16e49-d975-4d63-b201-5aee5888ac44', '0', 0, 1, '2026-01-14 12:43:15', '2026-01-14 12:43:15'),
 (37, 'BLOC 15 — ÉQUILIBRE VIE PRIVÉE – VIE PROFESSIONNELLE & CHARGE MENTALE', 15, '', NULL, 1, 0, 'f9a16e49-d975-4d63-b201-5aee5888ac44', '0', 0, 1, '2026-01-14 12:43:15', '2026-01-14 12:43:15');
 
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `diagnosticmodulescores`
+--
+
+DROP TABLE IF EXISTS `diagnosticmodulescores`;
+CREATE TABLE `diagnosticmodulescores` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `diagnostic_id` bigint(20) UNSIGNED NOT NULL,
+  `diagnosticmodule_id` bigint(20) UNSIGNED NOT NULL,
+  `score_total` int(11) DEFAULT NULL,
+  `score_max` int(11) DEFAULT NULL,
+  `score_pourcentage` decimal(5,2) DEFAULT NULL,
+  `niveau` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `diagnosticquestions`
+--
+
+DROP TABLE IF EXISTS `diagnosticquestions`;
+CREATE TABLE `diagnosticquestions` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `titre` varchar(255) NOT NULL,
+  `position` varchar(255) DEFAULT NULL,
+  `diagnosticmodule_id` bigint(20) UNSIGNED DEFAULT 0,
+  `diagnosticquestiontype_id` bigint(20) UNSIGNED DEFAULT 0,
+  `diagnosticquestioncategorie_id` bigint(20) UNSIGNED DEFAULT 0,
+  `langue_id` varchar(255) DEFAULT '0',
+  `obligatoire` tinyint(1) NOT NULL DEFAULT 0,
+  `parent` bigint(20) UNSIGNED DEFAULT 0,
+  `spotlight` tinyint(1) NOT NULL DEFAULT 0,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 --
 -- Déchargement des données de la table `diagnosticquestions`
 --
 
-REPLACE INTO `diagnosticquestions` (`id`, `titre`, `position`, `diagnosticmodule_id`, `diagnosticquestiontype_id`, `diagnosticquestioncategorie_id`, `langue_id`, `obligatoire`, `parent`, `spotlight`, `etat`, `created_at`, `updated_at`) VALUES
+INSERT INTO `diagnosticquestions` (`id`, `titre`, `position`, `diagnosticmodule_id`, `diagnosticquestiontype_id`, `diagnosticquestioncategorie_id`, `langue_id`, `obligatoire`, `parent`, `spotlight`, `etat`, `created_at`, `updated_at`) VALUES
 (1, 'Termines-tu ce que tu commences ?', '1', 2, 1, NULL, 'f9a16e49-d975-4d63-b201-5aee5888ac44', 1, NULL, 0, 1, '2025-07-29 09:50:21', '2025-09-11 22:36:55'),
 (2, 'As-tu une vision structurée pour ton activité sur au moins 3 ans ?', '2', 2, 1, NULL, 'f9a16e49-d975-4d63-b201-5aee5888ac44', 1, NULL, 0, 1, '2025-07-29 09:50:21', '2025-07-29 13:55:27'),
 (3, 'Quelle est ta principale motivation pour entreprendre ?', '3', 2, 1, NULL, 'f9a16e49-d975-4d63-b201-5aee5888ac44', 1, NULL, 0, 1, '2025-07-29 09:50:21', '2025-07-29 13:55:29'),
@@ -250,11 +333,31 @@ REPLACE INTO `diagnosticquestions` (`id`, `titre`, `position`, `diagnosticmodule
 (287, 'Pressions personnelles et continuité de l’entreprise', '4', 37, 1, 0, 'f9a16e49-d975-4d63-b201-5aee5888ac44', 1, 0, 0, 1, '2026-01-14 12:43:15', '2026-01-14 12:43:15'),
 (288, 'Capacité à se ressourcer', '5', 37, 1, 0, 'f9a16e49-d975-4d63-b201-5aee5888ac44', 1, 0, 0, 1, '2026-01-14 12:43:15', '2026-01-14 12:43:15');
 
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `diagnosticreponses`
+--
+
+DROP TABLE IF EXISTS `diagnosticreponses`;
+CREATE TABLE `diagnosticreponses` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `titre` varchar(255) NOT NULL,
+  `position` int(11) DEFAULT 0,
+  `score` int(11) DEFAULT NULL,
+  `langue_id` varchar(255) DEFAULT '0',
+  `diagnosticquestion_id` bigint(20) UNSIGNED DEFAULT 0,
+  `spotlight` tinyint(1) NOT NULL DEFAULT 0,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 --
 -- Déchargement des données de la table `diagnosticreponses`
 --
 
-REPLACE INTO `diagnosticreponses` (`id`, `titre`, `position`, `score`, `langue_id`, `diagnosticquestion_id`, `spotlight`, `etat`, `created_at`, `updated_at`) VALUES
+INSERT INTO `diagnosticreponses` (`id`, `titre`, `position`, `score`, `langue_id`, `diagnosticquestion_id`, `spotlight`, `etat`, `created_at`, `updated_at`) VALUES
 (1, 'Toujours, je vais jusqu’au bout même avec des obstacles', 1, 4, 'f9a16e49-d975-4d63-b201-5aee5888ac44', 1, 0, 1, '2025-07-29 09:50:21', '2025-07-29 14:01:58'),
 (2, 'Souvent, mais je ralentis si je rencontre un challenge difficile à surmonter', 2, 3, 'f9a16e49-d975-4d63-b201-5aee5888ac44', 1, 0, 1, '2025-07-29 09:50:21', '2025-07-29 09:50:21'),
 (3, 'Parfois, je commence beaucoup de choses mais j’abandonne si c’est trop difficile', 3, 2, 'f9a16e49-d975-4d63-b201-5aee5888ac44', 1, 0, 1, '2025-07-29 09:50:21', '2025-07-29 09:50:21'),
@@ -539,7 +642,7 @@ REPLACE INTO `diagnosticreponses` (`id`, `titre`, `position`, `score`, `langue_i
 (282, 'Chacun sait globalement ce qu\'il doit faire, sans cadre écrit', 2, 2, 'f9a16e49-d975-4d63-b201-5aee5888ac44', 62, 0, 1, '2026-01-12 19:57:41', '2026-01-12 19:57:41'),
 (283, 'Les rôles et responsabilités sont définis par écrit', 3, 3, 'f9a16e49-d975-4d63-b201-5aee5888ac44', 62, 0, 1, '2026-01-12 19:57:41', '2026-01-12 19:57:41'),
 (284, 'Chaque personne sait précisément ce qui relève de sa responsabilité', 3, 3, 'f9a16e49-d975-4d63-b201-5aee5888ac44', 62, 0, 1, '2026-01-12 19:57:41', '2026-01-12 19:57:41');
-REPLACE INTO `diagnosticreponses` (`id`, `titre`, `position`, `score`, `langue_id`, `diagnosticquestion_id`, `spotlight`, `etat`, `created_at`, `updated_at`) VALUES
+INSERT INTO `diagnosticreponses` (`id`, `titre`, `position`, `score`, `langue_id`, `diagnosticquestion_id`, `spotlight`, `etat`, `created_at`, `updated_at`) VALUES
 (285, 'Aucune procédure n\'existe', 1, 1, 'f9a16e49-d975-4d63-b201-5aee5888ac44', 63, 0, 1, '2026-01-12 19:57:41', '2026-01-12 19:57:41'),
 (286, 'Le travail se fait au cas par cas, sans méthode commune', 1, 1, 'f9a16e49-d975-4d63-b201-5aee5888ac44', 63, 0, 1, '2026-01-12 19:57:41', '2026-01-12 19:57:41'),
 (287, 'Quelques consignes ou notes existent, mais elles sont incomplètes', 2, 2, 'f9a16e49-d975-4d63-b201-5aee5888ac44', 63, 0, 1, '2026-01-12 19:57:41', '2026-01-12 19:57:41'),
@@ -835,7 +938,7 @@ REPLACE INTO `diagnosticreponses` (`id`, `titre`, `position`, `score`, `langue_i
 (577, 'Je lui fais confiance sans chercher à comprendre', 1, 1, 'f9a16e49-d975-4d63-b201-5aee5888ac44', 113, 0, 1, '2026-01-14 12:43:15', '2026-01-14 12:43:15'),
 (578, 'Je me contente d’exécuter ce qui m’est demandé', 2, 1, 'f9a16e49-d975-4d63-b201-5aee5888ac44', 113, 0, 1, '2026-01-14 12:43:15', '2026-01-14 12:43:15'),
 (579, 'Je pose parfois des questions, sans toujours saisir l’ensemble', 3, 2, 'f9a16e49-d975-4d63-b201-5aee5888ac44', 113, 0, 1, '2026-01-14 12:43:15', '2026-01-14 12:43:15');
-REPLACE INTO `diagnosticreponses` (`id`, `titre`, `position`, `score`, `langue_id`, `diagnosticquestion_id`, `spotlight`, `etat`, `created_at`, `updated_at`) VALUES
+INSERT INTO `diagnosticreponses` (`id`, `titre`, `position`, `score`, `langue_id`, `diagnosticquestion_id`, `spotlight`, `etat`, `created_at`, `updated_at`) VALUES
 (580, 'Je comprends certaines explications, pas toutes', 4, 2, 'f9a16e49-d975-4d63-b201-5aee5888ac44', 113, 0, 1, '2026-01-14 12:43:15', '2026-01-14 12:43:15'),
 (581, 'Je pose des questions ciblées pour comprendre l’essentiel', 5, 3, 'f9a16e49-d975-4d63-b201-5aee5888ac44', 113, 0, 1, '2026-01-14 12:43:15', '2026-01-14 12:43:15'),
 (582, 'Je peux expliquer les grandes lignes des décisions prises', 6, 3, 'f9a16e49-d975-4d63-b201-5aee5888ac44', 113, 0, 1, '2026-01-14 12:43:15', '2026-01-14 12:43:15'),
@@ -1151,7 +1254,7 @@ REPLACE INTO `diagnosticreponses` (`id`, `titre`, `position`, `score`, `langue_i
 (892, 'J’écoute les avis, sans toujours les intégrer', 4, 2, 'f9a16e49-d975-4d63-b201-5aee5888ac44', 271, 0, 1, '2026-01-14 12:43:15', '2026-01-14 12:43:15'),
 (893, 'Je sollicite des avis pour éclairer mes décisions', 5, 3, 'f9a16e49-d975-4d63-b201-5aee5888ac44', 271, 0, 1, '2026-01-14 12:43:15', '2026-01-14 12:43:15'),
 (894, 'Le conseil m’aide à prendre du recul', 6, 3, 'f9a16e49-d975-4d63-b201-5aee5888ac44', 271, 0, 1, '2026-01-14 12:43:15', '2026-01-14 12:43:15');
-REPLACE INTO `diagnosticreponses` (`id`, `titre`, `position`, `score`, `langue_id`, `diagnosticquestion_id`, `spotlight`, `etat`, `created_at`, `updated_at`) VALUES
+INSERT INTO `diagnosticreponses` (`id`, `titre`, `position`, `score`, `langue_id`, `diagnosticquestion_id`, `spotlight`, `etat`, `created_at`, `updated_at`) VALUES
 (895, 'Demander conseil fait partie de mon fonctionnement', 7, 4, 'f9a16e49-d975-4d63-b201-5aee5888ac44', 271, 0, 1, '2026-01-14 12:43:15', '2026-01-14 12:43:15'),
 (896, 'Les avis externes améliorent mes décisions', 8, 4, 'f9a16e49-d975-4d63-b201-5aee5888ac44', 271, 0, 1, '2026-01-14 12:43:15', '2026-01-14 12:43:15'),
 (897, 'Je poursuis sans vraiment analyser', 1, 1, 'f9a16e49-d975-4d63-b201-5aee5888ac44', 272, 0, 1, '2026-01-14 12:43:15', '2026-01-14 12:43:15'),
@@ -1331,11 +1434,203 @@ REPLACE INTO `diagnosticreponses` (`id`, `titre`, `position`, `score`, `langue_i
 (1071, 'Ma rémunération suit des règles claires et connues', 7, 4, 'f9a16e49-d975-4d63-b201-5aee5888ac44', 101, 0, 1, '2026-01-14 13:00:18', '2026-01-14 13:00:18'),
 (1072, 'Ma rémunération est cohérente avec la performance de l\'entreprise', 8, 4, 'f9a16e49-d975-4d63-b201-5aee5888ac44', 101, 0, 1, '2026-01-14 13:00:18', '2026-01-14 13:00:18');
 
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `migrations`
+--
+
+DROP TABLE IF EXISTS `migrations`;
+CREATE TABLE `migrations` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `migration` varchar(255) NOT NULL,
+  `batch` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Déchargement des données de la table `migrations`
+--
+
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
+(1, '0001_01_01_000000_create_users_table', 1),
+(2, '0001_01_01_000001_create_cache_table', 1),
+(3, '0001_01_01_000002_create_jobs_table', 1),
+(4, '2015_04_12_000000_create_orchid_users_table', 1),
+(5, '2015_10_19_214424_create_orchid_roles_table', 1),
+(6, '2015_10_19_214425_create_orchid_role_users_table', 1),
+(7, '2016_08_07_125128_create_orchid_attachmentstable_table', 1),
+(8, '2017_09_17_125801_create_notifications_table', 1),
+(9, '2025_01_13_000006_add_supabase_user_id_to_users_table', 1),
+(10, '2025_06_02_221804_create_accompagnementniveaus_table', 1),
+(11, '2025_06_02_221804_create_accompagnementstatuts_table', 1),
+(12, '2025_06_02_221804_create_accompagnementtypes_table', 1),
+(13, '2025_06_02_221804_create_actualitetypes_table', 1),
+(14, '2025_06_02_221804_create_alertetypes_table', 1),
+(15, '2025_06_02_221804_create_bonstatuts_table', 1),
+(16, '2025_06_02_221804_create_bontypes_table', 1),
+(17, '2025_06_02_221804_create_conseillertypes_table', 1),
+(18, '2025_06_02_221804_create_conseillervalides_table', 1),
+(19, '2025_06_02_221804_create_contacttypes_table', 1),
+(20, '2025_06_02_221804_create_cotisationtypes_table', 1),
+(21, '2025_06_02_221804_create_creditstatuts_table', 1),
+(22, '2025_06_02_221804_create_credittypes_table', 1),
+(23, '2025_06_02_221804_create_diagnosticmoduletypes_table', 1),
+(24, '2025_06_02_221804_create_diagnosticquestioncategories_table', 1),
+(25, '2025_06_02_221804_create_diagnosticquestiontypes_table', 1),
+(26, '2025_06_02_221804_create_diagnosticstatuts_table', 1),
+(27, '2025_06_02_221804_create_diagnostictypes_table', 1),
+(28, '2025_06_02_221804_create_documenttypes_table', 1),
+(29, '2025_06_02_221804_create_dossierstatuts_table', 1),
+(30, '2025_06_02_221804_create_echeancierstatuts_table', 1),
+(31, '2025_06_02_221804_create_entrepriseprofils_table', 1),
+(32, '2025_06_02_221804_create_entreprisetypes_table', 1),
+(33, '2025_06_02_221804_create_espacetypes_table', 1),
+(34, '2025_06_02_221804_create_evenementinscriptiontypes_table', 1),
+(35, '2025_06_02_221804_create_evenementtypes_table', 1),
+(36, '2025_06_02_221804_create_experttypes_table', 1),
+(37, '2025_06_02_221804_create_expertvalides_table', 1),
+(38, '2025_06_02_221804_create_formationniveaus_table', 1),
+(39, '2025_06_02_221804_create_formationtypes_table', 1),
+(40, '2025_06_02_221804_create_forumtypes_table', 1),
+(41, '2025_06_02_221804_create_jours_table', 1),
+(42, '2025_06_02_221804_create_langues_table', 1),
+(43, '2025_06_02_221804_create_membrecategories_table', 1),
+(44, '2025_06_02_221804_create_membrestatuts_table', 1),
+(45, '2025_06_02_221804_create_membretypes_table', 1),
+(46, '2025_06_02_221804_create_newslettertypes_table', 1),
+(47, '2025_06_02_221804_create_offretypes_table', 1),
+(48, '2025_06_02_221804_create_operationtypes_table', 1),
+(49, '2025_06_02_221804_create_paiementstatuts_table', 1),
+(50, '2025_06_02_221804_create_partenaireactivitetypes_table', 1),
+(51, '2025_06_02_221804_create_partenairetypes_table', 1),
+(52, '2025_06_02_221804_create_participantstatuts_table', 1),
+(53, '2025_06_02_221804_create_piecetypes_table', 1),
+(54, '2025_06_02_221804_create_prestationrealiseestatuts_table', 1),
+(55, '2025_06_02_221804_create_prestationtypes_table', 1),
+(56, '2025_06_02_221804_create_quizquestiontypes_table', 1),
+(57, '2025_06_02_221804_create_quizresultatstatuts_table', 1),
+(58, '2025_06_02_221804_create_recommandationorigines_table', 1),
+(59, '2025_06_02_221804_create_recommandationtypes_table', 1),
+(60, '2025_06_02_221804_create_reservationstatuts_table', 1),
+(61, '2025_06_02_221804_create_ressourcetypes_table', 1),
+(62, '2025_06_02_221804_create_secteurs_table', 1),
+(63, '2025_06_02_221804_create_slidertypes_table', 1),
+(64, '2025_06_02_221804_create_suivistatuts_table', 1),
+(65, '2025_06_02_221804_create_suivitypes_table', 1),
+(66, '2025_06_02_221804_create_veilletypes_table', 1),
+(67, '2025_06_02_225744_create_accompagnementconseillers_table', 1),
+(68, '2025_06_02_225744_create_accompagnementdocuments_table', 1),
+(69, '2025_06_02_225744_create_accompagnements_table', 1),
+(70, '2025_06_02_225744_create_actions_table', 1),
+(71, '2025_06_02_225744_create_actualites_table', 1),
+(72, '2025_06_02_225744_create_alertes_table', 1),
+(73, '2025_06_02_225744_create_bons_table', 1),
+(74, '2025_06_02_225744_create_bonutilises_table', 1),
+(75, '2025_06_02_225744_create_chiffres_table', 1),
+(76, '2025_06_02_225744_create_commentaires_table', 1),
+(77, '2025_06_02_225744_create_communes_table', 1),
+(78, '2025_06_02_225744_create_conseillerentreprises_table', 1),
+(79, '2025_06_02_225744_create_conseillerprescriptions_table', 1),
+(80, '2025_06_02_225744_create_conseillers_table', 1),
+(81, '2025_06_02_225744_create_contacts_table', 1),
+(82, '2025_06_02_225744_create_conversations_table', 1),
+(83, '2025_06_02_225744_create_conversions_table', 1),
+(84, '2025_06_02_225744_create_cotisations_table', 1),
+(85, '2025_06_02_225744_create_credits_table', 1),
+(86, '2025_06_02_225744_create_diagnosticmodules_table', 1),
+(87, '2025_06_02_225744_create_diagnosticquestions_table', 1),
+(88, '2025_06_02_225744_create_diagnosticreponses_table', 1),
+(89, '2025_06_02_225744_create_diagnosticresultats_table', 1),
+(90, '2025_06_02_225744_create_diagnostics_table', 1),
+(91, '2025_06_02_225744_create_disponibilites_table', 1),
+(92, '2025_06_02_225744_create_documents_table', 1),
+(93, '2025_06_02_225744_create_echeanciers_table', 1),
+(94, '2025_06_02_225744_create_entreprisemembres_table', 1),
+(95, '2025_06_02_225744_create_entreprises_table', 1),
+(96, '2025_06_02_225744_create_espaceressources_table', 1),
+(97, '2025_06_02_225744_create_espaces_table', 1),
+(98, '2025_06_02_225744_create_evaluations_table', 1),
+(99, '2025_06_02_225744_create_evenementinscriptions_table', 1),
+(100, '2025_06_02_225744_create_evenementressources_table', 1),
+(101, '2025_06_02_225744_create_evenements_table', 1),
+(102, '2025_06_02_225744_create_experts_table', 1),
+(103, '2025_06_02_225744_create_faqs_table', 1),
+(104, '2025_06_02_225744_create_formationressources_table', 1),
+(105, '2025_06_02_225744_create_formations_table', 1),
+(106, '2025_06_02_225744_create_forums_table', 1),
+(107, '2025_06_02_225744_create_membres_table', 1),
+(108, '2025_06_02_225744_create_messageforums_table', 1),
+(109, '2025_06_02_225744_create_messages_table', 1),
+(110, '2025_06_02_225744_create_newsletters_table', 1),
+(111, '2025_06_02_225744_create_pagelibres_table', 1),
+(112, '2025_06_02_225744_create_parrainages_table', 1),
+(113, '2025_06_02_225744_create_partenaires_table', 1),
+(114, '2025_06_02_225744_create_participants_table', 1),
+(115, '2025_06_02_225744_create_payss_table', 1),
+(116, '2025_06_02_225744_create_pieces_table', 1),
+(117, '2025_06_02_225744_create_plans_table', 1),
+(118, '2025_06_02_225744_create_prefectures_table', 1),
+(119, '2025_06_02_225744_create_prestationrealisees_table', 1),
+(120, '2025_06_02_225744_create_prestationressources_table', 1),
+(121, '2025_06_02_225744_create_prestations_table', 1),
+(122, '2025_06_02_225744_create_quartiers_table', 1),
+(123, '2025_06_02_225744_create_quizmembres_table', 1),
+(124, '2025_06_02_225744_create_quizquestions_table', 1),
+(125, '2025_06_02_225744_create_quizreponses_table', 1),
+(126, '2025_06_02_225744_create_quizresultats_table', 1),
+(127, '2025_06_02_225744_create_quizs_table', 1),
+(128, '2025_06_02_225744_create_recompenses_table', 1),
+(129, '2025_06_02_225744_create_regions_table', 1),
+(130, '2025_06_02_225744_create_reservations_table', 1),
+(131, '2025_06_02_225744_create_ressourcecomptes_table', 1),
+(132, '2025_06_02_225744_create_ressourcetransactions_table', 1),
+(133, '2025_06_02_225744_create_ressourcetypeoffretypes_table', 1),
+(134, '2025_06_02_225744_create_services_table', 1),
+(135, '2025_06_02_225744_create_sliders_table', 1),
+(136, '2025_06_02_225744_create_suivis_table', 1),
+(137, '2025_06_02_225744_create_sujets_table', 1),
+(138, '2025_06_02_225744_create_temoignages_table', 1),
+(139, '2025_06_02_231000_add_membrecategorie_id_to_membretypes_table', 1),
+(140, '2025_06_02_235000_add_vignette_to_diagnostics_table', 1),
+(141, '2025_06_02_235100_add_vignette_to_diagnosticmodules_table', 1),
+(142, '2025_06_02_235200_remove_vignette_from_diagnostics_table', 1),
+(143, '2025_06_08_160000_create_cotisationressources_table', 1),
+(144, '2025_06_09_120000_add_entrepriseprofil_id_and_nombre_jours_to_cotisationtypes_table', 1),
+(145, '2025_06_09_123000_create_reductiontypes_table', 1),
+(146, '2025_06_09_124500_remove_description_from_reductiontypes_table', 1),
+(147, '2025_06_09_130000_make_titre_nullable_in_reductiontypes_table', 1),
+(148, '2025_06_09_131000_make_pourcentage_montant_nullable_in_reductiontypes_table', 1),
+(149, '2025_06_09_163000_add_dates_promotion_to_reductiontypes_table', 1),
+(150, '2026_01_15_173737_create_api_tokens_table', 2),
+(158, '2025_06_02_225744_create_accompagnementaxes_table', 4),
+(159, '2025_06_02_225744_create_plantemplates_table', 5),
+(160, '2025_06_02_225744_create_diagnosticmodulescores_table', 6);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `plantemplates`
+--
+
+DROP TABLE IF EXISTS `plantemplates`;
+CREATE TABLE `plantemplates` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `diagnosticmodule_id` bigint(20) UNSIGNED NOT NULL,
+  `niveau` varchar(255) NOT NULL,
+  `objectif` text DEFAULT NULL,
+  `actionprioritaire` longtext DEFAULT NULL,
+  `priorite` int(11) NOT NULL DEFAULT 1,
+  `spotlight` tinyint(1) NOT NULL DEFAULT 0,
+  `etat` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 --
 -- Déchargement des données de la table `plantemplates`
 --
 
-REPLACE INTO `plantemplates` (`id`, `diagnosticmodule_id`, `niveau`, `objectif`, `actionprioritaire`, `priorite`, `spotlight`, `etat`, `created_at`, `updated_at`) VALUES
+INSERT INTO `plantemplates` (`id`, `diagnosticmodule_id`, `niveau`, `objectif`, `actionprioritaire`, `priorite`, `spotlight`, `etat`, `created_at`, `updated_at`) VALUES
 (1, 23, 'A', 'Améliorer la prise de responsabilité personnelle dans la gestion de l’entreprise.', 'Identifier les décisions importantes que je délègue encore et commencer à les assumer pleinement.', 1, 0, 1, '2026-01-17 12:47:13', '2026-01-17 12:47:13'),
 (2, 23, 'B', 'Renforcer la capacité à séparer émotions et relations personnelles de la prise de décision.', 'Mettre en place un cadre décisionnel clair pour les situations sensibles et suivre son application.', 1, 0, 1, '2026-01-17 12:47:13', '2026-01-17 12:47:13'),
 (3, 23, 'C', 'Formaliser les règles et principes pour guider le comportement du dirigeant et de l’équipe.', 'Documenter les règles clés et communiquer régulièrement leur importance aux collaborateurs et proches impliqués.', 1, 0, 1, '2026-01-17 12:47:13', '2026-01-17 12:47:13'),
@@ -1428,4 +1723,96 @@ REPLACE INTO `plantemplates` (`id`, `diagnosticmodule_id`, `niveau`, `objectif`,
 (90, 12, 'B', 'Exploiter le potentiel existant.', 'Activer les idées et contacts existants, prioriser les actions pour développer l’entreprise de manière structurée.', 2, 0, 1, '2026-01-17 14:26:22', '2026-01-17 14:26:22'),
 (91, 12, 'C', 'Structurer le développement de l’entreprise.', 'Mettre en place un plan stratégique clair, consolider les relations clés et formaliser les démarches pour croître efficacement.', 3, 0, 1, '2026-01-17 14:26:22', '2026-01-17 14:26:22'),
 (92, 12, 'D', 'Atteindre une stratégie ambitieuse et structurée.', 'Exécuter pleinement le plan stratégique, viser le leadership ou un fort impact, et intégrer toutes les actions pour maximiser la croissance.', 4, 0, 1, '2026-01-17 14:26:22', '2026-01-17 14:26:22');
+
+--
+-- Index pour les tables déchargées
+--
+
+--
+-- Index pour la table `accompagnementaxes`
+--
+ALTER TABLE `accompagnementaxes`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `diagnosticmodules`
+--
+ALTER TABLE `diagnosticmodules`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `diagnosticmodulescores`
+--
+ALTER TABLE `diagnosticmodulescores`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `diagnosticquestions`
+--
+ALTER TABLE `diagnosticquestions`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `diagnosticreponses`
+--
+ALTER TABLE `diagnosticreponses`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `migrations`
+--
+ALTER TABLE `migrations`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `plantemplates`
+--
+ALTER TABLE `plantemplates`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- AUTO_INCREMENT pour les tables déchargées
+--
+
+--
+-- AUTO_INCREMENT pour la table `accompagnementaxes`
+--
+ALTER TABLE `accompagnementaxes`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+
+--
+-- AUTO_INCREMENT pour la table `diagnosticmodules`
+--
+ALTER TABLE `diagnosticmodules`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
+
+--
+-- AUTO_INCREMENT pour la table `diagnosticmodulescores`
+--
+ALTER TABLE `diagnosticmodulescores`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `diagnosticquestions`
+--
+ALTER TABLE `diagnosticquestions`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=289;
+
+--
+-- AUTO_INCREMENT pour la table `diagnosticreponses`
+--
+ALTER TABLE `diagnosticreponses`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1073;
+
+--
+-- AUTO_INCREMENT pour la table `migrations`
+--
+ALTER TABLE `migrations`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=161;
+
+--
+-- AUTO_INCREMENT pour la table `plantemplates`
+--
+ALTER TABLE `plantemplates`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=93;
 
