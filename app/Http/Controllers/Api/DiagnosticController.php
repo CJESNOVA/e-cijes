@@ -11,6 +11,7 @@ use App\Models\Diagnosticresultat;
 use App\Models\Diagnosticquestion;
 use App\Models\Diagnosticreponse;
 use App\Models\Diagnosticmodule;
+use App\Models\Plantemplate;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 
@@ -155,7 +156,8 @@ class DiagnosticController extends Controller
                         'titre' => $module->titre,
                         'description' => $module->description,
                         'position' => $module->position,
-                        'questions' => []
+                        'questions' => [],
+                        'plans_accompagnement' => []
                     ];
                 }
 
@@ -193,9 +195,27 @@ class DiagnosticController extends Controller
                     $maxScore += 100; // Score maximum supposé par question
                 }
 
+                // Récupérer les plans d'accompagnement pour ce module
+                $plansAccompagnement = Plantemplate::where('diagnosticmodule_id', $module['id'])
+                    ->where('etat', 1) // Uniquement les plans actifs
+                    ->orderBy('priorite', 'asc')
+                    ->get()
+                    ->map(function($plan) {
+                        return [
+                            'id' => $plan->id,
+                            'niveau' => $plan->niveau,
+                            'objectif' => $plan->objectif,
+                            'action_prioritaire' => $plan->actionprioritaire,
+                            'priorite' => $plan->priorite,
+                            'spotlight' => $plan->spotlight,
+                            'etat' => $plan->etat
+                        ];
+                    });
+
+                $module['plans_accompagnement'] = $plansAccompagnement->toArray();
                 $module['statistiques'] = [
-                    'score_total' => $totalScore,
-                    'score_maximum' => $maxScore,
+                    'score_total' => $maxScore > 0 ? round(($totalScore / $maxScore) * 100, 2) : 0,
+                    'score_maximum' => 100,
                     'pourcentage' => $maxScore > 0 ? round(($totalScore / $maxScore) * 100, 2) : 0,
                     'questions_repondues' => $questionsRepondues,
                     'nombre_questions' => count($module['questions'])
@@ -213,7 +233,7 @@ class DiagnosticController extends Controller
                 'accompagnement' => $diagnostic->accompagnement->titre ?? null,
                 'modules' => array_values($modulesData),
                 'statistiques_globales' => [
-                    'score_total' => $diagnostic->scoreglobal,
+                    'score_total' => $diagnostic->scoreglobal, // C'est déjà un pourcentage
                     'nombre_modules' => count($modulesData),
                     'nombre_total_questions' => array_sum(array_column(array_column($modulesData, 'statistiques'), 'nombre_questions')),
                     'questions_repondues_total' => array_sum(array_column(array_column($modulesData, 'statistiques'), 'questions_repondues'))
