@@ -12,11 +12,23 @@ use App\Orchid\Screens\Examples\ExampleLayoutsScreen;
 use App\Orchid\Screens\Examples\ExampleScreen;
 use App\Orchid\Screens\Examples\ExampleTextEditorsScreen;
 use App\Orchid\Screens\PlatformScreen;
+use App\Orchid\Screens\Diagnosticmodule\EditScreen;
+use App\Orchid\Screens\Diagnosticmodule\ListScreen;
+use App\Orchid\Screens\Diagnosticmodule\ShowScreen;
+use App\Orchid\Screens\Diagnosticmodulescore\EditScreen as DiagnosticmodulescoreEditScreen;
+use App\Orchid\Screens\Diagnosticmodulescore\ListScreen as DiagnosticmodulescoreListScreen;
+use App\Orchid\Screens\Diagnosticmodulescore\ShowScreen as DiagnosticmodulescoreShowScreen;
+use App\Orchid\Screens\Accompagnementaxe\EditScreen as AccompagnementaxeEditScreen;
+use App\Orchid\Screens\Accompagnementaxe\ListScreen as AccompagnementaxeListScreen;
+use App\Orchid\Screens\Accompagnementaxe\ShowScreen as AccompagnementaxeShowScreen;
+use App\Orchid\Screens\Plantemplate\EditScreen as PlantemplateEditScreen;
+use App\Orchid\Screens\Plantemplate\ListScreen as PlantemplateListScreen;
+use App\Orchid\Screens\Plantemplate\ShowScreen as PlantemplateShowScreen;
+use App\Orchid\Screens\User\UserListScreen;
+use App\Orchid\Screens\User\UserProfileScreen;
 use App\Orchid\Screens\Role\RoleEditScreen;
 use App\Orchid\Screens\Role\RoleListScreen;
 use App\Orchid\Screens\User\UserEditScreen;
-use App\Orchid\Screens\User\UserListScreen;
-use App\Orchid\Screens\User\UserProfileScreen;
 use Illuminate\Support\Facades\Route;
 use Tabuna\Breadcrumbs\Trail;
 
@@ -1947,6 +1959,76 @@ Route::screen('diagnosticmodules/{diagnosticmodule}/show', App\Orchid\Screens\Di
 Route::post('diagnosticmodules/toggleSpotlight', [App\Orchid\Screens\Diagnosticmodule\ListScreen::class, 'toggleSpotlight'])->name('platform.diagnosticmodule.toggleSpotlight');
 Route::post('diagnosticmodules/toggleEtat', [App\Orchid\Screens\Diagnosticmodule\ListScreen::class, 'toggleEtat'])->name('platform.diagnosticmodule.toggleEtat');
 Route::post('diagnosticmodules/delete', [App\Orchid\Screens\Diagnosticmodule\ListScreen::class, 'delete'])->name('platform.diagnosticmodule.delete');
+
+//diagnosticmodulescore//////////////////////
+Route::screen('diagnosticmodulescore/{diagnosticmodulescore?}', DiagnosticmodulescoreEditScreen::class)->name('platform.diagnosticmodulescore.edit')
+    ->breadcrumbs(function (Trail $trail, $diagnosticmodulescore = null) {
+        $trail->parent('platform.diagnosticmodulescore.list');
+        if ($diagnosticmodulescore && $diagnosticmodulescore->exists) {
+            $trail->push('Modifier le score de module', route('platform.diagnosticmodulescore.edit', $diagnosticmodulescore));
+        } else {
+            $trail->push('Créer un score de module', route('platform.diagnosticmodulescore.edit'));
+        }
+    });
+Route::screen('diagnosticmodulescores', DiagnosticmodulescoreListScreen::class)->name('platform.diagnosticmodulescore.list')
+    ->breadcrumbs(fn (Trail $trail) => $trail
+        ->parent('platform.index')
+        ->push('Scores des modules de diagnostics', route('platform.diagnosticmodulescore.list')));
+Route::screen('diagnosticmodulescores/{diagnosticmodulescore}/show', DiagnosticmodulescoreShowScreen::class)->name('platform.diagnosticmodulescore.show')
+    ->breadcrumbs(function (Trail $trail, $diagnosticmodulescore) {
+        return $trail
+            ->parent('platform.diagnosticmodulescore.list') 
+            ->push('Détail du score de module');
+    });
+Route::post('diagnosticmodulescores/delete', [App\Orchid\Screens\Diagnosticmodulescore\ListScreen::class, 'delete'])->name('platform.diagnosticmodulescore.delete');
+
+//accompagnementaxe//////////////////////
+Route::screen('accompagnementaxe/{accompagnementaxe?}', AccompagnementaxeEditScreen::class)->name('platform.accompagnementaxe.edit')
+    ->breadcrumbs(function (Trail $trail, $accompagnementaxe = null) {
+        $trail->parent('platform.accompagnementaxe.list');
+        if ($accompagnementaxe && $accompagnementaxe->exists) {
+            $trail->push('Modifier l\'axe d\'accompagnement', route('platform.accompagnementaxe.edit', $accompagnementaxe));
+        } else {
+            $trail->push('Créer un axe d\'accompagnement', route('platform.accompagnementaxe.edit'));
+        }
+    });
+Route::screen('accompagnementaxes', AccompagnementaxeListScreen::class)->name('platform.accompagnementaxe.list')
+    ->breadcrumbs(fn (Trail $trail) => $trail
+        ->parent('platform.index')
+        ->push('Axes d\'accompagnement', route('platform.accompagnementaxe.list')));
+Route::screen('accompagnementaxes/{accompagnementaxe}/show', AccompagnementaxeShowScreen::class)->name('platform.accompagnementaxe.show')
+    ->breadcrumbs(function (Trail $trail, $accompagnementaxe) {
+        return $trail
+            ->parent('platform.accompagnementaxe.list') 
+            ->push('Détail de l\'axe d\'accompagnement');
+    });
+Route::post('accompagnementaxes/toggleSpotlight', [App\Orchid\Screens\Accompagnementaxe\ListScreen::class, 'toggleSpotlight'])->name('platform.accompagnementaxe.toggleSpotlight');
+Route::post('accompagnementaxes/toggleEtat', [App\Orchid\Screens\Accompagnementaxe\ListScreen::class, 'toggleEtat'])->name('platform.accompagnementaxe.toggleEtat');
+Route::post('accompagnementaxes/delete', [App\Orchid\Screens\Accompagnementaxe\ListScreen::class, 'delete'])->name('platform.accompagnementaxe.delete');
+
+//plantemplate//////////////////////
+Route::screen('plantemplate/{plantemplate?}', PlantemplateEditScreen::class)->name('platform.plantemplate.edit')
+    ->breadcrumbs(function (Trail $trail, $plantemplate = null) {
+        $trail->parent('platform.plantemplate.list');
+        if ($plantemplate && $plantemplate->exists) {
+            $trail->push('Modifier le plan template', route('platform.plantemplate.edit', $plantemplate));
+        } else {
+            $trail->push('Créer un plan template', route('platform.plantemplate.edit'));
+        }
+    });
+Route::screen('plantemplates', PlantemplateListScreen::class)->name('platform.plantemplate.list')
+    ->breadcrumbs(fn (Trail $trail) => $trail
+        ->parent('platform.index')
+        ->push('Plans templates', route('platform.plantemplate.list')));
+Route::screen('plantemplates/{plantemplate}/show', PlantemplateShowScreen::class)->name('platform.plantemplate.show')
+    ->breadcrumbs(function (Trail $trail, $plantemplate) {
+        return $trail
+            ->parent('platform.plantemplate.list') 
+            ->push('Détail du plan template');
+    });
+Route::post('plantemplates/toggleSpotlight', [App\Orchid\Screens\Plantemplate\ListScreen::class, 'toggleSpotlight'])->name('platform.plantemplate.toggleSpotlight');
+Route::post('plantemplates/toggleEtat', [App\Orchid\Screens\Plantemplate\ListScreen::class, 'toggleEtat'])->name('platform.plantemplate.toggleEtat');
+Route::post('plantemplates/delete', [App\Orchid\Screens\Plantemplate\ListScreen::class, 'delete'])->name('platform.plantemplate.delete');
 
 //diagnosticquestion//////////////////////
 Route::screen('diagnosticquestion/{diagnosticquestion?}', App\Orchid\Screens\Diagnosticquestion\EditScreen::class)->name('platform.diagnosticquestion.edit')

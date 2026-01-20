@@ -136,6 +136,7 @@ class PlatformProvider extends OrchidServiceProvider
                 ->list([
         Menu::make('Diagnostics')->route('platform.diagnostic.list'),
         Menu::make('Modules des diagnostics')->route('platform.diagnosticmodule.list'),
+        Menu::make('Scores des modules')->route('platform.diagnosticmodulescore.list'),
         Menu::make('Questions des diagnostics')->route('platform.diagnosticquestion.list'),
         Menu::make('Réponses des diagnostics')->route('platform.diagnosticreponse.list'),
         Menu::make('Résultats des diagnostics')->route('platform.diagnosticresultat.list'),
@@ -145,6 +146,8 @@ class PlatformProvider extends OrchidServiceProvider
                 ->icon('bs.bag')
                 ->list([
         Menu::make('Accompagnements')->route('platform.accompagnement.list'),
+        Menu::make('Axes d\'accompagnement')->route('platform.accompagnementaxe.list'),
+        Menu::make('Plans templates')->route('platform.plantemplate.list'),
         Menu::make('Plans d\'accompagnements')->route('platform.plan.list'),
         Menu::make('Documents d\'accompagnement')->route('platform.accompagnementdocument.list'),
         Menu::make('Suivis')->route('platform.suivi.list'),
@@ -310,7 +313,8 @@ class PlatformProvider extends OrchidServiceProvider
         return [
             ItemPermission::group(__('System'))
                 ->addPermission('platform.systems.roles', __('Roles'))
-                ->addPermission('platform.systems.users', __('Users')),
+                ->addPermission('platform.systems.users', __('Users'))
+                ->addPermission('platform.systems.management', __('System Management')),
         ];
     }
 }
