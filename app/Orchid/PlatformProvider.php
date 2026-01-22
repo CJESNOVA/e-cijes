@@ -150,6 +150,8 @@ class PlatformProvider extends OrchidServiceProvider
         Menu::make('Plans templates')->route('platform.plantemplate.list'),
         Menu::make('Plans d\'accompagnements')->route('platform.plan.list'),
         Menu::make('Documents d\'accompagnement')->route('platform.accompagnementdocument.list'),
+        Menu::make('Propositions')->route('platform.proposition.list'),
+        Menu::make('Statuts des propositions')->route('platform.propositionstatut.list'),
         Menu::make('Suivis')->route('platform.suivi.list'),
                 ]),
 

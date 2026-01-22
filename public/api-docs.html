@@ -269,9 +269,10 @@
             <ul style="margin-left: 20px; margin-top: 10px;">
                 <li>Informations du membre associé à l'email</li>
                 <li>Toutes les entreprises liées au membre</li>
-                <li>Tous les diagnostics effectués (membre + entreprises)</li>
+                <li>Uniquement les diagnostics avec <code>diagnostictype_id = 1</code></li>
                 <li>Modules, questions, réponses et scores détaillés</li>
-                <li>Statistiques calculées automatiquement</li>
+                <li>Statistiques calculées automatiquement selon les nouvelles formules</li>
+                <li>Plans d'accompagnement associés au diagnostic</li>
             </ul>
 
             <h3>🔧 Paramètres</h3>
@@ -317,7 +318,7 @@
               "spotlight": 0,
               "type": "Diagnostic complet",
               "statut": "Terminé",
-              "accompagnement": "Accompagnement standard",
+              "accompagnement": 2,
               "modules": [
                 {
                   "id": 1,
@@ -352,17 +353,29 @@
                 }
               ],
               "statistiques_globales": {
-                "score_total": 85,
+                "score_total": 150,
+                "score_maximum": 200,
+                "pourcentage": 75.0,
                 "nombre_modules": 2,
                 "nombre_total_questions": 10,
                 "questions_repondues_total": 10
-              }
+              },
+              "plans_accompagnement": [
+                {
+                  "id": 1,
+                  "objectif": "Développement de l'entreprise",
+                  "action_prioritaire": "Comment définir un plan stratégique efficace ?",
+                  "date_plan": "2025-07-09",
+                  "spotlight": 0,
+                  "etat": 1
+                }
+              ]
             }
           ]
         }
       ],
       "diagnostics": [
-        // Diagnostics directs du membre (même structure)
+        // Diagnostics directs du membre (même structure, filtrés par diagnostictype_id = 1)
       ]
     }
   }
@@ -792,6 +805,24 @@ except requests.exceptions.RequestException as e:
         <div class="card">
             <h2>⚠️ Notes Importantes</h2>
             
+            <div class="warning">
+                <h4>🔍 Filtrage des diagnostics</h4>
+                <p>L'API retourne uniquement les diagnostics avec <code>diagnostictype_id = 1</code> pour le membre et <code>diagnostictype_id = 2</code> pour les entreprises.</p>
+            </div>
+
+            <div class="warning">
+                <h4>📊 Calcul des statistiques</h4>
+                <p>Les statistiques sont calculées avec les nouvelles formules :<br>
+                - <strong>score_total</strong>: Cumul des scores des réponses choisies<br>
+                - <strong>score_maximum</strong>: Cumul des scores maximums par question<br>
+                - <strong>pourcentage</strong>: (score_total * 100) / score_maximum</p>
+            </div>
+
+            <div class="warning">
+                <h4>📋 Plans d'accompagnement</h4>
+                <p>Les plans sont récupérés une fois par diagnostic selon l'accompagnement_id du diagnostic. Si aucun plan n'est trouvé, tous les plans actifs sont retournés.</p>
+            </div>
+
             <div class="warning">
                 <h4>🚀 Performance</h4>
                 <p>L'API récupère toutes les données en une seule fois, ce qui peut être volumineux pour des utilisateurs avec beaucoup de diagnostics.</p>

@@ -21,6 +21,7 @@ class Expert extends Model
         'fichier',
         'experttype_id',
         'membre_id',
+        'secteur_id',
         'spotlight',
         'etat',
     ];
@@ -38,6 +39,11 @@ class Expert extends Model
     public function membre()
     {
         return $this->belongsTo(Membre::class);
+    }
+
+    public function secteur()
+    {
+        return $this->belongsTo(Secteur::class);
     }
 
 }

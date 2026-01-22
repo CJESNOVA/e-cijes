@@ -100,6 +100,12 @@ class EditScreen extends Screen
                             ->toArray())
                     ->empty('Choisir', 0),
 
+                Select::make('expert.secteur_id')
+                    ->title('Secteur')
+                    ->placeholder('Choisir le secteur')
+                    ->fromModel(\App\Models\Secteur::class, 'titre')
+                    ->empty('Choisir', 0),
+
                 /*TextArea::make('expert.domaine')
                     ->title('Domaine')
                     ->placeholder('Saisir la domaine'),

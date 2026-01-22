@@ -11,7 +11,7 @@ use App\Models\Diagnosticresultat;
 use App\Models\Diagnosticquestion;
 use App\Models\Diagnosticreponse;
 use App\Models\Diagnosticmodule;
-use App\Models\Plantemplate;
+use App\Models\Plan;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 
@@ -67,13 +67,15 @@ class DiagnosticController extends Controller
                     'email' => $membre->email,
                     'telephone' => $membre->telephone,
                     'nom_complet' => $membre->nom_complet,
+                    'diagnostics' => [],
                     'entreprises' => []
                 ]
             ];
 
             // Ajouter les diagnostics du membre lui-même (sans entreprise)
             $diagnosticsMembre = Diagnostic::where('membre_id', $membre->id)
-                ->whereNull('entreprise_id')
+                //->whereNull('entreprise_id')
+                ->where('diagnostictype_id', 1)
                 ->with(['diagnostictype', 'diagnosticstatut', 'accompagnement'])
                 ->get();
 
@@ -98,6 +100,7 @@ class DiagnosticController extends Controller
                 // Récupérer les diagnostics pour cette entreprise
                 $diagnosticsEntreprise = Diagnostic::where('membre_id', $membre->id)
                     ->where('entreprise_id', $entreprise->id)
+                    ->where('diagnostictype_id', 2)
                     ->with(['diagnostictype', 'diagnosticstatut', 'accompagnement'])
                     ->get();
 
@@ -157,7 +160,6 @@ class DiagnosticController extends Controller
                         'description' => $module->description,
                         'position' => $module->position,
                         'questions' => [],
-                        'plans_accompagnement' => []
                     ];
                 }
 
@@ -183,45 +185,51 @@ class DiagnosticController extends Controller
 
             // Calculer les statistiques par module
             foreach ($modulesData as &$module) {
-                $totalScore = 0;
-                $maxScore = 0;
+                $scoreTotal = 0;
+                $scoreMaximum = 0;
                 $questionsRepondues = 0;
 
                 foreach ($module['questions'] as $question) {
                     if ($question['reponse']['score'] !== null) {
-                        $totalScore += $question['reponse']['score'];
+                        $scoreTotal += $question['reponse']['score'];
                         $questionsRepondues++;
                     }
-                    $maxScore += 100; // Score maximum supposé par question
+                    // Calculer le score maximum pour cette question
+                    $maxQuestionScore = Diagnosticreponse::where('diagnosticquestion_id', $question['id'])
+                        ->max('score') ?? 0;
+                    $scoreMaximum += $maxQuestionScore;
                 }
-
-                // Récupérer les plans d'accompagnement pour ce module
-                $plansAccompagnement = Plantemplate::where('diagnosticmodule_id', $module['id'])
-                    ->where('etat', 1) // Uniquement les plans actifs
-                    ->orderBy('priorite', 'asc')
-                    ->get()
-                    ->map(function($plan) {
-                        return [
-                            'id' => $plan->id,
-                            'niveau' => $plan->niveau,
-                            'objectif' => $plan->objectif,
-                            'action_prioritaire' => $plan->actionprioritaire,
-                            'priorite' => $plan->priorite,
-                            'spotlight' => $plan->spotlight,
-                            'etat' => $plan->etat
-                        ];
-                    });
-
-                $module['plans_accompagnement'] = $plansAccompagnement->toArray();
+                $pourcentage = $scoreMaximum > 0 ? round(($scoreTotal * 100) / $scoreMaximum, 2) : 0;
                 $module['statistiques'] = [
-                    'score_total' => $maxScore > 0 ? round(($totalScore / $maxScore) * 100, 2) : 0,
-                    'score_maximum' => 100,
-                    'pourcentage' => $maxScore > 0 ? round(($totalScore / $maxScore) * 100, 2) : 0,
+                    'score_total' => $scoreTotal,
+                    'score_maximum' => $scoreMaximum,
+                    'pourcentage' => $pourcentage,
                     'questions_repondues' => $questionsRepondues,
                     'nombre_questions' => count($module['questions'])
                 ];
             }
+            
+            // Récupérer les plans d'accompagnement pour ce diagnostic (une seule fois)
+            $plansAccompagnement = Plan::where('accompagnement_id', $diagnostic->accompagnement_id)
+                ->where('etat', 1) // Uniquement les plans actifs
+                ->orderBy('dateplan', 'asc')
+                ->get()
+                ->map(function($plan) {
+                    return [
+                        'id' => $plan->id,
+                        'objectif' => $plan->objectif,
+                        'action_prioritaire' => $plan->actionprioritaire,
+                        'date_plan' => $plan->dateplan,
+                        'spotlight' => $plan->spotlight,
+                        'etat' => $plan->etat
+                    ];
+                });
 
+            // Calculer les statistiques globales
+            $globalScoreTotal = array_sum(array_column(array_column($modulesData, 'statistiques'), 'score_total'));
+            $globalScoreMaximum = array_sum(array_column(array_column($modulesData, 'statistiques'), 'score_maximum'));
+            $globalPourcentage = $globalScoreMaximum > 0 ? round(($globalScoreTotal * 100) / $globalScoreMaximum, 2) : 0;
+            
             $diagnosticData = [
                 'id' => $diagnostic->id,
                 'score_global' => $diagnostic->scoreglobal,
@@ -230,14 +238,17 @@ class DiagnosticController extends Controller
                 'spotlight' => $diagnostic->spotlight,
                 'type' => $diagnostic->diagnostictype->titre ?? null,
                 'statut' => $diagnostic->diagnosticstatut->titre ?? null,
-                'accompagnement' => $diagnostic->accompagnement->titre ?? null,
+                'accompagnement' => $diagnostic->accompagnement_id ?? null,
                 'modules' => array_values($modulesData),
                 'statistiques_globales' => [
-                    'score_total' => $diagnostic->scoreglobal, // C'est déjà un pourcentage
+                    'score_total' => $globalScoreTotal,
+                    'score_maximum' => $globalScoreMaximum,
+                    'pourcentage' => $globalPourcentage,
                     'nombre_modules' => count($modulesData),
                     'nombre_total_questions' => array_sum(array_column(array_column($modulesData, 'statistiques'), 'nombre_questions')),
                     'questions_repondues_total' => array_sum(array_column(array_column($modulesData, 'statistiques'), 'questions_repondues'))
-                ]
+                ],
+                'plans_accompagnement' => $plansAccompagnement->toArray()
             ];
 
             $formattedDiagnostics[] = $diagnosticData;

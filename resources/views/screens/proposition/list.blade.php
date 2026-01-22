@@ -1,6 +1,6 @@
 @extends('platform::app')
 
-@section('title', 'Liste des experts')
+@section('title', 'Liste des propositions')
 
 @push('head')
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
@@ -18,89 +18,82 @@
                             <tr>
                                 <th class="px-3 py-2">#</th>
                                 <th class="px-3 py-2">Membre</th>
-                                <th class="px-3 py-2">Secteur</th>
-                                <th class="px-3 py-2">Type</th>
-                                <th class="px-3 py-2">Fichier</th>
-                                <th class="px-3 py-2">Validation d'expert</th>
+                                <th class="px-3 py-2">Expert</th>
+                                <th class="px-3 py-2">Prestation</th>
+                                <th class="px-3 py-2">Plan</th>
+                                <th class="px-3 py-2">Accompagnement</th>
+                                <th class="px-3 py-2">Prix</th>
+                                <th class="px-3 py-2">Statut</th>
                                 <th class="px-3 py-2">Spotlight</th>
                                 <th class="px-3 py-2">État</th>
-                                <!-- <th class="px-3 py-2">Créé le</th> -->
-                                <!-- <th class="px-3 py-2">Modifié le</th> -->
                                 <th class="px-3 py-2 text-end">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($experts as $expert)
+                            @foreach($propositions as $proposition)
                                 <tr>
-                                    <td class="px-3 py-2">{{ $expert->id }}</td>
+                                    <td class="px-3 py-2">{{ $proposition->id }}</td>
                                     <td class="px-3 py-2">
-                                        @if ($expert->membre_id > 0)
-                                            {{ $expert->membre->nom_complet ?? '' }}
+                                        @if ($proposition->membre_id > 0)
+                                            {{ $proposition->membre->nom_complet ?? '' }}
                                         @endif
                                     </td>
                                     <td class="px-3 py-2">
-                                        @if ($expert->secteur_id > 0)
-                                            {{ $expert->secteur->titre ?? '' }}
-                                        @else
-                                            —
+                                        @if ($proposition->expert_id > 0)
+                                            {{ $proposition->expert->domaine ?? '' }}
                                         @endif
                                     </td>
                                     <td class="px-3 py-2">
-                                        @if ($expert->experttype_id > 0)
-                                            {{ $expert->experttype->titre ?? '' }}
+                                        @if ($proposition->prestation_id > 0)
+                                            {{ $proposition->prestation->titre ?? '' }}
                                         @endif
                                     </td>
                                     <td class="px-3 py-2">
-                                        @if ($expert->fichier)
-                                            @php $ext = pathinfo($expert->fichier, PATHINFO_EXTENSION); @endphp
-                                            @if(in_array(strtolower($ext), ['jpg','jpeg','png','webp','gif']))
-                                                <img src="{{ Storage::disk('public')->url($expert->fichier) }}" width="50" class="rounded shadow">
-                                            @else
-                                                <a href="{{ Storage::disk('public')->url($expert->fichier) }}" class="btn btn-outline-primary btn-sm" download>
-                                                    📄 Télécharger
-                                                </a>
-                                            @endif
-                                        @else
-                                            —
+                                        @if ($proposition->plan_id > 0)
+                                            {{ $proposition->plan->objectif ?? '' }}
                                         @endif
                                     </td>
                                     <td class="px-3 py-2">
-                                        @if ($expert->expertvalide_id > 0)
-                                            {{ $expert->expertvalide->titre ?? '' }}
+                                        @if ($proposition->accompagnement_id > 0)
+                                            {{ $proposition->accompagnement->titre ?? '' }}
+                                        @endif
+                                    </td>
+                                    <td class="px-3 py-2">{{ $proposition->prix_propose ?? '—' }}</td>
+                                    <td class="px-3 py-2">
+                                        @if ($proposition->propositionstatut_id > 0)
+                                            {{ $proposition->propositionstatut->titre ?? '' }}
                                         @endif
                                     </td>
                                     <td class="px-3 py-2">
-                                        <form method="POST" action="{{ route('platform.expert.toggleSpotlight') }}">
+                                        <form method="POST" action="{{ route('platform.proposition.toggleSpotlight') }}">
                                             @csrf
-                                            <input type="hidden" name="id" value="{{ $expert->id }}">
+                                            <input type="hidden" name="id" value="{{ $proposition->id }}">
                                             <button type="submit" class="btn btn-secondary btn-sm">
-                                                {{ $expert->spotlight ? '✅' : '❌' }}
+                                                {{ $proposition->spotlight ? '✅' : '❌' }}
                                             </button>
                                         </form>
                                     </td>
                                     <td class="px-3 py-2">
-                                        <form method="POST" action="{{ route('platform.expert.toggleEtat') }}">
+                                        <form method="POST" action="{{ route('platform.proposition.toggleEtat') }}">
                                             @csrf
-                                            <input type="hidden" name="id" value="{{ $expert->id }}">
+                                            <input type="hidden" name="id" value="{{ $proposition->id }}">
                                             <button type="submit" class="btn btn-secondary btn-sm">
-                                                {{ $expert->etat ? '✅' : '❌' }}
+                                                {{ $proposition->etat ? '✅' : '❌' }}
                                             </button>
                                         </form>
                                     </td>
-                                    <!-- <td class="px-3 py-2">{{ $expert->created_at }}</td> -->
-                                    <!-- <td class="px-3 py-2">{{ $expert->updated_at }}</td> -->
                                     <td class="px-3 py-2 text-end">
-                                        <a href="{{ route('platform.expert.show', $expert->id) }}" class="btn btn-info btn-sm">
+                                        <a href="{{ route('platform.proposition.show', $proposition->id) }}" class="btn btn-info btn-sm">
                                             🔍 Détail
                                         </a>
                                         
-                                        <a href="{{ route('platform.expert.edit', $expert->id) }}" class="btn btn-warning btn-sm">
+                                        <a href="{{ route('platform.proposition.edit', $proposition->id) }}" class="btn btn-warning btn-sm">
                                             ✏️ Modifier
                                         </a>
                                         
-                                        <form method="POST" action="{{ route('platform.expert.delete') }}" style="display:inline-block">
+                                        <form method="POST" action="{{ route('platform.proposition.delete') }}" style="display:inline-block">
                                             @csrf
-                                            <input type="hidden" name="expert" value="{{ $expert->id }}">
+                                            <input type="hidden" name="proposition" value="{{ $proposition->id }}">
                                             <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Confirmer la suppression ?')">🗑 Supprimer</button>
                                         </form>
                                     </td>

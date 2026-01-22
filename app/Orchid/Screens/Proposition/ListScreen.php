@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Orchid\Screens\Expert;
+namespace App\Orchid\Screens\Proposition;
 
-use App\Models\Expert;
+use App\Models\Proposition;
 use Orchid\Screen\Screen;
 use Illuminate\Http\Request;
 use Orchid\Support\Facades\Layout;
@@ -14,18 +14,18 @@ class ListScreen extends Screen
     public function query(): iterable
     {
         return [
-            'experts' => Expert::with(['membre', 'secteur', 'experttype', 'expertvalide'])->get(),
+            'propositions' => Proposition::with(['membre', 'expert', 'prestation', 'plan', 'accompagnement', 'propositionstatut'])->get(),
         ];
     }
 
     public function name(): ?string
     {
-        return 'Liste des experts';
+        return 'Liste des propositions';
     }
 
     public function description(): ?string
     {
-        return 'Tous les experts enregistrés';
+        return 'Toutes les propositions enregistrées';
     }
 
     /**
@@ -34,24 +34,24 @@ class ListScreen extends Screen
     public function commandBar(): iterable
     {
         return [
-            Link::make('Créer un expert')
+            Link::make('Créer une proposition')
                 ->icon('plus')
-                ->route('platform.expert.edit'),
+                ->route('platform.proposition.edit'),
         ];
     }
 
     public function layout(): iterable
     {
         return [
-            Layout::view('screens.expert.list'), 
+            Layout::view('screens.proposition.list'), 
         ];
     }
 
     public function toggleEtat(Request $request)
     {
-        $expert = Expert::findOrFail($request->input('id'));
-        $expert->etat = !$expert->etat;
-        $expert->save();
+        $proposition = Proposition::findOrFail($request->input('id'));
+        $proposition->etat = !$proposition->etat;
+        $proposition->save();
 
         Alert::info("État modifié.");
         return redirect()->back();
@@ -59,9 +59,9 @@ class ListScreen extends Screen
 
     public function toggleSpotlight(Request $request)
     {
-        $expert = Expert::findOrFail($request->input('id'));
-        $expert->spotlight = !$expert->spotlight;
-        $expert->save();
+        $proposition = Proposition::findOrFail($request->input('id'));
+        $proposition->spotlight = !$proposition->spotlight;
+        $proposition->save();
 
         Alert::info("Spotlight modifié.");
         return redirect()->back();
@@ -69,10 +69,10 @@ class ListScreen extends Screen
 
     public function delete(Request $request)
     {
-        $expert = Expert::findOrFail($request->input('expert'));
-        $expert->delete();
+        $proposition = Proposition::findOrFail($request->input('proposition'));
+        $proposition->delete();
 
-        Alert::info("Expert supprimé.");
+        Alert::info("Proposition supprimée.");
         return redirect()->back();
     }
 }

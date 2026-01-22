@@ -13,7 +13,7 @@ class ShowScreen extends Screen
 {
     public function query(Expert $expert): iterable
     {
-        $expert->load(['expertvalide', 'experttype', 'membre']); 
+        $expert->load(['expertvalide', 'experttype', 'membre', 'secteur']); 
 
         return [
             'expert' => $expert,
@@ -35,6 +35,7 @@ class ShowScreen extends Screen
         return [
             Layout::legend('expert', [
                 Sight::make('membre.nom_complet', 'Membre'),
+                Sight::make('secteur.titre', 'Secteur'),
                 Sight::make('domaine', 'Domaines d\'expertises')->render(function ($expert) {
                     return new HtmlString($expert->domaine); // ✅ Affiche HTML sans échapper
                 }),

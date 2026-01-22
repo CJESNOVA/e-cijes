@@ -2079,6 +2079,53 @@ Route::post('diagnosticreponses/toggleSpotlight', [App\Orchid\Screens\Diagnostic
 Route::post('diagnosticreponses/toggleEtat', [App\Orchid\Screens\Diagnosticreponse\ListScreen::class, 'toggleEtat'])->name('platform.diagnosticreponse.toggleEtat');
 Route::post('diagnosticreponses/delete', [App\Orchid\Screens\Diagnosticreponse\ListScreen::class, 'delete'])->name('platform.diagnosticreponse.delete');
 
+//propositionstatut//////////////////////
+Route::screen('propositionstatut/{propositionstatut?}', \App\Orchid\Screens\Propositionstatut\EditScreen::class)->name('platform.propositionstatut.edit')
+    ->breadcrumbs(function (Trail $trail, $propositionstatut = null) {
+        $trail->parent('platform.propositionstatut.list');
+        if ($propositionstatut && $propositionstatut->exists) {
+            $trail->push('Modifier le statut de proposition', route('platform.propositionstatut.edit', $propositionstatut));
+        } else {
+            $trail->push('Créer un statut de proposition', route('platform.propositionstatut.edit'));
+        }
+    });
+Route::screen('propositionstatuts', \App\Orchid\Screens\Propositionstatut\ListScreen::class)->name('platform.propositionstatut.list')
+    ->breadcrumbs(fn (Trail $trail) => $trail
+        ->parent('platform.index')
+        ->push('Statuts des propositions', route('platform.propositionstatut.list')));
+Route::screen('propositionstatuts/{propositionstatut}/show', \App\Orchid\Screens\Propositionstatut\ShowScreen::class)->name('platform.propositionstatut.show')
+    ->breadcrumbs(function (Trail $trail, $propositionstatut) {
+        return $trail
+            ->parent('platform.propositionstatut.list') 
+            ->push('Détail du statut de proposition');
+    });
+Route::post('propositionstatuts/toggleEtat', [\App\Orchid\Screens\Propositionstatut\ListScreen::class, 'toggleEtat'])->name('platform.propositionstatut.toggleEtat');
+Route::post('propositionstatuts/delete', [\App\Orchid\Screens\Propositionstatut\ListScreen::class, 'delete'])->name('platform.propositionstatut.delete');
+
+//proposition//////////////////////
+Route::screen('proposition/{proposition?}', \App\Orchid\Screens\Proposition\EditScreen::class)->name('platform.proposition.edit')
+    ->breadcrumbs(function (Trail $trail, $proposition = null) {
+        $trail->parent('platform.proposition.list');
+        if ($proposition && $proposition->exists) {
+            $trail->push('Modifier la proposition', route('platform.proposition.edit', $proposition));
+        } else {
+            $trail->push('Créer une proposition', route('platform.proposition.edit'));
+        }
+    });
+Route::screen('propositions', \App\Orchid\Screens\Proposition\ListScreen::class)->name('platform.proposition.list')
+    ->breadcrumbs(fn (Trail $trail) => $trail
+        ->parent('platform.index')
+        ->push('Propositions', route('platform.proposition.list')));
+Route::screen('propositions/{proposition}/show', \App\Orchid\Screens\Proposition\ShowScreen::class)->name('platform.proposition.show')
+    ->breadcrumbs(function (Trail $trail, $proposition) {
+        return $trail
+            ->parent('platform.proposition.list') 
+            ->push('Détail de la proposition');
+    });
+Route::post('propositions/toggleSpotlight', [\App\Orchid\Screens\Proposition\ListScreen::class, 'toggleSpotlight'])->name('platform.proposition.toggleSpotlight');
+Route::post('propositions/toggleEtat', [\App\Orchid\Screens\Proposition\ListScreen::class, 'toggleEtat'])->name('platform.proposition.toggleEtat');
+Route::post('propositions/delete', [\App\Orchid\Screens\Proposition\ListScreen::class, 'delete'])->name('platform.proposition.delete');
+
 //diagnosticresultat//////////////////////
 Route::screen('diagnosticresultat/{diagnosticresultat?}', App\Orchid\Screens\Diagnosticresultat\EditScreen::class)->name('platform.diagnosticresultat.edit')
     ->breadcrumbs(function (Trail $trail, $diagnosticresultat = null) {
