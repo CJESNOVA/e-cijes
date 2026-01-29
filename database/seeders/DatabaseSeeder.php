@@ -13,59 +13,94 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        // Accompagnements
         $this->call([
-            // Pages et contenu statique
-            PageLibresSeeder::class,
-            
-            // Types de ressources et offres
-            RessourcetypeSeeder::class,
-            OffretypeSeeder::class,
-            
-            // Types concrets selon offres
-            PrestationtypeSeeder::class,
-            FormationtypeSeeder::class,
-            EvenementtypeSeeder::class,
-            EspacetypeSeeder::class,
-            
-            // Types de réductions
-            ReductiontypeSeeder::class,
-            
-            // Types de membres et conseillers
-            MembretypeSeeder::class,
-            ConseillertypeSeeder::class,
-            
-            // Communication et cotisations
-            NewslettertypeSeeder::class,
-            CotisationtypeSeeder::class,
-            
-            // Accompagnement et quiz
-            AccompagnementtypeSeeder::class,
-            QuizquestiontypeSeeder::class,
-            
-            // Experts et langues
-            ExperttypeSeeder::class,
-            LangueSeeder::class,
-            
-            // Système
-            JourSeeder::class,
-            
-            // Statuts divers
-            MembrestatutSeeder::class,
-            AccompagnementstatutSeeder::class,
-            PaiementstatutSeeder::class,
-            
-            // Entreprises et secteurs
-            EntreprisetypeSeeder::class,
-            SecteurSeeder::class,
-            
-            // Documents et pièces
-            DocumenttypeSeeder::class,
-            PiecetypeSeeder::class,
-            OperationtypeSeeder::class,
-            ContacttypeSeeder::class,
-            
-            // Interface et contenu
-            SlidertypeSeeder::class,
+            AccompagnementniveausSeeder::class,
+            AccompagnementstatutsSeeder::class,
+            AccompagnementtypesSeeder::class,
+        ]);
+
+        // Contenu et communication
+        $this->call([
+            ActualitetypesSeeder::class,
+            AlertetypesSeeder::class,
+            NewslettertypesSeeder::class,
+            ForumtypesSeeder::class,
+        ]);
+
+        // Ressources et finances
+        $this->call([
+            BonstatutsSeeder::class,
+            BontypesSeeder::class,
+            CreditstatutsSeeder::class,
+            PaiementstatutsSeeder::class,
+            RessourcetypesSeeder::class,
+            OperationtypesSeeder::class,
+        ]);
+
+        // Diagnostics
+        $this->call([
+            DiagnosticmoduletypesSeeder::class,
+            DiagnosticquestiontypesSeeder::class,
+            DiagnosticstatutsSeeder::class,
+            DiagnostictypesSeeder::class,
+        ]);
+
+        // Entreprises et membres
+        $this->call([
+            EntrepriseprofilsSeeder::class,
+            EntreprisetypesSeeder::class,
+            MembrecategoriesSeeder::class,
+            MembrestatutsSeeder::class,
+            MembretypesSeeder::class,
+            CotisationtypesSeeder::class,
+        ]);
+
+        // Experts et conseillers
+        $this->call([
+            ExperttypesSeeder::class,
+            ExpertvalidesSeeder::class,
+            ConseillertypesSeeder::class,
+            ConseillervalidesSeeder::class,
+        ]);
+
+        // Formations et événements
+        $this->call([
+            FormationtypesSeeder::class,
+            FormationniveausSeeder::class,
+            EvenementtypesSeeder::class,
+            EvenementinscriptiontypesSeeder::class,
+            ParticipantstatutsSeeder::class,
+        ]);
+
+        // Espaces et prestations
+        $this->call([
+            EspacetypesSeeder::class,
+            PrestationtypesSeeder::class,
+            PrestationrealiseestatutsSeeder::class,
+            ReservationstatutsSeeder::class,
+        ]);
+
+        // Documents et pièces
+        $this->call([
+            DocumenttypesSeeder::class,
+            PiecetypesSeeder::class,
+        ]);
+
+        // Système et configuration
+        $this->call([
+            SecteursSeeder::class,
+            JoursSeeder::class,
+            SlidertypesSeeder::class,
+            OffretypesSeeder::class,
+            PartenairetypesSeeder::class,
+        ]);
+
+        // Propositions et recommandations
+        $this->call([
+            PropositionstatutsSeeder::class,
+            RecommandationoriginesSeeder::class,
+            SuivistatutsSeeder::class,
         ]);
     }
 }

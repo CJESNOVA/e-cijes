@@ -3,27 +3,29 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\Propositionstatut;
+use Illuminate\Support\Facades\DB;
 
 class PropositionstatutsSeeder extends Seeder
 {
     /**
      * Run the database seeds.
+     *
+     * @return void
      */
     public function run(): void
     {
-        $statuts = [
-            ['titre' => 'En attente de validation', 'etat' => true],
-            ['titre' => 'Validé', 'etat' => true],
-            ['titre' => 'Rejeté', 'etat' => true],
-            ['titre' => 'En cours', 'etat' => true],
-            ['titre' => 'Archivé', 'etat' => true],
+        $data = [
+            ['id' => 1, 'titre' => 'En attente', 'etat' => 1, 'created_at' => '2026-01-21 22:23:24', 'updated_at' => '2026-01-21 22:23:24'],
+            ['id' => 2, 'titre' => 'Acceptée', 'etat' => 1, 'created_at' => '2026-01-21 22:23:24', 'updated_at' => '2026-01-21 22:23:24'],
+            ['id' => 3, 'titre' => 'Refusée', 'etat' => 1, 'created_at' => '2026-01-21 22:23:24', 'updated_at' => '2026-01-21 22:23:24'],
+            ['id' => 4, 'titre' => 'Payée', 'etat' => 1, 'created_at' => '2026-01-21 22:23:24', 'updated_at' => '2026-01-21 22:23:24'],
         ];
 
-        foreach ($statuts as $statut) {
-            Propositionstatut::create($statut);
+        foreach ($data as $item) {
+            DB::table('propositionstatuts')->updateOrInsert(
+                ['id' => $item['id']],
+                $item
+            );
         }
-
-        $this->command->info('Statuts des propositions créés avec succès.');
     }
 }
