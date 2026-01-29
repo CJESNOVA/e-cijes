@@ -181,7 +181,7 @@ use Illuminate\Http\Request;
 */
 
 // Main
-Route::screen('/main', PlatformScreen::class)
+Route::screen('/main', \App\Orchid\Screens\Main\MainScreen::class)
     ->name('platform.main');
 
 // Platform > Profile

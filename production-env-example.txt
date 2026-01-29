@@ -1,0 +1,18 @@
+# À ajouter dans votre .env de production
+
+# Configuration des sessions
+SESSION_DRIVER=file
+SESSION_LIFETIME=120
+SESSION_ENCRYPT=false
+SESSION_PATH=/
+SESSION_DOMAIN=null
+
+# Configuration de l'application
+APP_URL=https://votredomaine.com
+APP_ENV=production
+
+# Configuration des cookies
+COOKIE_PATH=/
+COOKIE_DOMAIN=null
+COOKIE_SECURE=true
+COOKIE_SAMESITE=lax
