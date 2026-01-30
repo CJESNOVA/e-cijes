@@ -81,7 +81,7 @@
                     <div class="col-lg-6">
                         <div class="about-image-wrapper mr-60 lg-mr-30 md-mr-0 direction-rtl">
                             <div class="about-image overlay-anim2 img-anim-left wow fadeInLeft">
-                                <img src="{{ env('SUPABASE_BUCKET_URL') . '/' . $pagelibre->vignette }}" alt="{{ $pagelibre->titre }}" />
+                                <img src="{{ env('SUPABASE_BUCKET_URL') . '/' . $pagelibre->vignette }}" alt="{{ $pagelibre->titre }}" style="width: 100%;" />
                             </div>
                             <div class="shape d-none d-xxl-block"><img src="{{ env('APP_URL') }}site/assets/images/about/home4-dot-shape.png" alt="..."></div>
                             <!--<div class="about-single-card direction-ltr">
@@ -117,7 +117,7 @@
                             <div class="title-area two">
                                 <div class="sub-title"><span><i class="asterisk"></i></span>{{ __('site_sigle') }}</div>
                                 <h2 class="sec-title">{{ $pagelibre->titre }}</h2>
-                                <p class="sec-text text-gray" style="text-align: justify;">{!! $pagelibre->description !!}</p>
+                                <p class="sec-text text-gray" style="text-align: justify;">{!! $pagelibre->resume !!}</p>
                             </div>
                             <!--<div class="feature-list">
                                 <div class="feature-item">
