@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\DiagnosticController;
+use App\Http\Controllers\Api\DiagnosticStructureController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -30,4 +31,22 @@ Route::prefix('v1')->group(function () {
             ->name('api.diagnostic.complet');
     });
     
-});
+    // Routes pour la structure des diagnostics (publiques)
+    Route::prefix('diagnostic-structure')->group(function () {
+        // Structure complète : modules -> questions -> réponses
+        Route::get('/complete', [DiagnosticStructureController::class, 'getStructureComplete'])
+            ->name('api.diagnostic.structure.complete');
+            
+        // Structure par module spécifique
+        Route::get('/module/{moduleId}', [DiagnosticStructureController::class, 'getStructureByModule'])
+            ->name('api.diagnostic.structure.module');
+            
+        // Liste des modules uniquement
+        Route::get('/modules', [DiagnosticStructureController::class, 'getModulesList'])
+            ->name('api.diagnostic.structure.modules');
+            
+        // Questions d'un module spécifique
+        Route::get('/module/{moduleId}/questions', [DiagnosticStructureController::class, 'getQuestionsByModule'])
+            ->name('api.diagnostic.structure.questions');
+    });
+});    

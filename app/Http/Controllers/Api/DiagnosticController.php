@@ -108,7 +108,7 @@ class DiagnosticController extends Controller
                     $entrepriseData['diagnostics'] = $this->formatDiagnostics($diagnosticsEntreprise);
                 }
 
-                $data['membre']['entreprises'][] = $entrepriseData;
+                //$data['membre']['entreprises'][] = $entrepriseData;
             }
 
             return response()->json([
