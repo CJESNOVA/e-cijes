@@ -3,70 +3,151 @@
 namespace App\Orchid\Screens\Diagnosticreponse;
 
 use App\Models\Diagnosticreponse;
+use App\Models\Diagnosticquestion;
 use App\Models\Langue;
-
 use Orchid\Screen\Screen;
-use Illuminate\Http\Request;
+use Orchid\Screen\Actions\Link;
+use Orchid\Screen\Layouts\Table;
+use Orchid\Screen\TD;
 use Orchid\Support\Facades\Layout;
 use Orchid\Support\Facades\Alert;
-use Orchid\Screen\Actions\Link;
+use Illuminate\Http\Request;
 
 class ListScreen extends Screen
 {
+    /**
+     * Query data.
+     *
+     * @return array
+     */
     public function query(): iterable
     {
-        // 1. Charger toutes les actualités locales
-        $diagnosticreponses = Diagnosticreponse::all();
-
-        // 3. Charger toutes les langues depuis Supabase
-        $langueModel = new Langue();
-        $langues = collect($langueModel->all()); // Collection d'objets
-
-        // 4. Associer à chaque actualité sa langue
-        $diagnosticreponses->transform(function ($diagnosticreponse) use ($langues) {
-            $diagnosticreponse->langue = $langues->firstWhere('id', $diagnosticreponse->langue_id);
-            return $diagnosticreponse;
-        });
-
         return [
-            'diagnosticreponses' => $diagnosticreponses,
+            'diagnosticreponses' => Diagnosticreponse::with(['diagnosticquestion', 'langue'])
+                ->orderBy('position', 'asc')
+                ->paginate(),
         ];
     }
 
+    /**
+     * Display header name.
+     *
+     * @return string|null
+     */
     public function name(): ?string
     {
-        return 'Liste des réponses des diagnostics';
-    }
-
-    public function description(): ?string
-    {
-        return 'Toutes les réponses des diagnostics enregistrées';
+        return 'Réponses de Diagnostics';
     }
 
     /**
-     * Barre d'action (boutons en haut)
+     * Display header description.
+     *
+     * @return string|null
+     */
+    public function description(): ?string
+    {
+        return 'Gestion des réponses de diagnostics';
+    }
+
+    /**
+     * Button commands.
+     *
+     * @return \Orchid\Screen\Action[]
      */
     public function commandBar(): iterable
     {
         return [
-            Link::make('Créer une réponse du diagnostic')
-                ->icon('plus')
-                ->route('platform.diagnosticreponse.edit'),
+            Link::make('Ajouter une réponse')
+                ->icon('bs.plus-circle')
+                ->route('platform.diagnosticreponse.create'),
         ];
     }
 
+    /**
+     * Views.
+     *
+     * @return \Orchid\Screen\Layout[]|string[]
+     */
     public function layout(): iterable
     {
         return [
-            Layout::view('screens.diagnosticreponse.list'), 
+            Layout::table('diagnosticreponses', [
+                TD::make('id', 'ID')
+                    ->width('80')
+                    ->sort(),
+                    
+                TD::make('titre', 'Titre')
+                    ->width('200')
+                    ->sort()
+                    ->filter(TD::FILTER_TEXT)
+                    ->render(fn (Diagnosticreponse $reponse) => 
+                        Link::make($reponse->titre)
+                            ->route('platform.diagnosticreponse.edit', $reponse)
+                    ),
+                    
+                TD::make('explication', 'Explication')
+                    ->width('250')
+                    ->render(fn (Diagnosticreponse $reponse) => 
+                        $reponse->explication 
+                            ? substr(strip_tags($reponse->explication), 0, 80) . '...' 
+                            : '—'
+                    ),
+                    
+                TD::make('diagnosticquestion.titre', 'Question')
+                    ->width('200')
+                    ->sort()
+                    ->filter(TD::FILTER_TEXT),
+                    
+                TD::make('score', 'Score')
+                    ->width('80')
+                    ->alignCenter()
+                    ->sort(),
+                    
+                TD::make('position', 'Position')
+                    ->width('80')
+                    ->alignCenter()
+                    ->sort(),
+                    
+                TD::make('langue.titre', 'Langue')
+                    ->width('100')
+                    ->sort(),
+                    
+                TD::make('spotlight', 'Spotlight')
+                    ->width('100')
+                    ->alignCenter()
+                    ->render(fn (Diagnosticreponse $reponse) => 
+                        $reponse->spotlight ? '✅' : '❌'
+                    ),
+                    
+                TD::make('etat', 'État')
+                    ->width('100')
+                    ->alignCenter()
+                    ->render(fn (Diagnosticreponse $reponse) => 
+                        $reponse->etat ? '✅' : '❌'
+                    ),
+                    
+                TD::make('created_at', 'Créé le')
+                    ->width('150')
+                    ->dateTime()
+                    ->sort(),
+                    
+                TD::make('Actions')
+                    ->width('100')
+                    ->alignCenter()
+                    ->render(fn (Diagnosticreponse $reponse) => 
+                        Link::make('Voir')
+                            ->icon('bs.eye')
+                            ->route('platform.diagnosticreponse.show', $reponse)
+                    ),
+            ]),
         ];
     }
 
     public function toggleEtat(Request $request)
     {
-        $diagnosticreponse = Diagnosticreponse::findOrFail($request->input('id'));
-        $diagnosticreponse->etat = !$diagnosticreponse->etat;
-        $diagnosticreponse->save();
+        $reponse = Diagnosticreponse::findOrFail($request->input('id'));
+        $reponse->etat = !$reponse->etat;
+        $reponse->save();
 
         Alert::info("État modifié.");
         return redirect()->back();
@@ -74,9 +155,9 @@ class ListScreen extends Screen
 
     public function toggleSpotlight(Request $request)
     {
-        $diagnosticreponse = Diagnosticreponse::findOrFail($request->input('id'));
-        $diagnosticreponse->spotlight = !$diagnosticreponse->spotlight;
-        $diagnosticreponse->save();
+        $reponse = Diagnosticreponse::findOrFail($request->input('id'));
+        $reponse->spotlight = !$reponse->spotlight;
+        $reponse->save();
 
         Alert::info("Spotlight modifié.");
         return redirect()->back();
@@ -84,10 +165,10 @@ class ListScreen extends Screen
 
     public function delete(Request $request)
     {
-        $diagnosticreponse = Diagnosticreponse::findOrFail($request->input('diagnosticreponse'));
-        $diagnosticreponse->delete();
+        $reponse = Diagnosticreponse::findOrFail($request->input('diagnosticreponse'));
+        $reponse->delete();
 
-        Alert::info("Réponse du diagnostic supprimée.");
+        Alert::info("Réponse de diagnostic supprimée.");
         return redirect()->back();
     }
 }

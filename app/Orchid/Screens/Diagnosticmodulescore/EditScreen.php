@@ -119,6 +119,13 @@ class EditScreen extends Screen
                 Input::make('diagnosticmodulescore.niveau')
                     ->title('Niveau')
                     ->placeholder('Saisir le niveau'),
+
+                Select::make('diagnosticmodulescore.diagnosticblocstatut_id')
+                    ->title('Statut de bloc')
+                    ->placeholder('Choisir le statut de bloc')
+                    ->fromModel(\App\Models\Diagnosticblocstatut::class, 'titre')
+                    ->empty('Aucun', '0')
+                    ->help('Statut du bloc pour ce score'),
             ])
         ];
     }

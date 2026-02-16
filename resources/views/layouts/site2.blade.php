@@ -140,7 +140,8 @@ use Illuminate\Support\Facades\DB;
 <a href="{{ env('APP_URL2') }}/login" 
    class="theme-btn bg-theme" 
    target="_blank" 
-   rel="noopener noreferrer">
+   rel="noopener noreferrer"
+   style="lab: 55.0481% -49.9246 15.93;">
     <span class="link-effect">
         <span class="effect-1">
             <i class="fa-solid fa-right-to-bracket"></i> {{-- icône login --}}
@@ -160,7 +161,10 @@ use Illuminate\Support\Facades\DB;
                                         <span class="icon"><i class="fa-solid fa-magnifying-glass"></i></span>
                                     </button>
 
-                                    <a href="{{ env('APP_URL2') }}/login" class="theme-btn bg-theme" target="_blank">
+                                    <a href="{{ env('APP_URL2') }}/login" 
+                                       class="theme-btn bg-theme" 
+                                       target="_blank"
+                                       style="lab: 55.0481% -49.9246 15.93;">
                                         <span class="link-effect">
                                             <span class="effect-1">{{ __('site_connexion') }}</span>
                                             <span class="effect-1">{{ __('site_connexion') }}</span>
@@ -257,7 +261,8 @@ use Illuminate\Support\Facades\DB;
 <a href="{{ env('APP_URL2') }}/login" 
    class="theme-btn bg-theme" 
    target="_blank" 
-   rel="noopener noreferrer">
+   rel="noopener noreferrer"
+   style="lab: 55.0481% -49.9246 15.93;">
     <span class="link-effect">
         <span class="effect-1">
             <i class="fa-solid fa-right-to-bracket"></i> {{-- icône login --}}

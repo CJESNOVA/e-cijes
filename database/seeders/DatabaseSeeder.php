@@ -43,7 +43,10 @@ class DatabaseSeeder extends Seeder
             DiagnosticmoduletypesSeeder::class,
             DiagnosticquestiontypesSeeder::class,
             DiagnosticstatutsSeeder::class,
+            DiagnosticstatutreglesSeeder::class,
+            DiagnosticorientationsSeeder::class,
             DiagnostictypesSeeder::class,
+            DiagnosticBlocStatutSeeder::class,
         ]);
 
         // Entreprises et membres

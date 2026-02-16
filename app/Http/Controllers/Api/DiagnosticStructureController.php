@@ -37,6 +37,7 @@ class DiagnosticStructureController extends Controller
                     'description' => $module->description ?? null,
                     'ordre' => $module->position,
                     'diagnosticmoduletype_id' => $module->diagnosticmoduletype_id,
+                    'entrepriseprofil_id' => $module->entrepriseprofil_id,
                     'questions' => []
                 ];
 
@@ -57,6 +58,7 @@ class DiagnosticStructureController extends Controller
                         $reponseData = [
                             'id' => $reponse->id,
                             'titre' => $reponse->titre,
+                            'explication' => $reponse->explication,
                             'description' => $reponse->description ?? null,
                             'score' => $reponse->score,
                             'ordre' => $reponse->position,
@@ -127,6 +129,7 @@ class DiagnosticStructureController extends Controller
                 'description' => $module->description ?? null,
                 'ordre' => $module->position,
                 'diagnosticmoduletype_id' => $module->diagnosticmoduletype_id,
+                'entrepriseprofil_id' => $module->entrepriseprofil_id,
                 'questions' => []
             ];
 
@@ -147,6 +150,7 @@ class DiagnosticStructureController extends Controller
                     $reponseData = [
                         'id' => $reponse->id,
                         'titre' => $reponse->titre,
+                        'explication' => $reponse->explication,
                         'description' => $reponse->description ?? null,
                         'score' => $reponse->score,
                         'ordre' => $reponse->position,
@@ -191,7 +195,7 @@ class DiagnosticStructureController extends Controller
             $modules = Diagnosticmodule::where('etat', 1)
                 ->where('diagnosticmoduletype_id', 1)
                 ->orderBy('position', 'asc')
-                ->get(['id', 'titre', 'description', 'position', 'diagnosticmoduletype_id']);
+                ->get(['id', 'titre', 'description', 'position', 'diagnosticmoduletype_id', 'entrepriseprofil_id']);
 
             return response()->json([
                 'success' => true,
@@ -237,20 +241,6 @@ class DiagnosticStructureController extends Controller
                     'titre' => $question->titre,
                     'description' => $question->description ?? null,
                     'ordre' => $question->position,
-                    'diagnosticmodule_id' => $question->diagnosticmodule_id,
-                    'diagnosticquestiontype_id' => $question->diagnosticquestiontype_id,
-                    'score_max' => $question->score_max ?? null,
-                    'obligatoire' => $question->obligatoire ?? false,
-                    'reponses_possibles' => $question->reponses->map(function($reponse) {
-                        return [
-                            'id' => $reponse->id,
-                            'titre' => $reponse->titre,
-                            'description' => $reponse->description ?? null,
-                            'score' => $reponse->score,
-                            'ordre' => $reponse->position,
-                            'diagnosticquestion_id' => $reponse->diagnosticquestion_id
-                        ];
-                    })
                 ];
 
                 $questionsData[] = $questionData;

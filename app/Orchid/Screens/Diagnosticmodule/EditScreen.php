@@ -6,6 +6,7 @@ use Orchid\Screen\Screen;
 
 use App\Models\Diagnosticmodule;
 use App\Models\Diagnosticmoduletype;
+use App\Models\Entrepriseprofil;
 use App\Models\Pays;
 use App\Models\Langue;
 
@@ -15,6 +16,7 @@ use Orchid\Screen\Fields\DateTimer;
 use Orchid\Screen\Fields\TextArea;
 use Orchid\Screen\Fields\Select;
 use Orchid\Screen\Fields\Quill;
+use Orchid\Screen\Fields\CheckBox;
 use Orchid\Support\Facades\Layout;
 use Orchid\Screen\Actions\Button;
 use Orchid\Support\Facades\Alert;
@@ -36,7 +38,12 @@ class EditScreen extends Screen
     public function query(Diagnosticmodule $diagnosticmodule): array
     {
         return [
-            'diagnosticmodule' => $diagnosticmodule
+            'diagnosticmodule' => $diagnosticmodule,
+            'diagnosticmoduletypes' => Diagnosticmoduletype::where('etat', 1)->pluck('titre', 'id'),
+            'entrepriseprofils' => Entrepriseprofil::where('etat', 1)->pluck('titre', 'id'),
+            'modules' => Diagnosticmodule::where('etat', 1)
+                ->where('id', '!=', $diagnosticmodule->id ?? 0)
+                ->pluck('titre', 'id'),
         ];
     }
 
@@ -108,49 +115,59 @@ class EditScreen extends Screen
 
                 Input::make('diagnosticmodule.position')
                     ->title('Position')
-                    ->placeholder('Saisir la position'),
-
-                /*TextArea::make('diagnosticmodule.description')
-                    ->title('Description')
-                    ->placeholder('Saisir la description'),
-                    //->help('Spécifiez une description pour cette diagnosticmodule')*/
+                    ->type('number')
+                    ->placeholder('Saisir la position')
+                    ->required(),
 
                 Quill::make('diagnosticmodule.description')
                     ->title('Description')
-                    //->popover('Saisir la description')
                     ->placeholder('Saisir la description'),
-
-                Input::make('vignette')
-                    ->type('file')
-                    ->title('Vignette (image)')// ou PDF
-                    ->accept('image/*')//,.pdf
-                    ->help('Uploader un fichier image (1 seul fichier).'),// ou PDF
 
                 Select::make('diagnosticmodule.diagnosticmoduletype_id')
                     ->title('Type')
                     ->placeholder('Choisir le type')
-                    ->fromModel(\App\Models\Diagnosticmoduletype::class, 'titre')
-                    ->empty('Choisir', 0),
+                    ->fromModel(Diagnosticmoduletype::class, 'titre')
+                    ->empty('Choisir', 0)
+                    ->required(),
+
+                Select::make('diagnosticmodule.entrepriseprofil_id')
+                    ->title('Profil entreprise')
+                    ->placeholder('Choisir le profil')
+                    ->fromModel(Entrepriseprofil::class, 'titre')
+                    ->empty('Tous les profils', '0')
+                    ->help('Laissez vide si applicable à tous les profils'),
 
                 Select::make('diagnosticmodule.parent')
                     ->title('Module parent')
                     ->placeholder('Choisir le module')
-                    ->fromModel(\App\Models\Diagnosticmodule::class, 'titre')
-                    ->empty('Choisir', 0),
+                    ->fromModel(Diagnosticmodule::class, 'titre')
+                    ->empty('Aucun', '0')
+                    ->help('Module parent pour la hiérarchie'),
 
                 Select::make('diagnosticmodule.langue_id')
                     ->title('Langue')
                     ->placeholder('Choisir la langue')
-                    ->options($langueList)
-                    ->empty('Choisir', 0),
+                    ->fromModel(Langue::class, 'name')
+                    ->empty('Choisir', 0)
+                    ->required(),
 
                 Select::make('diagnosticmodule.pays_id')
                     ->title('Pays')
                     ->placeholder('Choisir le pays')
-                    ->options($paysList)
-                    ->empty('Choisir', 0),
+                    ->fromModel(Pays::class, 'name')
+                    ->empty('Choisir', 0)
+                    ->required(),
 
+                Input::make('vignette')
+                    ->type('file')
+                    ->title('Vignette (image)')
+                    ->accept('image/*')
+                    ->help('Uploader un fichier image (1 seul fichier).'),
 
+                CheckBox::make('diagnosticmodule.est_bloquant')
+                    ->title('Module bloquant')
+                    ->help('Si coché, ce module bloquera la progression du diagnostic')
+                    ->sendTrueOrFalse(),
             ])
         ];
     }

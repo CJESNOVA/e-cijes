@@ -4,68 +4,147 @@ namespace App\Orchid\Screens\Diagnosticmodule;
 
 use App\Models\Diagnosticmodule;
 use App\Models\Diagnosticmoduletype;
-use App\Models\Pays;
+use App\Models\Entrepriseprofil;
 use App\Models\Langue;
-
+use App\Models\Pays;
 use Orchid\Screen\Screen;
-use Illuminate\Http\Request;
+use Orchid\Screen\Actions\Link;
+use Orchid\Screen\Layouts\Table;
+use Orchid\Screen\TD;
 use Orchid\Support\Facades\Layout;
 use Orchid\Support\Facades\Alert;
-use Orchid\Screen\Actions\Link;
+use Illuminate\Http\Request;
 
 class ListScreen extends Screen
 {
+    /**
+     * Query data.
+     *
+     * @return array
+     */
     public function query(): iterable
     {
-        // 1. Charger toutes les actualités locales
-        $diagnosticmodules = Diagnosticmodule::all();
-
-        // 2. Charger tous les pays depuis Supabase
-        $paysModel = new Pays();
-        $payss = collect($paysModel->all()); // Collection d'objets
-
-        // 3. Charger toutes les langues depuis Supabase
-        $langueModel = new Langue();
-        $langues = collect($langueModel->all()); // Collection d'objets
-
-        // 4. Associer à chaque actualité son pays et sa langue
-        $diagnosticmodules->transform(function ($diagnosticmodule) use ($payss, $langues) {
-            $diagnosticmodule->pays = $payss->firstWhere('id', $diagnosticmodule->pays_id);
-            $diagnosticmodule->langue = $langues->firstWhere('id', $diagnosticmodule->langue_id);
-            return $diagnosticmodule;
-        });
-
         return [
-            'diagnosticmodules' => $diagnosticmodules,
+            'diagnosticmodules' => Diagnosticmodule::with(['diagnosticmoduletype', 'entrepriseprofil', 'langue', 'pays'])
+                ->orderBy('position', 'asc')
+                ->paginate(),
         ];
     }
 
+    /**
+     * Display header name.
+     *
+     * @return string|null
+     */
     public function name(): ?string
     {
-        return 'Liste des modules des diagnostics';
-    }
-
-    public function description(): ?string
-    {
-        return 'Tous les modules des diagnostics enregistrés';
+        return 'Modules de Diagnostics';
     }
 
     /**
-     * Barre d'action (boutons en haut)
+     * Display header description.
+     *
+     * @return string|null
+     */
+    public function description(): ?string
+    {
+        return 'Gestion des modules de diagnostics';
+    }
+
+    /**
+     * Button commands.
+     *
+     * @return \Orchid\Screen\Action[]
      */
     public function commandBar(): iterable
     {
         return [
-            Link::make('Créer un module de diagnostic')
-                ->icon('plus')
-                ->route('platform.diagnosticmodule.edit'),
+            Link::make('Ajouter un module')
+                ->icon('bs.plus-circle')
+                ->route('platform.diagnosticmodule.create'),
         ];
     }
 
+    /**
+     * Views.
+     *
+     * @return \Orchid\Screen\Layout[]|string[]
+     */
     public function layout(): iterable
     {
         return [
-            Layout::view('screens.diagnosticmodule.list'), 
+            Layout::table('diagnosticmodules', [
+                TD::make('id', 'ID')
+                    ->width('100')
+                    ->sort(),
+                    
+                TD::make('titre', 'Titre')
+                    ->width('250')
+                    ->sort()
+                    ->filter(TD::FILTER_TEXT)
+                    ->render(fn (Diagnosticmodule $module) => 
+                        Link::make($module->titre)
+                            ->route('platform.diagnosticmodule.edit', $module)
+                    ),
+                    
+                TD::make('diagnosticmoduletype.titre', 'Type')
+                    ->width('150')
+                    ->sort()
+                    ->filter(TD::FILTER_TEXT),
+                    
+                TD::make('entrepriseprofil.titre', 'Profil entreprise')
+                    ->width('150')
+                    ->sort()
+                    ->filter(TD::FILTER_TEXT),
+                    
+                TD::make('position', 'Position')
+                    ->width('100')
+                    ->sort()
+                    ->alignCenter(),
+                    
+                TD::make('langue.titre', 'Langue')
+                    ->width('100')
+                    ->sort(),
+                    
+                TD::make('pays.titre', 'Pays')
+                    ->width('100')
+                    ->sort(),
+                    
+                TD::make('spotlight', 'Spotlight')
+                    ->width('100')
+                    ->alignCenter()
+                    ->render(fn (Diagnosticmodule $module) => 
+                        $module->spotlight ? '✅' : '❌'
+                    ),
+                    
+                TD::make('est_bloquant', 'Bloquant')
+                    ->width('100')
+                    ->alignCenter()
+                    ->render(fn (Diagnosticmodule $module) => 
+                        $module->est_bloquant ? '🔒' : '🔓'
+                    ),
+                    
+                TD::make('etat', 'État')
+                    ->width('100')
+                    ->alignCenter()
+                    ->render(fn (Diagnosticmodule $module) => 
+                        $module->etat ? '✅' : '❌'
+                    ),
+                    
+                TD::make('created_at', 'Créé le')
+                    ->width('150')
+                    ->dateTime()
+                    ->sort(),
+                    
+                TD::make('Actions')
+                    ->width('100')
+                    ->alignCenter()
+                    ->render(fn (Diagnosticmodule $module) => 
+                        Link::make('Voir')
+                            ->icon('bs.eye')
+                            ->route('platform.diagnosticmodule.show', $module)
+                    ),
+            ]),
         ];
     }
 

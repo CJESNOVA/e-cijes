@@ -25,6 +25,7 @@ class Formation extends Model
         'formationniveau_id',
         'formationtype_id',
         'pays_id',
+        'course_supabase_id',
         'spotlight',
         'etat',
     ];
@@ -47,6 +48,13 @@ class Formation extends Model
     public function pays()
     {
         return $this->belongsTo(Pays::class);
+    }
+
+    public function course_supabase()
+    {
+        // La relation sera active quand le modèle CoursesSupabase sera créé
+        // return $this->belongsTo(CoursesSupabase::class);
+        return null;
     }
 
 }

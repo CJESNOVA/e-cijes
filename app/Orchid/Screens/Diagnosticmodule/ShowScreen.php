@@ -3,6 +3,8 @@
 namespace App\Orchid\Screens\Diagnosticmodule;
 
 use App\Models\Diagnosticmodule;
+use App\Models\Diagnosticmoduletype;
+use App\Models\Entrepriseprofil;
 use App\Models\Pays;
 use App\Models\Langue;
 use Illuminate\Support\Facades\Storage;
@@ -10,13 +12,14 @@ use Illuminate\Support\Facades\Storage;
 use Orchid\Screen\Screen;
 use Orchid\Support\Facades\Layout;
 use Orchid\Screen\Sight;
+use Orchid\Screen\Actions\Link;
 use Illuminate\Support\HtmlString;
 
 class ShowScreen extends Screen
 {
     public function query(Diagnosticmodule $diagnosticmodule): iterable
     {
-        $diagnosticmodule->load(['diagnosticmoduletype']); 
+        $diagnosticmodule->load(['diagnosticmoduletype', 'entrepriseprofil']); 
 
         // Charger les pays et langues depuis Supabase
         $paysList = collect((new Pays())->all())->keyBy('id');
@@ -59,10 +62,14 @@ class ShowScreen extends Screen
                     return "<img src='" . Storage::disk('public')->url($diagnosticmodule->vignette) . "' width='80'>";
                 }),
                 Sight::make('diagnosticmoduletype.titre', 'Type'),
+                Sight::make('entrepriseprofil.titre', 'Profil entreprise')->render(function ($diagnosticmodule) {
+                    return $diagnosticmodule->entrepriseprofil ? $diagnosticmodule->entrepriseprofil->titre : 'Tous les profils';
+                }),
                 Sight::make('moduleparent.titre', 'Module parent'),
                 Sight::make('langue_nom', 'Langue'),
                 Sight::make('pays_nom', 'Pays'),
                 Sight::make('spotlight', 'Spotlight')->render(fn($diagnosticmodule) => $diagnosticmodule->spotlight ? '✅ Actif' : '❌ Inactif'),
+                Sight::make('est_bloquant', 'Bloquant')->render(fn($diagnosticmodule) => $diagnosticmodule->est_bloquant ? '🔒 Oui' : '🔓 Non'),
                 Sight::make('etat', 'État')->render(fn($diagnosticmodule) => $diagnosticmodule->etat ? '✅ Actif' : '❌ Inactif'),
                 Sight::make('created_at', 'Créé le'),
                 Sight::make('updated_at', 'Modifié le'),

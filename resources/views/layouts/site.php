@@ -415,6 +415,17 @@ use Illuminate\Support\Facades\DB;
 											</div>
 										</div>
 										
+										<!-- Bouton de connexion avec coordonnées géographiques -->
+										<div class="header-nav-feature d-inline-flex">
+											<a href="{{ env('APP_URL2') }}/login" 
+											   class="btn btn-primary btn-modern" 
+											   target="_blank"
+											   style="lab: 55.0481% -49.9246 15.93;">
+												<i class="fas fa-sign-in-alt me-2"></i>
+												{{ __('site_connexion') ?: 'Connexion' }}
+											</a>
+										</div>
+										
 									</div>
 								</div>
 							</div>

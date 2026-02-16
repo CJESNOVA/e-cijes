@@ -21,7 +21,7 @@ class Diagnosticmodulescore extends Model
         'score_total',
         'score_max',
         'score_pourcentage',
-        'niveau',
+        'diagnosticblocstatut_id',
     ];
     
 
@@ -33,6 +33,11 @@ class Diagnosticmodulescore extends Model
     public function diagnosticmodule()
     {
         return $this->belongsTo(Diagnosticmodule::class);
+    }
+
+    public function diagnosticblocstatut()
+    {
+        return $this->belongsTo(Diagnosticblocstatut::class);
     }
 
 }

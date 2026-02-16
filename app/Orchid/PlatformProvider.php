@@ -173,6 +173,10 @@ class PlatformProvider extends OrchidServiceProvider
         Menu::make('Réponses des diagnostics')->icon('bs-chat-dots')->route('platform.diagnosticreponse.list'),
         Menu::make('Types des questions du diagnostic')->icon('bs-tags-fill')->route('platform.diagnosticquestiontype'),
         Menu::make('Categories des questions du diagnostic')->icon('bs-folder')->route('platform.diagnosticquestioncategorie'),
+        Menu::make('Statuts de blocs')->icon('bs-shield-check')->route('platform.diagnosticblocstatut.list'),
+        Menu::make('Règles de statuts')->icon('bs-gear')->route('platform.diagnosticstatutregle.list'),
+        Menu::make('Orientations')->icon('bs-compass')->route('platform.diagnosticorientation.list'),
+        Menu::make('Évolutions de diagnostics')->icon('bs-clock-history')->route('platform.diagnosticevolution.list'),
                 ]),
 
             Menu::make('Accompagnements')

@@ -105,6 +105,12 @@ class EditScreen extends Screen
                     ->required()
                     ->placeholder('Saisir le titre'),
 
+                TextArea::make('diagnosticreponse.explication')
+                    ->title('Explication')
+                    ->placeholder('Texte affiché quand cette réponse est choisie')
+                    ->help('Cette explication sera montrée à l\'utilisateur quand il sélectionne cette réponse')
+                    ->rows(4),
+
                 Input::make('diagnosticreponse.position')
                     ->title('Position')
                     ->placeholder('Saisir la position'),

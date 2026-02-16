@@ -16,4 +16,14 @@ class Diagnosticstatut extends Model
         'titre',
         'etat',
     ];
+
+    public function diagnosticstatutregles()
+    {
+        return $this->hasMany(Diagnosticstatutregle::class);
+    }
+
+    public function diagnosticorientations()
+    {
+        return $this->hasMany(Diagnosticorientation::class);
+    }
 }

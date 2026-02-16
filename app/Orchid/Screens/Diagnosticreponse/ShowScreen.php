@@ -43,10 +43,11 @@ class ShowScreen extends Screen
         return [
             Layout::legend('diagnosticreponse', [
                 Sight::make('titre', 'Titre'),
-                Sight::make('position', 'Position'),
-                Sight::make('score', 'Score')->render(function ($diagnosticreponse) {
-                    return new HtmlString($diagnosticreponse->score); // ✅ Affiche HTML sans échapper
+                Sight::make('explication', 'Explication')->render(function ($diagnosticreponse) {
+                    return $diagnosticreponse->explication ?? 'Aucune explication';
                 }),
+                Sight::make('position', 'Position'),
+                Sight::make('score', 'Score'),
                 Sight::make('langue_nom', 'Langue'),
                 Sight::make('diagnosticquestion.titre', 'Question du diagnostic'),
                 Sight::make('spotlight', 'Spotlight')->render(fn($diagnosticreponse) => $diagnosticreponse->spotlight ? '✅ Actif' : '❌ Inactif'),

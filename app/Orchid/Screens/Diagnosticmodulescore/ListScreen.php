@@ -7,20 +7,21 @@ use App\Models\Diagnostic;
 use App\Models\Diagnosticmodule;
 
 use Orchid\Screen\Screen;
-use Illuminate\Http\Request;
+use Orchid\Screen\Actions\Link;
+use Orchid\Screen\Layouts\Table;
+use Orchid\Screen\TD;
 use Orchid\Support\Facades\Layout;
 use Orchid\Support\Facades\Alert;
-use Orchid\Screen\Actions\Link;
+use Illuminate\Http\Request;
 
 class ListScreen extends Screen
 {
     public function query(): iterable
     {
-        // 1. Charger tous les scores de modules
-        $diagnosticmodulescores = Diagnosticmodulescore::with(['diagnostic', 'diagnosticmodule'])->get();
-
         return [
-            'diagnosticmodulescores' => $diagnosticmodulescores,
+            'diagnosticmodulescores' => Diagnosticmodulescore::with(['diagnostic', 'diagnosticmodule', 'diagnosticblocstatut'])
+                ->orderBy('created_at', 'desc')
+                ->paginate(),
         ];
     }
 
@@ -49,7 +50,70 @@ class ListScreen extends Screen
     public function layout(): iterable
     {
         return [
-            Layout::view('screens.diagnosticmodulescore.list'), 
+            Layout::table('diagnosticmodulescores', [
+                TD::make('id', 'ID')
+                    ->width('80')
+                    ->sort(),
+                    
+                TD::make('diagnostic', 'Diagnostic')
+                    ->width('200')
+                    ->sort()
+                    ->filter(TD::FILTER_TEXT)
+                    ->render(fn (Diagnosticmodulescore $score) => 
+                        $score->diagnostic ? $score->diagnostic->getNomCompletAttribute() : '—'
+                    ),
+                    
+                TD::make('diagnosticmodule.titre', 'Module')
+                    ->width('200')
+                    ->sort()
+                    ->filter(TD::FILTER_TEXT),
+                    
+                TD::make('score_total', 'Score total')
+                    ->width('100')
+                    ->alignCenter()
+                    ->sort(),
+                    
+                TD::make('score_max', 'Score max')
+                    ->width('100')
+                    ->alignCenter()
+                    ->sort(),
+                    
+                TD::make('score_pourcentage', 'Score %')
+                    ->width('100')
+                    ->alignCenter()
+                    ->render(fn (Diagnosticmodulescore $score) => 
+                        $score->score_pourcentage ? $score->score_pourcentage . '%' : '—'
+                    ),
+                    
+                TD::make('niveau', 'Niveau')
+                    ->width('100')
+                    ->alignCenter()
+                    ->sort(),
+                    
+                TD::make('diagnosticblocstatut.titre', 'Statut de bloc')
+                    ->width('150')
+                    ->sort()
+                    ->filter(TD::FILTER_TEXT)
+                    ->render(fn (Diagnosticmodulescore $score) => 
+                        $score->diagnosticblocstatut ? $score->diagnosticblocstatut->titre : '—'
+                    ),
+                    
+                TD::make('created_at', 'Créé le')
+                    ->width('150')
+                    ->render(fn (Diagnosticmodulescore $score) => 
+                        $score->created_at ? $score->created_at->format('d/m/Y H:i') : '—'
+                    )
+                    ->sort(),
+                    
+                TD::make('Actions')
+                    ->width('100')
+                    ->alignCenter()
+                    ->render(fn (Diagnosticmodulescore $score) => 
+                        Link::make('Voir')
+                            ->icon('bs.eye')
+                            ->route('platform.diagnosticmodulescore.show', $score)
+                    ),
+            ]),
         ];
     }
 

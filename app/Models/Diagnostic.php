@@ -24,6 +24,7 @@ class Diagnostic extends Model
         'accompagnement_id',
         'diagnostictype_id',
         'diagnosticstatut_id',
+        'entrepriseprofil_id',
         'membre_id',
         'entreprise_id',
         'spotlight',
@@ -53,6 +54,11 @@ class Diagnostic extends Model
     public function entreprise()
     {
         return $this->belongsTo(Entreprise::class);
+    }
+
+    public function entrepriseprofil()
+    {
+        return $this->belongsTo(Entrepriseprofil::class);
     }
 
     public function getNomCompletAttribute(): string

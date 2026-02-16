@@ -17,6 +17,7 @@ class Diagnosticreponse extends Model
      */
     protected $fillable = [
         'titre',
+        'explication',
         'position',
         'score',
         'langue_id',

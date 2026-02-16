@@ -143,6 +143,9 @@ use App\Models\Diagnosticmodule;
 use App\Models\Diagnosticquestion;
 use App\Models\Diagnosticreponse;
 use App\Models\Diagnosticresultat;
+use App\Models\Diagnosticblocstatut;
+use App\Models\Diagnosticstatutregle;
+use App\Models\Diagnosticorientation;
 use App\Models\Conseiller;
 use App\Models\Conseillerentreprise;
 use App\Models\Conseillerprescription;
@@ -1937,6 +1940,11 @@ Route::post('diagnostics/toggleEtat', [App\Orchid\Screens\Diagnostic\ListScreen:
 Route::post('diagnostics/delete', [App\Orchid\Screens\Diagnostic\ListScreen::class, 'delete'])->name('platform.diagnostic.delete');
 
 //diagnosticmodule//////////////////////
+Route::screen('diagnosticmodule/create', App\Orchid\Screens\Diagnosticmodule\EditScreen::class)->name('platform.diagnosticmodule.create')
+    ->breadcrumbs(function (Trail $trail) {
+        $trail->parent('platform.diagnosticmodule.list')
+            ->push('Créer un module du diagnostic', route('platform.diagnosticmodule.create'));
+    });
 Route::screen('diagnosticmodule/{diagnosticmodule?}', App\Orchid\Screens\Diagnosticmodule\EditScreen::class)->name('platform.diagnosticmodule.edit')
     ->breadcrumbs(function (Trail $trail, $diagnosticmodule = null) {
         $trail->parent('platform.diagnosticmodule.list');
@@ -2056,6 +2064,11 @@ Route::post('diagnosticquestions/toggleEtat', [App\Orchid\Screens\Diagnosticques
 Route::post('diagnosticquestions/delete', [App\Orchid\Screens\Diagnosticquestion\ListScreen::class, 'delete'])->name('platform.diagnosticquestion.delete');
 
 //diagnosticreponse//////////////////////
+Route::screen('diagnosticreponse/create', App\Orchid\Screens\Diagnosticreponse\EditScreen::class)->name('platform.diagnosticreponse.create')
+    ->breadcrumbs(function (Trail $trail) {
+        $trail->parent('platform.diagnosticreponse.list')
+            ->push('Créer une réponse du diagnostic', route('platform.diagnosticreponse.create'));
+    });
 Route::screen('diagnosticreponse/{diagnosticreponse?}', App\Orchid\Screens\Diagnosticreponse\EditScreen::class)->name('platform.diagnosticreponse.edit')
     ->breadcrumbs(function (Trail $trail, $diagnosticreponse = null) {
         $trail->parent('platform.diagnosticreponse.list');
@@ -2078,6 +2091,87 @@ Route::screen('diagnosticreponses/{diagnosticreponse}/show', App\Orchid\Screens\
 Route::post('diagnosticreponses/toggleSpotlight', [App\Orchid\Screens\Diagnosticreponse\ListScreen::class, 'toggleSpotlight'])->name('platform.diagnosticreponse.toggleSpotlight');
 Route::post('diagnosticreponses/toggleEtat', [App\Orchid\Screens\Diagnosticreponse\ListScreen::class, 'toggleEtat'])->name('platform.diagnosticreponse.toggleEtat');
 Route::post('diagnosticreponses/delete', [App\Orchid\Screens\Diagnosticreponse\ListScreen::class, 'delete'])->name('platform.diagnosticreponse.delete');
+
+//diagnosticblocstatut//////////////////////
+Route::screen('diagnosticblocstatut/create', App\Orchid\Screens\Diagnosticblocstatut\EditScreen::class)->name('platform.diagnosticblocstatut.create')
+    ->breadcrumbs(function (Trail $trail) {
+        $trail->parent('platform.diagnosticblocstatut.list')
+            ->push('Créer un statut de bloc', route('platform.diagnosticblocstatut.create'));
+    });
+Route::screen('diagnosticblocstatut/{diagnosticblocstatut?}', App\Orchid\Screens\Diagnosticblocstatut\EditScreen::class)->name('platform.diagnosticblocstatut.edit')
+    ->breadcrumbs(function (Trail $trail, $diagnosticblocstatut = null) {
+        $trail->parent('platform.diagnosticblocstatut.list');
+        if ($diagnosticblocstatut && $diagnosticblocstatut->exists) {
+            $trail->push('Modifier le statut de bloc', route('platform.diagnosticblocstatut.edit', $diagnosticblocstatut));
+        } else {
+            $trail->push('Créer un statut de bloc', route('platform.diagnosticblocstatut.edit'));
+        }
+    });
+Route::screen('diagnosticblocstatuts', App\Orchid\Screens\Diagnosticblocstatut\ListScreen::class)->name('platform.diagnosticblocstatut.list')
+    ->breadcrumbs(fn (Trail $trail) => $trail
+        ->parent('platform.index')
+        ->push('Statuts de blocs', route('platform.diagnosticblocstatut.list')));
+Route::screen('diagnosticblocstatuts/{diagnosticblocstatut}/show', App\Orchid\Screens\Diagnosticblocstatut\ShowScreen::class)->name('platform.diagnosticblocstatut.show')
+    ->breadcrumbs(function (Trail $trail, $diagnosticblocstatut) {
+        return $trail
+            ->parent('platform.diagnosticblocstatut.list') 
+            ->push('Détail du statut de bloc');
+    });
+Route::post('diagnosticblocstatuts/delete', [App\Orchid\Screens\Diagnosticblocstatut\ListScreen::class, 'delete'])->name('platform.diagnosticblocstatut.delete');
+
+//diagnosticstatutregle//////////////////////
+Route::screen('diagnosticstatutregle/create', App\Orchid\Screens\Diagnosticstatutregle\EditScreen::class)->name('platform.diagnosticstatutregle.create')
+    ->breadcrumbs(function (Trail $trail) {
+        $trail->parent('platform.diagnosticstatutregle.list')
+            ->push('Créer une règle de statut', route('platform.diagnosticstatutregle.create'));
+    });
+Route::screen('diagnosticstatutregle/{diagnosticstatutregle?}', App\Orchid\Screens\Diagnosticstatutregle\EditScreen::class)->name('platform.diagnosticstatutregle.edit')
+    ->breadcrumbs(function (Trail $trail, $diagnosticstatutregle = null) {
+        $trail->parent('platform.diagnosticstatutregle.list');
+        if ($diagnosticstatutregle && $diagnosticstatutregle->exists) {
+            $trail->push('Modifier la règle de statut', route('platform.diagnosticstatutregle.edit', $diagnosticstatutregle));
+        } else {
+            $trail->push('Créer une règle de statut', route('platform.diagnosticstatutregle.edit'));
+        }
+    });
+Route::screen('diagnosticstatutregles', App\Orchid\Screens\Diagnosticstatutregle\ListScreen::class)->name('platform.diagnosticstatutregle.list')
+    ->breadcrumbs(fn (Trail $trail) => $trail
+        ->parent('platform.index')
+        ->push('Règles de statuts', route('platform.diagnosticstatutregle.list')));
+Route::screen('diagnosticstatutregles/{diagnosticstatutregle}/show', App\Orchid\Screens\Diagnosticstatutregle\ShowScreen::class)->name('platform.diagnosticstatutregle.show')
+    ->breadcrumbs(function (Trail $trail, $diagnosticstatutregle) {
+        return $trail
+            ->parent('platform.diagnosticstatutregle.list') 
+            ->push('Détail de la règle de statut');
+    });
+Route::post('diagnosticstatutregles/delete', [App\Orchid\Screens\Diagnosticstatutregle\ListScreen::class, 'delete'])->name('platform.diagnosticstatutregle.delete');
+
+//diagnosticorientation//////////////////////
+Route::screen('diagnosticorientation/create', App\Orchid\Screens\Diagnosticorientation\EditScreen::class)->name('platform.diagnosticorientation.create')
+    ->breadcrumbs(function (Trail $trail) {
+        $trail->parent('platform.diagnosticorientation.list')
+            ->push('Créer une orientation', route('platform.diagnosticorientation.create'));
+    });
+Route::screen('diagnosticorientation/{diagnosticorientation?}', App\Orchid\Screens\Diagnosticorientation\EditScreen::class)->name('platform.diagnosticorientation.edit')
+    ->breadcrumbs(function (Trail $trail, $diagnosticorientation = null) {
+        $trail->parent('platform.diagnosticorientation.list');
+        if ($diagnosticorientation && $diagnosticorientation->exists) {
+            $trail->push('Modifier l\'orientation', route('platform.diagnosticorientation.edit', $diagnosticorientation));
+        } else {
+            $trail->push('Créer une orientation', route('platform.diagnosticorientation.edit'));
+        }
+    });
+Route::screen('diagnosticorientations', App\Orchid\Screens\Diagnosticorientation\ListScreen::class)->name('platform.diagnosticorientation.list')
+    ->breadcrumbs(fn (Trail $trail) => $trail
+        ->parent('platform.index')
+        ->push('Orientations', route('platform.diagnosticorientation.list')));
+Route::screen('diagnosticorientations/{diagnosticorientation}/show', App\Orchid\Screens\Diagnosticorientation\ShowScreen::class)->name('platform.diagnosticorientation.show')
+    ->breadcrumbs(function (Trail $trail, $diagnosticorientation) {
+        return $trail
+            ->parent('platform.diagnosticorientation.list') 
+            ->push('Détail de l\'orientation');
+    });
+Route::post('diagnosticorientations/delete', [App\Orchid\Screens\Diagnosticorientation\ListScreen::class, 'delete'])->name('platform.diagnosticorientation.delete');
 
 //propositionstatut//////////////////////
 Route::screen('propositionstatut/{propositionstatut?}', \App\Orchid\Screens\Propositionstatut\EditScreen::class)->name('platform.propositionstatut.edit')
@@ -2636,3 +2730,26 @@ Route::screen('reductiontype/{reductiontype?}', App\Orchid\Screens\Parametres\Re
 
 
 
+
+
+//diagnosticevolutions//////////////////////
+Route::screen('diagnosticevolutions/{diagnosticevolution?}/show', \App\Orchid\Screens\Diagnosticevolution\ShowScreen::class)->name('platform.diagnosticevolution.show')
+    ->breadcrumbs(function (Trail $trail, $diagnosticevolution) {
+        $trail->parent('platform.diagnosticevolution.list');
+        $trail->push('Détail de l\'évolution');
+    });
+Route::post('diagnosticevolutions/delete', [\App\Orchid\Screens\Diagnosticevolution\ListScreen::class, 'delete'])->name('platform.diagnosticevolution.delete');
+
+Route::screen('diagnosticevolutions/{diagnosticevolution?}', \App\Orchid\Screens\Diagnosticevolution\EditScreen::class)->name('platform.diagnosticevolution.edit')
+    ->breadcrumbs(function (Trail $trail, $diagnosticevolution = null) {
+        $trail->parent('platform.diagnosticevolution.list');
+        if ($diagnosticevolution && $diagnosticevolution->exists) {
+            $trail->push('Modifier l\'évolution', route('platform.diagnosticevolution.edit', $diagnosticevolution));
+        } else {
+            $trail->push('Créer une évolution', route('platform.diagnosticevolution.edit'));
+        }
+    });
+Route::screen('diagnosticevolutions', \App\Orchid\Screens\Diagnosticevolution\ListScreen::class)->name('platform.diagnosticevolution.list')
+    ->breadcrumbs(fn (Trail $trail) => $trail
+        ->parent('platform.index')
+        ->push('Évolutions de diagnostics', route('platform.diagnosticevolution.list')));
