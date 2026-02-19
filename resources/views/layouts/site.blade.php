@@ -91,7 +91,7 @@ use Illuminate\Support\Facades\DB;
                     <div class="col-auto nav-menu">
                         <nav class="main-menu d-none d-lg-inline-block lh-1">
                             <ul class="navigation">
-                                <li style="margin-right: 15px !important;"><a href="{{ env('APP_URL') }}">{!! __('accueil') !!}</a></li>
+                                <!-- <li style="margin-right: 15px !important;"><a href="{{ env('APP_URL') }}">{!! __('accueil') !!}</a></li> -->
                                 <li style="margin-right: 15px !important;"><a href="{{ env('APP_URL') }}page/{{ $pagelibre1->id }}-{{ getEnleveAccent($pagelibre1->titre) }}.html">{!! __('site_menu') !!}</a></li>
                                 <li style="margin-right: 15px !important;"><a href="{{ env('APP_URL') }}services.html">{!! __('site_menu2') !!}</a></li>
                                 <li style="margin-right: 15px !important;"><a href="{{ env('APP_URL') }}page/{{ $pagelibre2->id }}-{{ getEnleveAccent($pagelibre2->titre) }}.html">{!! __('site_menu3') !!}</a></li>
