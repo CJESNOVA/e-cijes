@@ -66,15 +66,6 @@
                                     </div>
                                 </li>
 
-        @if ($i == 3)
-        
-
-                    @php
-                        $i = 0;
-                    @endphp
-                    @endif
-
-
                 @endforeach
                                 
                             </ul>
