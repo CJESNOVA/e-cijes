@@ -64,9 +64,9 @@ use Illuminate\Support\Facades\DB;
 
 
 @php
-    $pagelibre1 = DB::table('pagelibres')->where('etat', 1)->first();
-    //$pagelibre1 = DB::table('pagelibres')->where('etat', 1)->where('spotlight', 1)->where('langue_id', __('id'))->first();
-    //$pagelibre2 = DB::table('pagelibres')->where('id', 1)->where('etat', 1)->where('spotlight', 0)->where('langue_id', __('id'))->first();->where('langue_id', __('id'))
+    //$pagelibre1 = DB::table('pagelibres')->where('etat', 1)->first();
+    $pagelibre1 = DB::table('pagelibres')->where('id', 1)->where('etat', 1)->where('spotlight', 1)->where('langue_id', __('id'))->first();
+    $pagelibre2 = DB::table('pagelibres')->where('id', 2)->where('etat', 1)->where('spotlight', 0)->where('langue_id', __('id'))->first();
 @endphp
         <!--==============================
         Header Area
@@ -107,26 +107,12 @@ use Illuminate\Support\Facades\DB;
                             <div class="col-auto nav-menu">
                                 <nav class="main-menu d-none d-lg-inline-block lh-1">
                                     <ul class="navigation">
-                                        <li>
-                                            <a href="{{ env('APP_URL') }}">{!! (__('accueil')) !!}</a>
-                                        </li>
-                                        <li>
-                                            <a href="{{ env('APP_URL') }}page/{{ $pagelibre1->id }}-{{ getEnleveAccent($pagelibre1->titre) }}.html">{!! (__('site_menu')) !!}</a>
-                                        </li>
-                                        <li>
-                                            <a href="{{ env('APP_URL') }}services.html">{!! (__('site_menu2')) !!}</a>
-                                        </li>
-                                        <li class="menu-item-has-children">
-                                            <a href="#">{!! (__('site_menu3_')) !!}</a>
-                                            <ul class="sub-menu">
-                                                <li><a href="{{ env('APP_URL') }}partenaires.html">{!! (__('site_menu3')) !!}</a></li>
-                                                <li><a href="{{ env('APP_URL') }}faqs.html">{!! (__('site_menu4')) !!}</a></li>
-                                                <li><a href="{{ env('APP_URL') }}actualites.html">{!! (__('site_menu5')) !!}</a></li>
-                                            </ul>
-                                        </li>
-                                        <li>
-                                            <a href="{{ env('APP_URL') }}contacts.html">{!! (__('site_menu6')) !!}</a>
-                                        </li>
+                                <li><a href="{{ env('APP_URL') }}page/{{ $pagelibre1->id }}-{{ getEnleveAccent($pagelibre1->titre) }}.html">{!! __('site_menu') !!}</a></li>
+                                <li><a href="{{ env('APP_URL') }}services.html">{!! __('site_menu2') !!}</a></li>
+                                <li><a href="{{ env('APP_URL') }}page/{{ $pagelibre2->id }}-{{ getEnleveAccent($pagelibre2->titre) }}.html">{!! __('site_menu3') !!}</a></li>
+                                <li><a href="{{ env('APP_URL') }}temoignages.html">{!! __('site_menu5') !!}</a></li>
+                                <li><a href="{{ env('APP_URL') }}faqs.html">{!! __('site_menu4') !!}</a></li>
+                                <li><a href="{{ env('APP_URL') }}contacts.html">{!! __('site_menu6') !!}</a></li>
                                     </ul>
                                 </nav>
                                 <div class="navbar-right d-inline-flex d-lg-none">
