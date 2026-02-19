@@ -333,24 +333,14 @@ use Illuminate\Support\Facades\DB;
                                 <div class="footer-widget ml-0">
                                     <h4 class="title">{{ __('autresliens') }}</h4>
                                     <ul class="list-unstyled">
-                                        <li>
-                                            <a href="{{ env('APP_URL') }}page/{{ $pagelibre1->id }}-{{ getEnleveAccent($pagelibre1->titre) }}.html">{!! (__('site_menu')) !!}</a>
-                                        </li>
-                                        <li>
-                                            <a href="{{ env('APP_URL') }}services.html">{!! (__('site_menu2')) !!}</a>
-                                        </li>
-                                        <li>
-                                            <a href="{{ env('APP_URL') }}partenaires.html">{!! (__('site_menu3')) !!}</a>
-                                        </li>
-                                        <li>
-                                            <a href="{{ env('APP_URL') }}faqs.html">{!! (__('site_menu4')) !!}</a>
-                                        </li>
-                                        <li>
-                                            <a href="{{ env('APP_URL') }}actualites.html">{!! (__('site_menu5')) !!}</a>
-                                        </li>
-                                        <li>
-                                            <a href="{{ env('APP_URL') }}contacts.html">{!! (__('site_menu6')) !!}</a>
-                                        </li>
+                                        
+                                <!-- <li><a href="{{ env('APP_URL') }}">{!! __('accueil') !!}</a></li> -->
+                                <li><a href="{{ env('APP_URL') }}page/{{ $pagelibre1->id }}-{{ getEnleveAccent($pagelibre1->titre) }}.html">{!! __('site_menu') !!}</a></li>
+                                <li><a href="{{ env('APP_URL') }}services.html">{!! __('site_menu2') !!}</a></li>
+                                <li><a href="{{ env('APP_URL') }}page/{{ $pagelibre2->id }}-{{ getEnleveAccent($pagelibre2->titre) }}.html">{!! __('site_menu3') !!}</a></li>
+                                <li><a href="{{ env('APP_URL') }}temoignages.html">{!! __('site_menu5') !!}</a></li>
+                                <li><a href="{{ env('APP_URL') }}faqs.html">{!! __('site_menu4') !!}</a></li>
+                                <li><a href="{{ env('APP_URL') }}contacts.html">{!! __('site_menu6') !!}</a></li>
                                     </ul>
                                 </div>
                             </div>
