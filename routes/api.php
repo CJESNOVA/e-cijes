@@ -48,5 +48,17 @@ Route::prefix('v1')->group(function () {
         // Questions d'un module spécifique
         Route::get('/module/{moduleId}/questions', [DiagnosticStructureController::class, 'getQuestionsByModule'])
             ->name('api.diagnostic.structure.questions');
+            
+        // Structure par profil d'entreprise
+        Route::get('/profil/{profilId}', [DiagnosticStructureController::class, 'getStructureByProfil'])
+            ->name('api.diagnostic.structure.profil');
+            
+        // Types de modules disponibles
+        Route::get('/types', [DiagnosticStructureController::class, 'getModuleTypes'])
+            ->name('api.diagnostic.structure.types');
+            
+        // Profils d'entreprise disponibles
+        Route::get('/profils', [DiagnosticStructureController::class, 'getEntrepriseProfils'])
+            ->name('api.diagnostic.structure.profils');
     });
 });    

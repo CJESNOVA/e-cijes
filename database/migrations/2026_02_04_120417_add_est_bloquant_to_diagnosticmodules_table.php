@@ -12,7 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('diagnosticmodules', function (Blueprint $table) {
-            $table->boolean('est_bloquant')->default(0);
+            // Vérifier si la colonne n'existe pas déjà avant de l'ajouter
+            if (!Schema::hasColumn('diagnosticmodules', 'est_bloquant')) {
+                $table->boolean('est_bloquant')->default(0);
+            }
         });
     }
 
@@ -22,7 +25,10 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('diagnosticmodules', function (Blueprint $table) {
-            $table->dropColumn('est_bloquant');
+            // Supprimer la colonne seulement si elle existe
+            if (Schema::hasColumn('diagnosticmodules', 'est_bloquant')) {
+                $table->dropColumn('est_bloquant');
+            }
         });
     }
 };

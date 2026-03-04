@@ -6,6 +6,7 @@ use Orchid\Screen\Screen;
 
 use App\Models\Diagnosticmodule;
 use App\Models\Diagnosticmoduletype;
+use App\Models\Diagnosticmodulecategory;
 use App\Models\Entrepriseprofil;
 use App\Models\Pays;
 use App\Models\Langue;
@@ -40,6 +41,7 @@ class EditScreen extends Screen
         return [
             'diagnosticmodule' => $diagnosticmodule,
             'diagnosticmoduletypes' => Diagnosticmoduletype::where('etat', 1)->pluck('titre', 'id'),
+            'diagnosticmodulecategories' => Diagnosticmodulecategory::where('etat', 1)->pluck('titre', 'id'),
             'entrepriseprofils' => Entrepriseprofil::where('etat', 1)->pluck('titre', 'id'),
             'modules' => Diagnosticmodule::where('etat', 1)
                 ->where('id', '!=', $diagnosticmodule->id ?? 0)
@@ -129,6 +131,13 @@ class EditScreen extends Screen
                     ->fromModel(Diagnosticmoduletype::class, 'titre')
                     ->empty('Choisir', 0)
                     ->required(),
+
+                Select::make('diagnosticmodule.diagnosticmodulecategory_id')
+                    ->title('Catégorie')
+                    ->placeholder('Choisir la catégorie')
+                    ->fromModel(Diagnosticmodulecategory::class, 'titre')
+                    ->empty('Choisir', 0)
+                    ->help('Catégorie du module de diagnostic'),
 
                 Select::make('diagnosticmodule.entrepriseprofil_id')
                     ->title('Profil entreprise')

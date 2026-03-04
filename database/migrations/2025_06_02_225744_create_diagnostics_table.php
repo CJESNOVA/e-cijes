@@ -15,9 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('scoreglobal')->nullable();
             $table->text('commentaire')->nullable();
-            $table->unsignedBigInteger('accompagnement_id')->nullable()->default(0);
             $table->unsignedBigInteger('diagnostictype_id')->nullable()->default(0);
             $table->unsignedBigInteger('diagnosticstatut_id')->nullable()->default(0);
+            $table->unsignedBigInteger('entrepriseprofil_id')->nullable()->default(0);
             $table->unsignedBigInteger('membre_id')->nullable()->default(0);
             $table->unsignedBigInteger('entreprise_id')->nullable()->default(0);
             $table->boolean('spotlight')->default(0);

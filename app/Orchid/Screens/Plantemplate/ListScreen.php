@@ -16,7 +16,7 @@ class ListScreen extends Screen
     public function query(): iterable
     {
         // 1. Charger tous les plans templates
-        $plantemplates = Plantemplate::with('diagnosticmodule')->get();
+        $plantemplates = Plantemplate::with(['diagnosticmodule', 'diagnosticquestion'])->get();
 
         return [
             'plantemplates' => $plantemplates,

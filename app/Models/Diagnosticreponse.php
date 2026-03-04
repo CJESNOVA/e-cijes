@@ -32,6 +32,17 @@ class Diagnosticreponse extends Model
         return $this->belongsTo(Diagnosticquestion::class);
     }
 
+    public function langue()
+    {
+        return new LangueRelation(
+            $this->newQuery(),
+            $this,
+            'langue_id',
+            'id',
+            'langue'
+        );
+    }
+
     public function resultats()
     {
         return $this->hasMany(Diagnosticresultat::class, 'diagnosticreponse_id');

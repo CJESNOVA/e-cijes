@@ -58,7 +58,7 @@ class ListScreen extends Screen
                         return $ressourcetypeoffretype->offre_type_nom;
                     }),
 
-                TD::make('type_offre_nom_complet', 'Type concret')
+                TD::make('type_offre_nom', 'Type concret')
                     ->render(function (Ressourcetypeoffretype $ressourcetypeoffretype) {
                         return $ressourcetypeoffretype->type_offre_nom_complet;
                     }),

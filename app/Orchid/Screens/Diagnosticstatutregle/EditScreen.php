@@ -5,6 +5,7 @@ namespace App\Orchid\Screens\Diagnosticstatutregle;
 use App\Models\Diagnosticstatutregle;
 use App\Models\Diagnosticstatut;
 use App\Models\Entrepriseprofil;
+use App\Models\Diagnostictype;
 use Orchid\Screen\Screen;
 use Orchid\Screen\Actions\Button;
 use Orchid\Screen\Actions\Link;
@@ -33,6 +34,7 @@ class EditScreen extends Screen
         return [
             'diagnosticstatutregle' => $diagnosticstatutregle,
             'entrepriseprofils' => Entrepriseprofil::where('etat', 1)->pluck('titre', 'id'),
+            'diagnostictypes' => Diagnostictype::where('etat', 1)->pluck('titre', 'id'),
         ];
     }
 
@@ -92,6 +94,12 @@ class EditScreen extends Screen
                     ->title('Profil d\'entreprise')
                     ->placeholder('Choisir le profil d\'entreprise')
                     ->fromModel(Entrepriseprofil::class, 'titre')
+                    ->empty('Choisir', 0),
+
+                Select::make('diagnosticstatutregle.diagnostictype_id')
+                    ->title('Type de diagnostic')
+                    ->placeholder('Choisir le type de diagnostic')
+                    ->fromModel(Diagnostictype::class, 'titre')
                     ->empty('Choisir', 0),
 
                 Input::make('diagnosticstatutregle.score_total_min')

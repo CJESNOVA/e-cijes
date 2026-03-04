@@ -48,13 +48,6 @@ class DiagnosticController extends Controller
                 ], 404);
             }
 
-            // Récupérer toutes les entreprises du membre via la table entreprisemembres
-            $entreprises = \App\Models\Entreprisemembre::where('membre_id', $membre->id)
-                ->with('entreprise')
-                ->get()
-                ->pluck('entreprise')
-                ->filter();
-
             // Préparer la structure de données
             $data = [
                 'user_email' => $email,
@@ -67,48 +60,18 @@ class DiagnosticController extends Controller
                     'email' => $membre->email,
                     'telephone' => $membre->telephone,
                     'nom_complet' => $membre->nom_complet,
-                    'diagnostics' => [],
-                    'entreprises' => []
+                    'diagnostics' => []
                 ]
             ];
 
-            // Ajouter les diagnostics du membre lui-même (sans entreprise)
+            // Ajouter les diagnostics du membre (type 1 - diagnostics personnels)
             $diagnosticsMembre = Diagnostic::where('membre_id', $membre->id)
-                //->whereNull('entreprise_id')
                 ->where('diagnostictype_id', 1)
-                ->with(['diagnostictype', 'diagnosticstatut', 'accompagnement'])
+                ->with(['diagnostictype', 'diagnosticstatut', 'entrepriseprofil'])
                 ->get();
 
             if ($diagnosticsMembre->isNotEmpty()) {
                 $data['membre']['diagnostics'] = $this->formatDiagnostics($diagnosticsMembre);
-            }
-
-            // Traiter chaque entreprise et ses diagnostics
-            foreach ($entreprises as $entreprise) {
-                $entrepriseData = [
-                    'id' => $entreprise->id,
-                    'nom' => $entreprise->nom,
-                    'email' => $entreprise->email,
-                    'telephone' => $entreprise->telephone,
-                    'adresse' => $entreprise->adresse,
-                    'description' => $entreprise->description,
-                    'annee_creation' => $entreprise->annee_creation,
-                    'est_membre_cijes' => $entreprise->est_membre_cijes,
-                    'diagnostics' => []
-                ];
-
-                // Récupérer les diagnostics pour cette entreprise
-                $diagnosticsEntreprise = Diagnostic::where('membre_id', $membre->id)
-                    ->where('entreprise_id', $entreprise->id)
-                    ->where('diagnostictype_id', 2)
-                    ->with(['diagnostictype', 'diagnosticstatut', 'accompagnement'])
-                    ->get();
-
-                if ($diagnosticsEntreprise->isNotEmpty()) {
-                    $entrepriseData['diagnostics'] = $this->formatDiagnostics($diagnosticsEntreprise);
-                }
-
-                //$data['membre']['entreprises'][] = $entrepriseData;
             }
 
             return response()->json([
@@ -141,7 +104,10 @@ class DiagnosticController extends Controller
             $resultats = Diagnosticresultat::where('diagnostic_id', $diagnostic->id)
                 ->with([
                     'diagnosticquestion' => function($query) {
-                        $query->with(['diagnosticmodule', 'diagnosticquestiontype', 'diagnosticquestioncategorie']);
+                        $query->with(['diagnosticmodule.diagnosticmodulecategory', 'diagnosticquestiontype', 'diagnosticquestioncategorie'])
+                              ->whereHas('diagnosticmodule', function($moduleQuery) {
+                                  $moduleQuery->where('diagnosticmoduletype_id', 1);
+                              });
                     },
                     'diagnosticreponse'
                 ])
@@ -150,16 +116,27 @@ class DiagnosticController extends Controller
             // Grouper les résultats par module
             $modulesData = [];
             foreach ($resultats as $resultat) {
+                // Vérifier que la question et le module existent
+                if (!$resultat->diagnosticquestion || !$resultat->diagnosticquestion->diagnosticmodule) {
+                    continue;
+                }
+                
                 $module = $resultat->diagnosticquestion->diagnosticmodule;
                 $moduleId = $module->id;
-
+                
+                // Créer le module s'il n'existe pas
                 if (!isset($modulesData[$moduleId])) {
+                    $category = $module->diagnosticmodulecategory;
                     $modulesData[$moduleId] = [
                         'id' => $module->id,
                         'titre' => $module->titre,
                         'description' => $module->description,
                         'position' => $module->position,
-                        'questions' => [],
+                        'categorie' => [
+                            'id' => $category ? $category->id : null,
+                            'titre' => $category ? $category->titre : 'Non catégorisé'
+                        ],
+                        'questions' => []
                     ];
                 }
 
@@ -183,6 +160,9 @@ class DiagnosticController extends Controller
                 $modulesData[$moduleId]['questions'][] = $questionData;
             }
 
+            // Convertir les modules en tableau indexé
+            $modulesData = array_values($modulesData);
+
             // Calculer les statistiques par module
             foreach ($modulesData as &$module) {
                 $scoreTotal = 0;
@@ -199,35 +179,59 @@ class DiagnosticController extends Controller
                         ->max('score') ?? 0;
                     $scoreMaximum += $maxQuestionScore;
                 }
-                $pourcentage = $scoreMaximum > 0 ? round(($scoreTotal * 100) / $scoreMaximum, 2) : 0;
+
                 $module['statistiques'] = [
                     'score_total' => $scoreTotal,
                     'score_maximum' => $scoreMaximum,
-                    'pourcentage' => $pourcentage,
+                    'pourcentage' => $scoreMaximum > 0 ? round(($scoreTotal / $scoreMaximum) * 100, 2) : 0,
                     'questions_repondues' => $questionsRepondues,
                     'nombre_questions' => count($module['questions'])
                 ];
             }
             
             // Récupérer les plans d'accompagnement pour ce diagnostic (une seule fois)
-            $plansAccompagnement = Plan::where('accompagnement_id', $diagnostic->accompagnement_id)
-                ->where('etat', 1) // Uniquement les plans actifs
-                ->orderBy('dateplan', 'asc')
-                ->get()
-                ->map(function($plan) {
-                    return [
-                        'id' => $plan->id,
-                        'objectif' => $plan->objectif,
-                        'action_prioritaire' => $plan->actionprioritaire,
-                        'date_plan' => $plan->dateplan,
-                        'spotlight' => $plan->spotlight,
-                        'etat' => $plan->etat
-                    ];
-                });
+            $plansAccompagnement = [];
+            if ($diagnostic->entreprise_id) {
+                // Rechercher les accompagnements liés à ce diagnostic
+                $accompagnement = \App\Models\Accompagnement::where('diagnostic_id', $diagnostic->id)
+                    ->where('etat', 1)
+                    ->first();
+                
+                if ($accompagnement) {
+                    $plansAccompagnement = Plan::where('accompagnement_id', $accompagnement->id)
+                        ->where('etat', 1) // Uniquement les plans actifs
+                        ->orderBy('dateplan', 'asc')
+                        ->get()
+                        ->map(function($plan) {
+                            return [
+                                'id' => $plan->id,
+                                'objectif' => $plan->objectif,
+                                'action_prioritaire' => $plan->actionprioritaire,
+                                'date_plan' => $plan->dateplan,
+                                'spotlight' => $plan->spotlight,
+                                'etat' => $plan->etat
+                            ];
+                        });
+                }
+            }
 
             // Calculer les statistiques globales
-            $globalScoreTotal = array_sum(array_column(array_column($modulesData, 'statistiques'), 'score_total'));
-            $globalScoreMaximum = array_sum(array_column(array_column($modulesData, 'statistiques'), 'score_maximum'));
+            $globalScoreTotal = 0;
+            $globalScoreMaximum = 0;
+            $totalQuestions = 0;
+            $totalQuestionsRepondues = 0;
+            $totalModules = 0;
+
+            foreach ($modulesData as $module) {
+                if (isset($module['statistiques'])) {
+                    $globalScoreTotal += $module['statistiques']['score_total'];
+                    $globalScoreMaximum += $module['statistiques']['score_maximum'];
+                    $totalQuestions += $module['statistiques']['nombre_questions'];
+                    $totalQuestionsRepondues += $module['statistiques']['questions_repondues'];
+                    $totalModules++;
+                }
+            }
+            
             $globalPourcentage = $globalScoreMaximum > 0 ? round(($globalScoreTotal * 100) / $globalScoreMaximum, 2) : 0;
             
             $diagnosticData = [
@@ -238,17 +242,17 @@ class DiagnosticController extends Controller
                 'spotlight' => $diagnostic->spotlight,
                 'type' => $diagnostic->diagnostictype->titre ?? null,
                 'statut' => $diagnostic->diagnosticstatut->titre ?? null,
-                'accompagnement' => $diagnostic->accompagnement_id ?? null,
-                'modules' => array_values($modulesData),
+                'profil' => $diagnostic->entrepriseprofil->titre ?? null,
+                'modules' => $modulesData,
                 'statistiques_globales' => [
                     'score_total' => $globalScoreTotal,
                     'score_maximum' => $globalScoreMaximum,
                     'pourcentage' => $globalPourcentage,
-                    'nombre_modules' => count($modulesData),
-                    'nombre_total_questions' => array_sum(array_column(array_column($modulesData, 'statistiques'), 'nombre_questions')),
-                    'questions_repondues_total' => array_sum(array_column(array_column($modulesData, 'statistiques'), 'questions_repondues'))
+                    'nombre_modules' => $totalModules,
+                    'nombre_total_questions' => $totalQuestions,
+                    'questions_repondues_total' => $totalQuestionsRepondues
                 ],
-                'plans_accompagnement' => $plansAccompagnement->toArray()
+                'plans_accompagnement' => is_array($plansAccompagnement) ? $plansAccompagnement : $plansAccompagnement->toArray()
             ];
 
             $formattedDiagnostics[] = $diagnosticData;

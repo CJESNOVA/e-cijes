@@ -21,7 +21,6 @@ class Diagnostic extends Model
     protected $fillable = [
         'scoreglobal',
         'commentaire',
-        'accompagnement_id',
         'diagnostictype_id',
         'diagnosticstatut_id',
         'entrepriseprofil_id',
@@ -31,11 +30,6 @@ class Diagnostic extends Model
         'etat',
     ];
     
-    public function accompagnement()
-    {
-        return $this->belongsTo(Accompagnement::class);
-    }
-
     public function diagnostictype()
     {
         return $this->belongsTo(Diagnostictype::class);

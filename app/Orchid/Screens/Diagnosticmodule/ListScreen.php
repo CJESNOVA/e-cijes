@@ -4,6 +4,7 @@ namespace App\Orchid\Screens\Diagnosticmodule;
 
 use App\Models\Diagnosticmodule;
 use App\Models\Diagnosticmoduletype;
+use App\Models\Diagnosticmodulecategory;
 use App\Models\Entrepriseprofil;
 use App\Models\Langue;
 use App\Models\Pays;
@@ -25,7 +26,7 @@ class ListScreen extends Screen
     public function query(): iterable
     {
         return [
-            'diagnosticmodules' => Diagnosticmodule::with(['diagnosticmoduletype', 'entrepriseprofil', 'langue', 'pays'])
+            'diagnosticmodules' => Diagnosticmodule::with(['diagnosticmoduletype', 'diagnosticmodulecategory', 'entrepriseprofil', 'langue', 'pays'])
                 ->orderBy('position', 'asc')
                 ->paginate(),
         ];
@@ -88,6 +89,11 @@ class ListScreen extends Screen
                     ),
                     
                 TD::make('diagnosticmoduletype.titre', 'Type')
+                    ->width('150')
+                    ->sort()
+                    ->filter(TD::FILTER_TEXT),
+                    
+                TD::make('diagnosticmodulecategory.titre', 'Catégorie')
                     ->width('150')
                     ->sort()
                     ->filter(TD::FILTER_TEXT),

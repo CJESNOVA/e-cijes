@@ -33,7 +33,7 @@ class ShowScreen extends Screen
     {
         return [
             Layout::legend('suivi', [
-                Sight::make('accompagnement.nom_complet', 'Accompagnement'),
+                Sight::make('accompagnement.id', 'Accompagnement'),
                 Sight::make('datesuivi', 'Date du suivi'),
                 Sight::make('observation', 'Observation'),
                 Sight::make('suivitype.titre', 'Type du suivi'),

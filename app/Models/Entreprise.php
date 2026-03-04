@@ -34,6 +34,8 @@ class Entreprise extends Model
         'spotlight',
         'etat',
     ];
+
+    protected $appends = ['nom_complet'];
     
     public function secteur()
     {
@@ -70,6 +72,11 @@ class Entreprise extends Model
     public function setEstMembreCijesAttribute($value)
     {
         $this->attributes['est_membre_cijes'] = is_bool($value) ? $value : in_array(strtolower($value), ['oui', 'yes', '1', true]);
+    }
+
+    public function getNomCompletAttribute()
+    {
+        return $this->nom;
     }
 
 }

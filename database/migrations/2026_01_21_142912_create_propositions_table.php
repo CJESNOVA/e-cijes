@@ -25,7 +25,7 @@ return new class extends Migration
             // Liens contextuels (optionnels)
             $table->unsignedBigInteger('plan_id')->nullable();
             $table->unsignedBigInteger('accompagnement_id')->nullable();
-            $table->foreign('plan_id')->references('id')->on('plantemplates')->onDelete('set null');
+            $table->foreign('plan_id')->references('id')->on('plans')->onDelete('set null');
             $table->foreign('accompagnement_id')->references('id')->on('accompagnements')->onDelete('set null');
 
             // Contenu de la proposition

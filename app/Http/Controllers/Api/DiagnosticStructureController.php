@@ -21,8 +21,8 @@ class DiagnosticStructureController extends Controller
     public function getStructureComplete(Request $request): JsonResponse
     {
         try {
-            // Récupérer tous les modules avec leurs questions et réponses
-            $modules = Diagnosticmodule::with(['questions.reponses'])
+            // Récupérer tous les modules avec leurs questions, réponses et catégories
+            $modules = Diagnosticmodule::with(['questions.reponses', 'diagnosticmodulecategory'])
                 ->where('etat', 1)
                 ->where('diagnosticmoduletype_id', 1)
                 ->orderBy('position', 'asc')
@@ -30,56 +30,73 @@ class DiagnosticStructureController extends Controller
 
             $structure = [];
 
-            foreach ($modules as $module) {
-                $moduleData = [
-                    'id' => $module->id,
-                    'titre' => $module->titre,
-                    'description' => $module->description ?? null,
-                    'ordre' => $module->position,
-                    'diagnosticmoduletype_id' => $module->diagnosticmoduletype_id,
-                    'entrepriseprofil_id' => $module->entrepriseprofil_id,
-                    'questions' => []
+            // Grouper les modules par catégorie
+            $modulesByCategory = $modules->groupBy('diagnosticmodulecategory_id');
+            
+            foreach ($modulesByCategory as $categoryId => $categoryModules) {
+                $category = $categoryModules->first()->diagnosticmodulecategory;
+                
+                $categoryData = [
+                    'id' => $categoryId,
+                    'titre' => $category ? $category->titre : 'Non catégorisé',
+                    'modules' => []
                 ];
 
-                foreach ($module->questions as $question) {
-                    $questionData = [
-                        'id' => $question->id,
-                        'titre' => $question->titre,
-                        'description' => $question->description ?? null,
-                        'ordre' => $question->position,
-                        'diagnosticmodule_id' => $question->diagnosticmodule_id,
-                        'diagnosticquestiontype_id' => $question->diagnosticquestiontype_id,
-                        'score_max' => $question->score_max ?? null,
-                        'obligatoire' => $question->obligatoire ?? false,
-                        'reponses_possibles' => []
+                foreach ($categoryModules as $module) {
+                    $moduleData = [
+                        'id' => $module->id,
+                        'titre' => $module->titre,
+                        'description' => $module->description ?? null,
+                        'ordre' => $module->position,
+                        'diagnosticmoduletype_id' => $module->diagnosticmoduletype_id,
+                        'diagnosticmodulecategory_id' => $module->diagnosticmodulecategory_id,
+                        'entrepriseprofil_id' => $module->entrepriseprofil_id,
+                        'questions' => []
                     ];
 
-                    foreach ($question->reponses as $reponse) {
-                        $reponseData = [
-                            'id' => $reponse->id,
-                            'titre' => $reponse->titre,
-                            'explication' => $reponse->explication,
-                            'description' => $reponse->description ?? null,
-                            'score' => $reponse->score,
-                            'ordre' => $reponse->position,
-                            'diagnosticquestion_id' => $reponse->diagnosticquestion_id
+                    foreach ($module->questions as $question) {
+                        $questionData = [
+                            'id' => $question->id,
+                            'titre' => $question->titre,
+                            'description' => $question->description ?? null,
+                            'ordre' => $question->position,
+                            'diagnosticmodule_id' => $question->diagnosticmodule_id,
+                            'diagnosticquestiontype_id' => $question->diagnosticquestiontype_id,
+                            'score_max' => $question->score_max ?? null,
+                            'obligatoire' => $question->obligatoire ?? false,
+                            'reponses_possibles' => []
                         ];
 
-                        $questionData['reponses_possibles'][] = $reponseData;
+                        foreach ($question->reponses as $reponse) {
+                            $reponseData = [
+                                'id' => $reponse->id,
+                                'titre' => $reponse->titre,
+                                'explication' => $reponse->explication,
+                                'description' => $reponse->description ?? null,
+                                'score' => $reponse->score,
+                                'ordre' => $reponse->position,
+                                'diagnosticquestion_id' => $reponse->diagnosticquestion_id
+                            ];
+
+                            $questionData['reponses_possibles'][] = $reponseData;
+                        }
+
+                        $moduleData['questions'][] = $questionData;
                     }
 
-                    $moduleData['questions'][] = $questionData;
+                    $categoryData['modules'][] = $moduleData;
                 }
 
-                $structure[] = $moduleData;
+                $structure[] = $categoryData;
             }
 
             return response()->json([
                 'success' => true,
                 'message' => 'Structure complète des diagnostics récupérée avec succès',
                 'data' => [
-                    'modules' => $structure,
-                    'total_modules' => count($structure),
+                    'categories' => $structure,
+                    'total_categories' => count($structure),
+                    'total_modules' => $modules->count(),
                     'total_questions' => $modules->sum(function($module) {
                         return $module->questions->count();
                     }),
@@ -259,6 +276,151 @@ class DiagnosticStructureController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Erreur lors de la récupération des questions: ' . $e->getMessage(),
+                'data' => null
+            ], 500);
+        }
+    }
+
+    /**
+     * Récupère la structure des diagnostics par profil d'entreprise
+     * 
+     * @param int $profilId
+     * @return JsonResponse
+     */
+    public function getStructureByProfil($profilId): JsonResponse
+    {
+        try {
+            // Récupérer les modules spécifiques à ce profil avec leurs catégories
+            $modules = Diagnosticmodule::with(['questions.reponses', 'diagnosticmodulecategory'])
+                ->where('etat', 1)
+                ->where('diagnosticmoduletype_id', 1)
+                ->where(function($query) use ($profilId) {
+                    $query->whereNull('entrepriseprofil_id')
+                          ->orWhere('entrepriseprofil_id', $profilId);
+                })
+                ->orderBy('position', 'asc')
+                ->get();
+
+            $structure = [];
+            
+            // Grouper les modules par catégorie
+            $modulesByCategory = $modules->groupBy('diagnosticmodulecategory_id');
+            
+            foreach ($modulesByCategory as $categoryId => $categoryModules) {
+                $category = $categoryModules->first()->diagnosticmodulecategory;
+                
+                $categoryData = [
+                    'id' => $categoryId,
+                    'titre' => $category ? $category->titre : 'Non catégorisé',
+                    'modules' => []
+                ];
+                
+                foreach ($categoryModules as $module) {
+                    $moduleData = [
+                        'id' => $module->id,
+                        'titre' => $module->titre,
+                        'description' => $module->description ?? null,
+                        'ordre' => $module->position,
+                        'diagnosticmoduletype_id' => $module->diagnosticmoduletype_id,
+                        'diagnosticmodulecategory_id' => $module->diagnosticmodulecategory_id,
+                        'entrepriseprofil_id' => $module->entrepriseprofil_id,
+                        'questions' => []
+                    ];
+
+                    foreach ($module->questions as $question) {
+                        $questionData = [
+                            'id' => $question->id,
+                            'titre' => $question->titre,
+                            'description' => $question->description ?? null,
+                            'ordre' => $question->position,
+                            'obligatoire' => $question->obligatoire,
+                            'type' => $question->diagnosticquestiontype->titre ?? null,
+                            'categorie' => $question->diagnosticquestioncategorie->titre ?? null,
+                            'reponses' => $question->reponses->map(function($reponse) {
+                                return [
+                                    'id' => $reponse->id,
+                                    'titre' => $reponse->titre,
+                                    'score' => $reponse->score,
+                                    'ordre' => $reponse->position
+                                ];
+                            })->toArray()
+                        ];
+                        $moduleData['questions'][] = $questionData;
+                    }
+                    $categoryData['modules'][] = $moduleData;
+                }
+                $structure[] = $categoryData;
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Structure du diagnostic par profil récupérée avec succès',
+                'data' => [
+                    'profil_id' => $profilId,
+                    'categories' => $structure,
+                    'total_categories' => count($structure),
+                    'total_modules' => $modules->count()
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erreur lors de la récupération de la structure: ' . $e->getMessage(),
+                'data' => null
+            ], 500);
+        }
+    }
+
+    /**
+     * Récupère les types de modules disponibles
+     * 
+     * @return JsonResponse
+     */
+    public function getModuleTypes(): JsonResponse
+    {
+        try {
+            $types = \App\Models\Diagnosticmoduletype::where('etat', 1)
+                ->orderBy('titre', 'asc')
+                ->get();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Types de modules récupérés avec succès',
+                'data' => $types
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erreur lors de la récupération des types: ' . $e->getMessage(),
+                'data' => null
+            ], 500);
+        }
+    }
+
+    /**
+     * Récupère les profils d'entreprise disponibles
+     * 
+     * @return JsonResponse
+     */
+    public function getEntrepriseProfils(): JsonResponse
+    {
+        try {
+            $profils = \App\Models\Entrepriseprofil::where('etat', 1)
+                ->orderBy('titre', 'asc')
+                ->get();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Profils d\'entreprise récupérés avec succès',
+                'data' => $profils
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erreur lors de la récupération des profils: ' . $e->getMessage(),
                 'data' => null
             ], 500);
         }

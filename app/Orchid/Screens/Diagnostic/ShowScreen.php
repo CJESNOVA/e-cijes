@@ -12,7 +12,7 @@ class ShowScreen extends Screen
 {
     public function query(Diagnostic $diagnostic): iterable
     {
-        $diagnostic->load(['accompagnement', 'diagnostictype', 'diagnosticstatut', 'membre', 'entreprise']); 
+        $diagnostic->load(['diagnostictype', 'diagnosticstatut', 'entrepriseprofil', 'membre', 'entreprise']); 
 
         return [
             'diagnostic' => $diagnostic,
@@ -35,7 +35,7 @@ class ShowScreen extends Screen
             Layout::legend('diagnostic', [
                 Sight::make('membre.nom_complet', 'Membre'),
                 Sight::make('entreprise.nom', 'Entreprise'),
-                Sight::make('accompagnement.nom_complet', 'Accompagnement'),
+                Sight::make('entrepriseprofil.titre', 'Profil de l\'entreprise'),
                 Sight::make('scoreglobal', 'Score global'),
                 Sight::make('commentaire', 'Commentaire'),
                 Sight::make('diagnostictype.titre', 'Profil émotionnel'),

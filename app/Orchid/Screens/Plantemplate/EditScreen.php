@@ -112,6 +112,12 @@ class EditScreen extends Screen
                     ->placeholder('Choisir le module')
                     ->fromModel(\App\Models\Diagnosticmodule::class, 'titre')
                     ->empty('Choisir', 0),
+
+                Select::make('plantemplate.diagnosticquestion_id')
+                    ->title('Question de diagnostic')
+                    ->placeholder('Choisir la question')
+                    ->fromModel(\App\Models\Diagnosticquestion::class, 'titre')
+                    ->empty('Choisir', 0),
             ])
         ];
     }

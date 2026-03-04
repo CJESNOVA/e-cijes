@@ -15,7 +15,15 @@ return new class extends Migration
                 $table->foreign('diagnosticmodule_id')->references('id')->on('diagnosticmodules')->onDelete('cascade');
             }
             if (!Schema::hasColumn('diagnosticorientations', 'diagnosticstatut_id')) {
-                $table->unsignedBigInteger('diagnosticstatut_id')->after('diagnosticmodule_id');
+                $table->unsignedBigInteger('diagnosticstatut_id')->nullable()->after('diagnosticmodule_id');
+                
+                // Nettoyer les données invalides avant d'ajouter la clé étrangère
+                \DB::table('diagnosticorientations')
+                    ->whereNotIn('diagnosticstatut_id', function($query) {
+                        $query->select('id')->from('diagnosticstatuts');
+                    })
+                    ->update(['diagnosticstatut_id' => null]);
+                
                 $table->foreign('diagnosticstatut_id')->references('id')->on('diagnosticstatuts')->onDelete('cascade');
             }
             if (!Schema::hasColumn('diagnosticorientations', 'seuil_max')) {
@@ -35,6 +43,22 @@ return new class extends Migration
             
             foreach ($columns as $column) {
                 if (Schema::hasColumn('diagnosticorientations', $column)) {
+                    // Supprimer les clés étrangères avant de supprimer les colonnes
+                    if ($column === 'diagnosticmodule_id') {
+                        try {
+                            $table->dropForeign(['diagnosticmodule_id']);
+                        } catch (\Exception $e) {
+                            // La clé étrangère n'existe peut-être pas
+                        }
+                    }
+                    if ($column === 'diagnosticstatut_id') {
+                        try {
+                            $table->dropForeign(['diagnosticstatut_id']);
+                        } catch (\Exception $e) {
+                            // La clé étrangère n'existe peut-être pas
+                        }
+                    }
+                    
                     $table->dropColumn($column);
                 }
             }

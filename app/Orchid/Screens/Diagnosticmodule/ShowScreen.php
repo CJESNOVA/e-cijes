@@ -4,6 +4,7 @@ namespace App\Orchid\Screens\Diagnosticmodule;
 
 use App\Models\Diagnosticmodule;
 use App\Models\Diagnosticmoduletype;
+use App\Models\Diagnosticmodulecategory;
 use App\Models\Entrepriseprofil;
 use App\Models\Pays;
 use App\Models\Langue;
@@ -19,7 +20,7 @@ class ShowScreen extends Screen
 {
     public function query(Diagnosticmodule $diagnosticmodule): iterable
     {
-        $diagnosticmodule->load(['diagnosticmoduletype', 'entrepriseprofil']); 
+        $diagnosticmodule->load(['diagnosticmoduletype', 'diagnosticmodulecategory', 'entrepriseprofil']); 
 
         // Charger les pays et langues depuis Supabase
         $paysList = collect((new Pays())->all())->keyBy('id');
@@ -62,6 +63,9 @@ class ShowScreen extends Screen
                     return "<img src='" . Storage::disk('public')->url($diagnosticmodule->vignette) . "' width='80'>";
                 }),
                 Sight::make('diagnosticmoduletype.titre', 'Type'),
+                Sight::make('diagnosticmodulecategory.titre', 'Catégorie')->render(function ($diagnosticmodule) {
+                    return $diagnosticmodule->diagnosticmodulecategory ? $diagnosticmodule->diagnosticmodulecategory->titre : 'Non définie';
+                }),
                 Sight::make('entrepriseprofil.titre', 'Profil entreprise')->render(function ($diagnosticmodule) {
                     return $diagnosticmodule->entrepriseprofil ? $diagnosticmodule->entrepriseprofil->titre : 'Tous les profils';
                 }),

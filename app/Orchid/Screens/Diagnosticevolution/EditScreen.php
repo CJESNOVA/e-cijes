@@ -35,7 +35,7 @@ class EditScreen extends Screen
     {
         return [
             'diagnosticevolution' => $diagnosticevolution,
-            'entreprises' => Entreprise::where('etat', 1)->pluck('nom_complet', 'id'),
+            'entreprises' => Entreprise::where('etat', 1)->pluck('nom', 'id'),
             'diagnostics' => Diagnostic::pluck('id', 'id'),
             'diagnosticstatuts' => Diagnosticstatut::where('etat', 1)->pluck('titre', 'id'),
             'entrepriseprofils' => Entrepriseprofil::where('etat', 1)->pluck('titre', 'id'),
@@ -89,10 +89,16 @@ class EditScreen extends Screen
     {
         return [
             Layout::rows([
+                Select::make('diagnosticevolution.membre_id')
+                    ->title('Membre')
+                    ->placeholder('Choisir le membre')
+                    ->fromModel(\App\Models\Membre::class, 'nom')
+                    ->required(),
+
                 Select::make('diagnosticevolution.entreprise_id')
                     ->title('Entreprise')
                     ->placeholder('Choisir l\'entreprise')
-                    ->fromModel(Entreprise::class, 'nom_complet')
+                    ->fromModel(Entreprise::class, 'nom')
                     ->required(),
 
                 Select::make('diagnosticevolution.diagnostic_id')
@@ -105,7 +111,7 @@ class EditScreen extends Screen
                     ->title('Diagnostic précédent')
                     ->placeholder('Choisir le diagnostic précédent (optionnel)')
                     ->fromModel(Diagnostic::class, 'id')
-                    ->empty('Aucun', null),
+                    ->empty('Aucun', '0'),
 
                 Input::make('diagnosticevolution.score_global')
                     ->title('Score global')

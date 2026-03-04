@@ -12,12 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('diagnosticmodulescores', function (Blueprint $table) {
-            $table->unsignedBigInteger('diagnosticblocstatut_id')->nullable();
-            
-            $table->foreign('diagnosticblocstatut_id')
-                  ->references('id')
-                  ->on('diagnosticblocstatuts')
-                  ->onDelete('set null');
+            // Vérifier si la colonne n'existe pas déjà avant de l'ajouter
+            if (!Schema::hasColumn('diagnosticmodulescores', 'diagnosticblocstatut_id')) {
+                $table->unsignedBigInteger('diagnosticblocstatut_id')->nullable();
+                
+                $table->foreign('diagnosticblocstatut_id')
+                      ->references('id')
+                      ->on('diagnosticblocstatuts')
+                      ->onDelete('set null');
+            }
         });
     }
 
@@ -27,8 +30,11 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('diagnosticmodulescores', function (Blueprint $table) {
-            $table->dropForeign(['diagnosticblocstatut_id']);
-            $table->dropColumn('diagnosticblocstatut_id');
+            // Supprimer seulement si la colonne existe
+            if (Schema::hasColumn('diagnosticmodulescores', 'diagnosticblocstatut_id')) {
+                $table->dropForeign(['diagnosticblocstatut_id']);
+                $table->dropColumn('diagnosticblocstatut_id');
+            }
         });
     }
 };

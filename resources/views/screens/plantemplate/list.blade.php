@@ -22,6 +22,7 @@
                                 <th class="px-3 py-2">Action prioritaire</th>
                                 <th class="px-3 py-2">Priorité</th>
                                 <th class="px-3 py-2">Module de diagnostic</th>
+                                <th class="px-3 py-2">Question de diagnostic</th>
                                 <th class="px-3 py-2">Spotlight</th>
                                 <th class="px-3 py-2">État</th>
                                 <th class="px-3 py-2 text-end">Actions</th>
@@ -42,6 +43,11 @@
                                     <td class="px-3 py-2">
                                         @if ($plantemplate->diagnosticmodule)
                                             {{ $plantemplate->diagnosticmodule->titre }}
+                                        @endif
+                                    </td>
+                                    <td class="px-3 py-2">
+                                        @if ($plantemplate->diagnosticquestion)
+                                            {{ $plantemplate->diagnosticquestion->titre }}
                                         @endif
                                     </td>
                                     <td class="px-3 py-2">

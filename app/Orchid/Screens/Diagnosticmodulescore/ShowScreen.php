@@ -21,7 +21,7 @@ class ShowScreen extends Screen
     public function query(Diagnosticmodulescore $diagnosticmodulescore): iterable
     {
         $this->diagnosticmodulescore = $diagnosticmodulescore;
-        $diagnosticmodulescore->load(['diagnostic', 'diagnosticmodule', 'diagnosticblocstatut']); 
+        $diagnosticmodulescore->load(['diagnostic', 'diagnosticmodule', 'diagnosticquestion', 'diagnosticblocstatut']); 
 
         return [
             'diagnosticmodulescore' => $diagnosticmodulescore,
@@ -66,6 +66,10 @@ class ShowScreen extends Screen
                         $diagnosticmodulescore->diagnostic ? $diagnosticmodulescore->diagnostic->getNomCompletAttribute() : '—'
                     ),
                 Sight::make('diagnosticmodule.titre', 'Module de diagnostic'),
+                Sight::make('diagnosticquestion.titre', 'Question de diagnostic')
+                    ->render(fn($diagnosticmodulescore) => 
+                        $diagnosticmodulescore->diagnosticquestion ? $diagnosticmodulescore->diagnosticquestion->titre : '—'
+                    ),
                 Sight::make('score_total', 'Score total'),
                 Sight::make('score_max', 'Score maximum'),
                 Sight::make('score_pourcentage', 'Score en pourcentage')->render(fn($diagnosticmodulescore) => $diagnosticmodulescore->score_pourcentage ? $diagnosticmodulescore->score_pourcentage . '%' : '—'),

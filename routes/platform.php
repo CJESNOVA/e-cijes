@@ -88,6 +88,7 @@ use App\Orchid\Screens\Parametres\ConseillertypeScreen;
 use App\Orchid\Screens\Parametres\ConseillervalideScreen;
 use App\Orchid\Screens\Parametres\AccompagnementtypeScreen;
 use App\Orchid\Screens\Parametres\DiagnosticmoduletypeScreen;
+use App\Orchid\Screens\Parametres\DiagnosticmodulecategoryScreen;
 use App\Orchid\Screens\Parametres\QuizquestiontypeScreen;
 use App\Orchid\Screens\Parametres\QuizresultatstatutScreen;
 
@@ -679,6 +680,14 @@ Route::screen('diagnosticmoduletype', DiagnosticmoduletypeScreen::class)
         return $trail
             ->parent('platform.index')
             ->push('Types des modules du diagnostic');
+    });
+
+Route::screen('diagnosticmodulecategory', DiagnosticmodulecategoryScreen::class)
+    ->name('platform.diagnosticmodulecategory')
+    ->breadcrumbs(function (Trail $trail){
+        return $trail
+            ->parent('platform.index')
+            ->push('Catégories des modules du diagnostic');
     });
 
 Route::screen('quizquestiontype', QuizquestiontypeScreen::class)

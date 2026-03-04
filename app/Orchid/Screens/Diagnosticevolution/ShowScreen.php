@@ -25,7 +25,7 @@ class ShowScreen extends Screen
      */
     public function query(Diagnosticevolution $diagnosticevolution): iterable
     {
-        $diagnosticevolution->load(['entreprise', 'diagnostic', 'diagnosticPrecedent', 'diagnosticstatut', 'entrepriseprofil']);
+        $diagnosticevolution->load(['membre', 'entreprise', 'diagnostic', 'diagnosticPrecedent', 'diagnosticstatut', 'entrepriseprofil']);
         
         return [
             'diagnosticevolution' => $diagnosticevolution,
@@ -84,7 +84,9 @@ class ShowScreen extends Screen
     {
         return [
             Layout::legend('diagnosticevolution', [
-                Sight::make('entreprise.nom_complet', 'Entreprise')
+                Sight::make('membre.nom', 'Membre')
+                    ->render(fn ($evolution) => $evolution->membre ? $evolution->membre->nom_complet : 'Non défini'),
+                Sight::make('entreprise.nom', 'Entreprise')
                     ->render(fn ($evolution) => $evolution->entreprise ? $evolution->entreprise->nom_complet : 'Non défini'),
                 Sight::make('diagnostic_id', 'Diagnostic')
                     ->render(fn ($evolution) => '#' . ($evolution->diagnostic_id ?? 'Non défini')),

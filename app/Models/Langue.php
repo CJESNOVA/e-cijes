@@ -15,6 +15,42 @@ class Langue
     }
 
     /**
+     * Méthodes requises par Laravel pour les relations
+     */
+    public function getConnectionName()
+    {
+        return 'supabase'; // Nom de connexion factice
+    }
+    
+    public function getConnection()
+    {
+        return null; // Pas de connexion SQL
+    }
+    
+    public function getKeyName()
+    {
+        return 'id';
+    }
+    
+    public function getKey()
+    {
+        return $this->id ?? null;
+    }
+    
+    public function getTable()
+    {
+        return $this->table;
+    }
+    
+    /**
+     * Créer un query builder factice pour les relations
+     */
+    public function newQuery()
+    {
+        return new SupabaseQueryBuilder();
+    }
+
+    /**
      * Récupérer tous les langue
      */
     public function all()

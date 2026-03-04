@@ -33,7 +33,7 @@ class ShowScreen extends Screen
     {
         return [
             Layout::legend('reservation', [
-                Sight::make('membre.nom_complet', 'Membre'),
+                Sight::make('membre.nom', 'Membre'),
                 Sight::make('datedebut', 'Date de début'),
                 Sight::make('datefin', 'Date de fin'),
                 Sight::make('observation', 'Observation'),

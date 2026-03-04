@@ -18,6 +18,7 @@ class Diagnosticmodulescore extends Model
     protected $fillable = [
         'diagnostic_id',
         'diagnosticmodule_id',
+        'diagnosticquestion_id',
         'score_total',
         'score_max',
         'score_pourcentage',
@@ -33,6 +34,11 @@ class Diagnosticmodulescore extends Model
     public function diagnosticmodule()
     {
         return $this->belongsTo(Diagnosticmodule::class);
+    }
+
+    public function diagnosticquestion()
+    {
+        return $this->belongsTo(Diagnosticquestion::class);
     }
 
     public function diagnosticblocstatut()

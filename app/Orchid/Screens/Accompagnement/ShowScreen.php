@@ -12,7 +12,7 @@ class ShowScreen extends Screen
 {
     public function query(Accompagnement $accompagnement): iterable
     {
-        $accompagnement->load(['membre', 'entreprise', 'accompagnementniveau', 'accompagnementstatut']); 
+        $accompagnement->load(['membre', 'entreprise', 'diagnostic', 'accompagnementniveau', 'accompagnementstatut']); 
 
         return [
             'accompagnement' => $accompagnement,
@@ -35,6 +35,7 @@ class ShowScreen extends Screen
             Layout::legend('accompagnement', [
                 Sight::make('membre.nom_complet', 'Membre'),
                 Sight::make('entreprise.nom', 'Entreprise'),
+                Sight::make('diagnostic.nom_complet', 'Diagnostic associé'),
                 Sight::make('dateaccompagnement', 'Date de l\'accompagnement'),
                 Sight::make('accompagnementniveau.titre', 'Type de l\'accompagnement'),
                 Sight::make('accompagnementstatut.titre', 'Statut de l\'accompagnement'),

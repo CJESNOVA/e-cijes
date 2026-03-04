@@ -12,14 +12,21 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('diagnosticorientations', function (Blueprint $table) {
-            // Renommer l'ancienne colonne pour garder la compatibilité
-            $table->renameColumn('diagnosticstatut_id', 'ancien_diagnosticstatut_id');
-            
-            // Ajouter la nouvelle colonne correcte
-            $table->unsignedBigInteger('diagnosticblocstatut_id')->nullable()->after('diagnosticmodule_id');
-            
-            // Ajouter la clé étrangère correcte
-            $table->foreign('diagnosticblocstatut_id', 'diag_orient_bloc_fk')->references('id')->on('diagnosticblocstatuts')->onDelete('cascade');
+            // Vérifier si la table et les colonnes existent avant de faire des modifications
+            if (Schema::hasTable('diagnosticorientations')) {
+                // Renommer l'ancienne colonne seulement si elle existe
+                if (Schema::hasColumn('diagnosticorientations', 'diagnosticstatut_id')) {
+                    $table->renameColumn('diagnosticstatut_id', 'ancien_diagnosticstatut_id');
+                }
+                
+                // Ajouter la nouvelle colonne seulement si elle n'existe pas déjà
+                if (!Schema::hasColumn('diagnosticorientations', 'diagnosticblocstatut_id')) {
+                    $table->unsignedBigInteger('diagnosticblocstatut_id')->nullable()->after('diagnosticmodule_id');
+                    
+                    // Ajouter la clé étrangère correcte seulement si la colonne a été ajoutée
+                    $table->foreign('diagnosticblocstatut_id', 'diag_orient_bloc_fk')->references('id')->on('diagnosticblocstatuts')->onDelete('cascade');
+                }
+            }
         });
     }
 
@@ -29,14 +36,25 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('diagnosticorientations', function (Blueprint $table) {
-            // Supprimer la clé étrangère
-            $table->dropForeign('diag_orient_bloc_fk');
-            
-            // Supprimer la nouvelle colonne
-            $table->dropColumn('diagnosticblocstatut_id');
-            
-            // Restaurer l'ancienne colonne
-            $table->renameColumn('ancien_diagnosticstatut_id', 'diagnosticstatut_id');
+            // Vérifier si la table existe avant de faire des modifications
+            if (Schema::hasTable('diagnosticorientations')) {
+                // Supprimer la clé étrangère seulement si elle existe
+                try {
+                    $table->dropForeign('diag_orient_bloc_fk');
+                } catch (\Exception $e) {
+                    // La clé étrangère n'existe peut-être pas, ignorer l'erreur
+                }
+                
+                // Supprimer la nouvelle colonne seulement si elle existe
+                if (Schema::hasColumn('diagnosticorientations', 'diagnosticblocstatut_id')) {
+                    $table->dropColumn('diagnosticblocstatut_id');
+                }
+                
+                // Restaurer l'ancienne colonne seulement si elle existe
+                if (Schema::hasColumn('diagnosticorientations', 'ancien_diagnosticstatut_id')) {
+                    $table->renameColumn('ancien_diagnosticstatut_id', 'diagnosticstatut_id');
+                }
+            }
         });
     }
 };

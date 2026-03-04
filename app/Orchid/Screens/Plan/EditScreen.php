@@ -5,6 +5,7 @@ namespace App\Orchid\Screens\Plan;
 use Orchid\Screen\Screen;
 
 use App\Models\Plan;
+use App\Models\Plantemplate;
 use Illuminate\Http\Request;
 use Orchid\Screen\Fields\Input;
 use Orchid\Screen\Fields\DateTimer;
@@ -32,7 +33,8 @@ class EditScreen extends Screen
     public function query(Plan $plan): array
     {
         return [
-            'plan' => $plan
+            'plan' => $plan,
+            'plantemplates' => Plantemplate::pluck('objectif', 'id'),
         ];
     }
 
@@ -119,6 +121,30 @@ class EditScreen extends Screen
                             })
                             ->toArray()
                     )
+                    ->empty('Choisir', 0),
+
+                Select::make('plan.diagnostic_id')
+                    ->title('Diagnostic')
+                    ->placeholder('Choisir le diagnostic')
+                    ->fromModel(\App\Models\Diagnostic::class, 'id')
+                    ->empty('Choisir', 0),
+
+                Select::make('plan.diagnosticmodule_id')
+                    ->title('Module de diagnostic')
+                    ->placeholder('Choisir le module')
+                    ->fromModel(\App\Models\Diagnosticmodule::class, 'titre')
+                    ->empty('Choisir', 0),
+
+                Select::make('plan.diagnosticquestion_id')
+                    ->title('Question de diagnostic')
+                    ->placeholder('Choisir la question')
+                    ->fromModel(\App\Models\Diagnosticquestion::class, 'titre')
+                    ->empty('Choisir', 0),
+
+                Select::make('plan.plantemplate_id')
+                    ->title('Modèle de plan')
+                    ->placeholder('Choisir le modèle de plan')
+                    ->fromModel(Plantemplate::class, 'objectif')
                     ->empty('Choisir', 0),
 
             ])

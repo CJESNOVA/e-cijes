@@ -13,7 +13,7 @@ class ShowScreen extends Screen
 {
     public function query(Plantemplate $plantemplate): iterable
     {
-        $plantemplate->load(['diagnosticmodule']); 
+        $plantemplate->load(['diagnosticmodule', 'diagnosticquestion']); 
 
         return [
             'plantemplate' => $plantemplate,
@@ -41,6 +41,7 @@ class ShowScreen extends Screen
                 }),
                 Sight::make('priorite', 'Priorité'),
                 Sight::make('diagnosticmodule.titre', 'Module de diagnostic'),
+                Sight::make('diagnosticquestion.titre', 'Question de diagnostic'),
                 Sight::make('spotlight', 'Spotlight')->render(fn($plantemplate) => $plantemplate->spotlight ? '✅ Actif' : '❌ Inactif'),
                 Sight::make('etat', 'État')->render(fn($plantemplate) => $plantemplate->etat ? '✅ Actif' : '❌ Inactif'),
                 Sight::make('created_at', 'Créé le'),

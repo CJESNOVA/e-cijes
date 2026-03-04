@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Orchid\Screen\AsSource;
 use Orchid\Attachment\Attachable;
 use App\Models\Diagnosticmoduletype;
+use App\Models\Diagnosticmodulecategory;
 use App\Models\Entrepriseprofil;
 use App\Models\Langue;
 use App\Models\Pays;
@@ -27,6 +28,7 @@ class Diagnosticmodule extends Model
         'description',
         'vignette',
         'diagnosticmoduletype_id',
+        'diagnosticmodulecategory_id',
         'entrepriseprofil_id',
         'parent',
         'langue_id',
@@ -40,6 +42,11 @@ class Diagnosticmodule extends Model
     public function diagnosticmoduletype()
     {
         return $this->belongsTo(Diagnosticmoduletype::class);
+    }
+
+    public function diagnosticmodulecategory()
+    {
+        return $this->belongsTo(Diagnosticmodulecategory::class);
     }
 
     public function entrepriseprofil()

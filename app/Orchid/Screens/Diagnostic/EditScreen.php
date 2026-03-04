@@ -103,23 +103,14 @@ class EditScreen extends Screen
 
                 Select::make('diagnostic.entreprise_id')
                     ->title('Entreprise')
-                    ->placeholder('Choisir le entreprise')
-                    //->help('Spécifiez un entreprise.')
+                    ->placeholder('Choisir l\'entreprise')
                     ->fromModel(\App\Models\Entreprise::class, 'nom')
                     ->empty('Choisir', 0),
 
-                Select::make('diagnostic.accompagnement_id')
-                    ->title('Accompagnement')
-                    ->placeholder('Choisir l\'accompagnement')
-                    ->options(
-                        \App\Models\Accompagnement::with('membre', 'entreprise')->get()
-                            ->mapWithKeys(function ($accompagnement) {
-                                $membre = $accompagnement->membre ? $accompagnement->membre->prenom . ' ' . $accompagnement->membre->nom : '';
-                                $entreprise = $accompagnement->entreprise ? $accompagnement->entreprise->nom : '';
-                                return [$accompagnement->id => "$membre - $entreprise"];
-                            })
-                            ->toArray()
-                    )
+                Select::make('diagnostic.entrepriseprofil_id')
+                    ->title('Profil de l\'entreprise')
+                    ->placeholder('Choisir le profil')
+                    ->fromModel(\App\Models\Entrepriseprofil::class, 'titre')
                     ->empty('Choisir', 0),
 
                 Input::make('diagnostic.scoreglobal')

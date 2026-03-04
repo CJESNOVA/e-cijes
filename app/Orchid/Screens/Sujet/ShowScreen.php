@@ -44,7 +44,7 @@ class ShowScreen extends Screen
                     if (!$sujet->vignette) return '—';
                     return "<img src='" . Storage::disk('public')->url($sujet->vignette) . "' width='80'>";
                 }),
-                Sight::make('membre.nom_complet', 'Membre'),
+                Sight::make('membre.nom', 'Membre'),
                 Sight::make('spotlight', 'Spotlight')->render(fn($sujet) => $sujet->spotlight ? '✅ Actif' : '❌ Inactif'),
                 Sight::make('etat', 'État')->render(fn($sujet) => $sujet->etat ? '✅ Actif' : '❌ Inactif'),
                 Sight::make('created_at', 'Créé le'),

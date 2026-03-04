@@ -20,6 +20,8 @@ class Plan extends Model
         'actionprioritaire',
         'dateplan',
         'accompagnement_id',
+        'diagnostic_id',
+        'plantemplate_id',
         'spotlight',
         'etat',
     ];
@@ -27,6 +29,16 @@ class Plan extends Model
     public function accompagnement()
     {
         return $this->belongsTo(Accompagnement::class);
+    }
+
+    public function diagnostic()
+    {
+        return $this->belongsTo(Diagnostic::class);
+    }
+
+    public function plantemplate()
+    {
+        return $this->belongsTo(Plantemplate::class);
     }
 
 }

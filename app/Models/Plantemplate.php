@@ -17,6 +17,7 @@ class Plantemplate extends Model
      */
     protected $fillable = [
         'diagnosticmodule_id',
+        'diagnosticquestion_id',
         'niveau',
         'objectif',
         'actionprioritaire',

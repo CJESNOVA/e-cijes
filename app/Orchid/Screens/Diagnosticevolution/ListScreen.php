@@ -21,7 +21,7 @@ class ListScreen extends Screen
     public function query(): iterable
     {
         return [
-            'diagnosticevolutions' => Diagnosticevolution::with(['entreprise', 'diagnostic', 'diagnosticstatut', 'entrepriseprofil'])
+            'diagnosticevolutions' => Diagnosticevolution::with(['membre', 'entreprise', 'diagnostic', 'diagnosticstatut', 'entrepriseprofil'])
                 ->orderBy('created_at', 'desc')
                 ->paginate(),
         ];
@@ -74,10 +74,21 @@ class ListScreen extends Screen
                     ->width('80')
                     ->sort(),
                     
-                TD::make('entreprise.nom_complet', 'Entreprise')
+                TD::make('membre.nom', 'Membre')
                     ->width('200')
                     ->sort()
-                    ->filter(TD::FILTER_TEXT),
+                    ->filter(TD::FILTER_TEXT)
+                    ->render(fn (Diagnosticevolution $evolution) => 
+                        $evolution->membre ? $evolution->membre->prenom . ' ' . $evolution->membre->nom : '—'
+                    ),
+                    
+                TD::make('entreprise.nom', 'Entreprise')
+                    ->width('200')
+                    ->sort()
+                    ->filter(TD::FILTER_TEXT)
+                    ->render(fn (Diagnosticevolution $evolution) => 
+                        $evolution->entreprise ? $evolution->entreprise->nom : '—'
+                    ),
                     
                 TD::make('score_global', 'Score global')
                     ->width('100')

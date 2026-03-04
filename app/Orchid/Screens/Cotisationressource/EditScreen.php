@@ -99,7 +99,7 @@ class EditScreen extends Screen
                 Select::make('cotisationressource.accompagnement_id')
                     ->title('Accompagnement')
                     ->placeholder('Choisir l\'accompagnement')
-                    ->fromModel(\App\Models\Accompagnement::class, 'nom_complet')
+                    ->fromModel(\App\Models\Accompagnement::class, 'id')
                     ->empty('Choisir', 0),
 
                 Select::make('cotisationressource.ressourcecompte_id')
@@ -123,7 +123,7 @@ class EditScreen extends Screen
                 Select::make('cotisationressource.membre_id')
                     ->title('Membre')
                     ->placeholder('Choisir le membre')
-                    ->fromModel(\App\Models\Membre::class, 'nom_complet')
+                    ->fromModel(\App\Models\Membre::class, 'nom')
                     ->empty('Choisir', 0),
 
                 Select::make('cotisationressource.entreprise_id')

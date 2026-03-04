@@ -100,6 +100,12 @@ class EditScreen extends Screen
                     ->fromModel(\App\Models\Diagnosticmodule::class, 'titre')
                     ->empty('Choisir', 0),
 
+                Select::make('diagnosticmodulescore.diagnosticquestion_id')
+                    ->title('Question de diagnostic')
+                    ->placeholder('Choisir la question')
+                    ->fromModel(\App\Models\Diagnosticquestion::class, 'titre')
+                    ->empty('Choisir', 0),
+
                 Input::make('diagnosticmodulescore.score_total')
                     ->title('Score total')
                     ->placeholder('Saisir le score total')

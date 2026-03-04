@@ -20,7 +20,6 @@
                                 <th class="px-3 py-2">Date</th>
                                 <th class="px-3 py-2">Membre</th>
                                 <th class="px-3 py-2">Entreprise</th>
-                                <th class="px-3 py-2">Accompagnement</th>
                                 <th class="px-3 py-2">Score global</th>
                                 <th class="px-3 py-2">Profil</th>
                                 <th class="px-3 py-2">Statut</th>
@@ -44,11 +43,6 @@
                                     <td class="px-3 py-2">
                                         @if ($diagnostic->entreprise_id > 0)
                                             {{ $diagnostic->entreprise->nom ?? '' }}
-                                        @endif
-                                    </td>
-                                    <td class="px-3 py-2">
-                                        @if ($diagnostic->accompagnement_id > 0)
-                                            {{ $diagnostic->accompagnement->nom_complet ?? '' }}
                                         @endif
                                     </td>
                                     <td class="px-3 py-2">{{ $diagnostic->scoreglobal }}<br /><small>{{ $diagnostic->commentaire }}</small></td>
@@ -79,6 +73,13 @@
                                                 {{ $diagnostic->etat ? '✅' : '❌' }}
                                             </button>
                                         </form>
+                                    </td>
+                                    <td class="px-3 py-2">
+                                        @if ($diagnostic->entrepriseprofil_id > 0)
+                                            {{ $diagnostic->entrepriseprofil->titre ?? '' }}
+                                        @else
+                                            —
+                                        @endif
                                     </td>
                                     <!-- <td class="px-3 py-2">{{ $diagnostic->created_at }}</td> -->
                                     <!-- <td class="px-3 py-2">{{ $diagnostic->updated_at }}</td> -->

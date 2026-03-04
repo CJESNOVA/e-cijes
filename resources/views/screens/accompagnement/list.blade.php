@@ -19,8 +19,8 @@
                                 <th class="px-3 py-2">#</th>
                                 <th class="px-3 py-2">Membre</th>
                                 <th class="px-3 py-2">Entreprise</th>
+                                <th class="px-3 py-2">Diagnostic</th>
                                 <th class="px-3 py-2">Date</th>
-                                <th class="px-3 py-2">Niveau</th>
                                 <th class="px-3 py-2">Statut</th>
                                 <th class="px-3 py-2">Spotlight</th>
                                 <th class="px-3 py-2">État</th>
@@ -43,12 +43,12 @@
                                             {{ $accompagnement->entreprise->nom ?? '' }}
                                         @endif
                                     </td>
-                                    <td>{{ \Carbon\Carbon::parse($accompagnement->dateaccompagnement)->format('d/m/Y') }}</td>
                                     <td class="px-3 py-2">
-                                        @if ($accompagnement->accompagnementniveau_id > 0)
-                                            {{ $accompagnement->accompagnementniveau->titre ?? '' }}
+                                        @if ($accompagnement->diagnostic_id > 0)
+                                            {{ $accompagnement->diagnostic->nom_complet ?? '' }}
                                         @endif
                                     </td>
+                                    <td>{{ \Carbon\Carbon::parse($accompagnement->dateaccompagnement)->format('d/m/Y') }}</td>
                                     <td class="px-3 py-2">
                                         @if ($accompagnement->accompagnementstatut_id > 0)
                                             {{ $accompagnement->accompagnementstatut->titre ?? '' }}

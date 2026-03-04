@@ -19,7 +19,7 @@ class ListScreen extends Screen
     public function query(): iterable
     {
         return [
-            'diagnosticmodulescores' => Diagnosticmodulescore::with(['diagnostic', 'diagnosticmodule', 'diagnosticblocstatut'])
+            'diagnosticmodulescores' => Diagnosticmodulescore::with(['diagnostic', 'diagnosticmodule', 'diagnosticquestion', 'diagnosticblocstatut'])
                 ->orderBy('created_at', 'desc')
                 ->paginate(),
         ];
@@ -67,6 +67,14 @@ class ListScreen extends Screen
                     ->width('200')
                     ->sort()
                     ->filter(TD::FILTER_TEXT),
+                    
+                TD::make('diagnosticquestion.titre', 'Question')
+                    ->width('250')
+                    ->sort()
+                    ->filter(TD::FILTER_TEXT)
+                    ->render(fn (Diagnosticmodulescore $score) => 
+                        $score->diagnosticquestion ? $score->diagnosticquestion->titre : '—'
+                    ),
                     
                 TD::make('score_total', 'Score total')
                     ->width('100')

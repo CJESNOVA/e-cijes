@@ -23,8 +23,9 @@ class ListScreen extends Screen
     public function query(): iterable
     {
         return [
-            'diagnosticstatutregles' => Diagnosticstatutregle::with('entrepriseprofil')
+            'diagnosticstatutregles' => Diagnosticstatutregle::with(['entrepriseprofil', 'diagnostictype'])
                 ->orderBy('entrepriseprofil_id')
+                ->orderBy('diagnostictype_id')
                 ->orderBy('score_total_min')
                 ->paginate(),
         ];
@@ -81,6 +82,12 @@ class ListScreen extends Screen
                     ->width('150')
                     ->sort()
                     ->filter(TD::FILTER_TEXT),
+                    
+                TD::make('diagnostictype.titre', 'Type de diagnostic')
+                    ->width('150')
+                    ->sort()
+                    ->filter(TD::FILTER_TEXT)
+                    ->render(fn (Diagnosticstatutregle $regle) => $regle->diagnostictype?->titre ?? '—'),
                     
                 TD::make('score_total_min', 'Score min')
                     ->width('100')

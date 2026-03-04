@@ -14,7 +14,7 @@ class ListScreen extends Screen
     public function query(): iterable
     {
         return [
-            'plans' => Plan::all(),
+            'plans' => Plan::with(['accompagnement', 'diagnostic', 'diagnosticmodule', 'diagnosticquestion', 'plantemplate'])->get(),
         ];
     }
 

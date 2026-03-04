@@ -24,7 +24,7 @@ class ShowScreen extends Screen
      */
     public function query(Diagnosticstatutregle $diagnosticstatutregle): iterable
     {
-        $diagnosticstatutregle->load(['entrepriseprofil']);
+        $diagnosticstatutregle->load(['entrepriseprofil', 'diagnostictype']);
         
         return [
             'diagnosticstatutregle' => $diagnosticstatutregle,
@@ -80,6 +80,8 @@ class ShowScreen extends Screen
             Layout::legend('diagnosticstatutregle', [
                 Sight::make('entrepriseprofil.titre', 'Profil d\'entreprise')
                     ->render(fn ($regle) => $regle->entrepriseprofil ? $regle->entrepriseprofil->titre : 'Non défini'),
+                Sight::make('diagnostictype.titre', 'Type de diagnostic')
+                    ->render(fn ($regle) => $regle->diagnostictype ? $regle->diagnostictype->titre : 'Non défini'),
                 Sight::make('score_total_min', 'Score total minimum')
                     ->render(fn ($regle) => $regle->score_total_min ?? 'Non défini'),
                 Sight::make('score_total_max', 'Score total maximum')

@@ -73,7 +73,7 @@ class ListScreen extends Screen
                 TD::make('montant', 'Montant')->sort(),
                 TD::make('reference', 'Référence')->sort(),
                 TD::make('cotisation.reference', 'Cotisation')->sort(),
-                TD::make('membre.nom_complet', 'Membre')->sort(),
+                TD::make('membre.nom', 'Membre')->sort(),
                 TD::make('entreprise.nom', 'Entreprise')->sort(),
                 TD::make('paiementstatut.titre', 'Statut')->sort(),
                 TD::make('spotlight', 'Spotlight')->render(function (Cotisationressource $cotisationressource) {

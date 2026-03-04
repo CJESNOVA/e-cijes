@@ -15,7 +15,10 @@ class Diagnosticevolution extends Model
 {
     use HasFactory, AsSource, Attachable;
 
+    protected $table = 'diagnosticevolutions';
+
     protected $fillable = [
+        'membre_id',
         'entreprise_id',
         'diagnostic_id',
         'diagnostic_precedent_id',
@@ -24,6 +27,11 @@ class Diagnosticevolution extends Model
         'entrepriseprofil_id',
         'commentaire',
     ];
+
+    public function membre()
+    {
+        return $this->belongsTo(Membre::class);
+    }
 
     public function entreprise()
     {

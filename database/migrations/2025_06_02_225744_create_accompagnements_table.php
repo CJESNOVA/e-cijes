@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('membre_id')->nullable()->default(0);
             $table->unsignedBigInteger('entreprise_id')->nullable()->default(0);
+            $table->unsignedBigInteger('diagnostic_id')->nullable()->default(0);
             $table->unsignedBigInteger('accompagnementniveau_id')->nullable()->default(0);
             $table->date('dateaccompagnement')->nullable();
             $table->unsignedBigInteger('accompagnementstatut_id')->nullable()->default(0);

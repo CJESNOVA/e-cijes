@@ -19,7 +19,11 @@
                                 <th class="px-3 py-2">#</th>
                                 <th class="px-3 py-2">Date</th>
                                 <th class="px-3 py-2">Objectif</th>
+                                <th class="px-3 py-2">Modèle</th>
                                 <th class="px-3 py-2">Accompagnement</th>
+                                <th class="px-3 py-2">Diagnostic</th>
+                                <th class="px-3 py-2">Module</th>
+                                <th class="px-3 py-2">Question</th>
                                 <th class="px-3 py-2">Spotlight</th>
                                 <th class="px-3 py-2">État</th>
                                 <!-- <th class="px-3 py-2">Créé le</th> -->
@@ -34,8 +38,28 @@
                                     <td>{{ \Carbon\Carbon::parse($plan->dateplan)->format('d/m/Y') }}</td>
                                     <td class="px-3 py-2"><span>{{ $plan->objectif }}</span></td>
                                     <td class="px-3 py-2">
+                                        @if ($plan->plantemplate_id > 0 && $plan->plantemplate)
+                                            {{ Str::limit($plan->plantemplate->objectif, 50) }}
+                                        @endif
+                                    </td>
+                                    <td class="px-3 py-2">
                                         @if ($plan->accompagnement_id > 0)
                                             {{ $plan->accompagnement->nom_complet ?? '' }}
+                                        @endif
+                                    </td>
+                                    <td class="px-3 py-2">
+                                        @if ($plan->diagnostic_id > 0)
+                                            #{{ $plan->diagnostic_id }}
+                                        @endif
+                                    </td>
+                                    <td class="px-3 py-2">
+                                        @if ($plan->diagnosticmodule_id > 0 && $plan->diagnosticmodule)
+                                            {{ $plan->diagnosticmodule->titre }}
+                                        @endif
+                                    </td>
+                                    <td class="px-3 py-2">
+                                        @if ($plan->diagnosticquestion_id > 0 && $plan->diagnosticquestion)
+                                            {{ $plan->diagnosticquestion->titre }}
                                         @endif
                                     </td>
                                     <td class="px-3 py-2">

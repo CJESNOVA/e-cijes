@@ -117,6 +117,16 @@ class EditScreen extends Screen
                     ->fromModel(\App\Models\Entreprise::class, 'nom')
                     ->empty('Choisir', 0),
 
+                Select::make('accompagnement.diagnostic_id')
+                    ->title('Diagnostic associé')
+                    ->placeholder('Choisir le diagnostic')
+                    ->options(
+                        \App\Models\Diagnostic::all()
+                            ->mapWithKeys(function ($diagnostic) {
+                                return [$diagnostic->id => $diagnostic->nom_complet];
+                            })
+                            ->toArray())
+                    ->empty('Aucun', 0),
 
                 Select::make('accompagnement.accompagnementniveau_id')
                     ->title('Type d\'accompagnement')

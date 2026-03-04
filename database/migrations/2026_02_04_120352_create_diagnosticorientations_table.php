@@ -11,17 +11,20 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('diagnosticorientations', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('diagnosticmodule_id');
-            $table->unsignedBigInteger('diagnosticstatut_id');
-            $table->integer('seuil_max');
-            $table->string('dispositif');
-            $table->timestamps();
-            
-            $table->foreign('diagnosticmodule_id')->references('id')->on('diagnosticmodules')->onDelete('cascade');
-            $table->foreign('diagnosticstatut_id')->references('id')->on('diagnosticstatuts')->onDelete('cascade');
-        });
+        // Vérifier si la table n'existe pas déjà avant de la créer
+        if (!Schema::hasTable('diagnosticorientations')) {
+            Schema::create('diagnosticorientations', function (Blueprint $table) {
+                $table->id();
+                $table->unsignedBigInteger('diagnosticmodule_id');
+                $table->unsignedBigInteger('diagnosticstatut_id');
+                $table->integer('seuil_max');
+                $table->string('dispositif');
+                $table->timestamps();
+                
+                $table->foreign('diagnosticmodule_id')->references('id')->on('diagnosticmodules')->onDelete('cascade');
+                $table->foreign('diagnosticstatut_id')->references('id')->on('diagnosticstatuts')->onDelete('cascade');
+            });
+        }
     }
 
     /**
@@ -29,6 +32,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('diagnosticorientations');
+        // Supprimer la table seulement si elle existe
+        if (Schema::hasTable('diagnosticorientations')) {
+            Schema::dropIfExists('diagnosticorientations');
+        }
     }
 };

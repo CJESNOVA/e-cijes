@@ -12,7 +12,7 @@ class ShowScreen extends Screen
 {
     public function query(Plan $plan): iterable
     {
-        $plan->load(['accompagnement']); 
+        $plan->load(['accompagnement', 'diagnostic', 'diagnosticmodule', 'diagnosticquestion', 'plantemplate']); 
 
         return [
             'plan' => $plan,
@@ -38,7 +38,11 @@ class ShowScreen extends Screen
                 Sight::make('actionprioritaire', 'Actions prioritaires')->render(function ($plan) {
                     return new HtmlString($plan->actionprioritaire); // ✅ Affiche HTML sans échapper
                 }),
-                Sight::make('accompagnement.nom_complet', 'Accompagnement'),
+                Sight::make('plantemplate.objectif', 'Modèle de plan')->render(fn($plan) => $plan->plantemplate?->objectif ?? 'Non défini'),
+                Sight::make('accompagnement.id', 'Accompagnement'),
+                Sight::make('diagnostic.id', 'Diagnostic'),
+                Sight::make('diagnosticmodule.titre', 'Module de diagnostic'),
+                Sight::make('diagnosticquestion.titre', 'Question de diagnostic'),
                 Sight::make('spotlight', 'Spotlight')->render(fn($plan) => $plan->spotlight ? '✅ Actif' : '❌ Inactif'),
                 Sight::make('etat', 'État')->render(fn($plan) => $plan->etat ? '✅ Actif' : '❌ Inactif'),
                 Sight::make('created_at', 'Créé le'),

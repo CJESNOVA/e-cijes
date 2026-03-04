@@ -20,6 +20,7 @@ class Accompagnement extends Model
     protected $fillable = [
         'membre_id',
         'entreprise_id',
+        'diagnostic_id',
         'accompagnementniveau_id',
         'dateaccompagnement',
         'accompagnementstatut_id',
@@ -35,6 +36,11 @@ class Accompagnement extends Model
     public function entreprise()
     {
         return $this->belongsTo(Entreprise::class);
+    }
+
+    public function diagnostic()
+    {
+        return $this->belongsTo(Diagnostic::class);
     }
 
     public function accompagnementniveau()
