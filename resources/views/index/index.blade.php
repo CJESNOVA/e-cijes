@@ -347,7 +347,7 @@
                                         <div class="swiper-slide">
                                             <div class="brand-item">
                                                 <a class="image" href="{{ env('APP_URL') }}partenaire/{{ $partenaire->id }}-{{ getEnleveAccent($partenaire->titre) }}.html">
-                                                    <img src="{{ env('SUPABASE_BUCKET_URL') . '/' . $partenaire->vignette }}" alt="{{ $partenaire->titre }}"  class="img-fluid" style="height: 100px !important;">
+                                                    <img src="{{ env('SUPABASE_BUCKET_URL') . '/' . $partenaire->vignette }}" alt="{{ $partenaire->titre }}" class="img-fluid" style="max-height: 80px; width: auto; object-fit: contain;">
                                                 </a>
                                             </div>
                                         </div>
