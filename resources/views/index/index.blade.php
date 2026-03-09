@@ -378,7 +378,7 @@
                     <div class="row gy-30 align-items-center">
                         <div class="col-lg-3">
                             <div class="image-box">
-                                <div class="thumb"><img src="{{ env('APP_URL') }}site/assets/images/choose/home4-img01.png" alt=""></div>
+                                <div class="thumb"><img src="{{ env('APP_URL') }}site/assets/images/choose/home4-img02.png" alt=""></div>
                             </div>
                         </div>
                         <div class="col-lg-7">

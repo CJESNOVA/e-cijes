@@ -39,7 +39,7 @@ use Illuminate\Support\Facades\DB;
                                         @foreach ($actualites1 as $actualite)
                                         @if ($actualite->vignette != '')
                                         <div class="post">
-                                            <a href="{{ env('APP_URL') }}actualite/{{ $actualite->id }}-{{ getEnleveAccent($actualite->titre) }}.html"><img src="{{ env('SUPABASE_BUCKET_URL') . '/' . $actualite->vignette }}" alt="{{ $actualite->titre }}" class="img-fluid"></a>
+                                            <a href="{{ env('APP_URL') }}actualite/{{ $actualite->id }}-{{ getEnleveAccent($actualite->titre) }}.html"><img src="{{ env('SUPABASE_BUCKET_URL') . '/' . $actualite->vignette }}" alt="{{ $actualite->titre }}" class="img-fluid" style="width: 100px;"></a>
                                             <div class="post-content">
                                                 <a href="{{ env('APP_URL') }}actualite/{{ $actualite->id }}-{{ getEnleveAccent($actualite->titre) }}.html">{{ $actualite->titre }}</a>
                                                 <p>{{ \Carbon\Carbon::parse($actualite->dateactualite)->translatedFormat('d F Y') }}</p>
