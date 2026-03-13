@@ -385,8 +385,8 @@
                             <div class="cta-text">
                                 <div class="title-area mb-0 white">
                                     <h2 class="sec-title" style="font-size: 30px !important;">{!! __('contact_index3') !!}</h2>
-                                </div>
                                 <p><i class="fa-regular fa-check"></i> {{ __('contact_index2') }}</p>
+                                </div>
                             </div>
                         </div>
                         <div class="col-lg-2">

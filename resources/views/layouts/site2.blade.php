@@ -109,7 +109,7 @@ use Illuminate\Support\Facades\DB;
                                     <ul class="navigation">
                                 <!-- <li style="margin-right: 15px !important;"><a href="{{ env('APP_URL') }}">{!! __('accueil') !!}</a></li> -->
                                 <li style="margin-right: 15px !important;"><a href="{{ env('APP_URL') }}page/{{ $pagelibre1->id }}-{{ getEnleveAccent($pagelibre1->titre) }}.html">{!! __('site_menu') !!}</a></li>
-                                <li style="margin-right: 15px !important;"><a href="{{ env('APP_URL') }}services.html">{!! __('site_menu2') !!}</a></li>
+                                <li style="margin-right: 15px !important;"><a href="{{ env('APP_URL') }}services.html">{!! __('site_menu2_') !!}</a></li>
                                 <li style="margin-right: 15px !important;"><a href="{{ env('APP_URL') }}page/{{ $pagelibre2->id }}-{{ getEnleveAccent($pagelibre2->titre) }}.html">{!! __('site_menu3') !!}</a></li>
                                 <li style="margin-right: 15px !important;"><a href="{{ env('APP_URL') }}temoignages.html">{!! __('site_menu5') !!}</a></li>
                                 <li style="margin-right: 15px !important;"><a href="{{ env('APP_URL') }}faqs.html">{!! __('site_menu4') !!}</a></li>
@@ -349,7 +349,7 @@ use Illuminate\Support\Facades\DB;
                                             <a href="{{ env('APP_URL') }}page/{{ $pagelibre1->id }}-{{ getEnleveAccent($pagelibre1->titre) }}.html">{!! (__('site_menu')) !!}</a>
                                         </li>
                                         <li>
-                                            <a href="{{ env('APP_URL') }}services.html">{!! (__('site_menu2')) !!}</a>
+                                            <a href="{{ env('APP_URL') }}services.html">{!! (__('site_menu2_')) !!}</a>
                                         </li>
                                         <li>
                                             <a href="{{ env('APP_URL') }}partenaires.html">{!! (__('site_menu3')) !!}</a>
@@ -388,7 +388,13 @@ use Illuminate\Support\Facades\DB;
                         <div class="col-md-2 md-mb-20">
                             <a href="{{ env('APP_URL') }}"><img src="{{ env('APP_URL') }}site/assets/images/logo/logo-2.png" alt=""></a>
                         </div>
-                        <div class="col-md-10 text-md-end">
+                        <div class="col-md-5 text-md-end">
+                            <p class="mb-0">
+                                <a href="{{ env('APP_URL') }}page/6-Politique-de-Confidentialité.html" target="_blank">Politique de Confidentialité</a> - 
+                                <a href="{{ env('APP_URL') }}page/7-Conditions-Générales-d-Utilisation.html" target="_blank">Conditions Générales d’Utilisation</a>
+                            </p>
+                        </div>
+                        <div class="col-md-5 text-md-end">
                             <p class="mb-0">{!! __('copyright') !!}</p>
                         </div>
                     </div>
