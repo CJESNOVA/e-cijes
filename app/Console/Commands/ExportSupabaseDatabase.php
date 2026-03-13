@@ -111,14 +111,8 @@ class ExportSupabaseDatabase extends Command
                 return $this->saveLocally($filePath, $filename);
             }
 
-            // Vérifier si c'est une URL locale
-            if (str_contains(env('SUPABASE_URL'), '127.0.0.1') || str_contains(env('SUPABASE_URL'), 'localhost')) {
-                $this->warn('⚠️  URL Supabase locale détectée !');
-                $this->warn('📍  Pour le stockage Supabase, utilisez l\'URL de production : https://votre-projet.supabase.co');
-                $this->warn('🔄  Fallback vers sauvegarde locale...');
-                return $this->saveLocally($filePath, $filename);
-            }
-
+            $supabaseUrl = env('SUPABASE_URL');
+            
             // Utiliser le service Supabase existant
             $storage = new SupabaseStorageService();
             
@@ -140,7 +134,7 @@ class ExportSupabaseDatabase extends Command
             $this->info('☁️  Upload Supabase Storage réussi !');
             $this->info('📁 Fichier : ' . $filename);
             $this->info('📊 Taille : ' . $this->formatBytes($fileSize));
-            $this->info('🔗 URL : ' . env('SUPABASE_URL') . '/storage/v1/object/' . env('SUPABASE_BUCKET') . '/' . $filename);
+            $this->info('🔗 URL : ' . $supabaseUrl . '/storage/v1/object/' . env('SUPABASE_BUCKET') . '/' . $filename);
 
         } catch (\Exception $e) {
             $this->error('❌ Erreur upload Supabase : ' . $e->getMessage());

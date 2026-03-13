@@ -240,14 +240,6 @@ class ExportSupabaseStorage extends Command
     private function uploadZipToSupabase($zipPath, $filename)
     {
         try {
-            // Vérifier si c'est une URL locale
-            if (str_contains(env('SUPABASE_URL'), '127.0.0.1') || str_contains(env('SUPABASE_URL'), 'localhost')) {
-                $this->warn('⚠️  URL Supabase locale détectée !');
-                $this->warn('📍  Pour le stockage Supabase, utilisez l\'URL de production : https://votre-projet.supabase.co');
-                $this->warn('🔄  Fallback vers sauvegarde locale...');
-                return $this->saveZipLocally($zipPath, $filename);
-            }
-
             // Utiliser le service Supabase existant
             $storage = new SupabaseStorageService();
             
