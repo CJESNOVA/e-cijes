@@ -38,10 +38,10 @@ class ExportSupabaseStorage extends Command
             // Utiliser la configuration depuis les variables d'environnement
             $supabaseUrl = env('SUPABASE_URL', 'https://cjes-nova-supabase-c2d40c-144-91-65-9.traefik.me');
             $serviceKey = env('SUPABASE_SERVICE_ROLE_KEY');
-            $bucket = env('SUPABASE_BUCKET', 'ecijes-bucket');
+            $bucket = env('SUPABASE_STORAGE_BUCKET', 'storage');
             
             if (!$supabaseUrl || !$serviceKey || !$bucket) {
-                $this->error('❌ Configuration manquante : SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY ou SUPABASE_BUCKET');
+                $this->error('❌ Configuration manquante : SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY ou SUPABASE_STORAGE_BUCKET');
                 $this->info('   Ajoutez ces variables dans votre fichier .env');
                 return;
             }
@@ -244,7 +244,7 @@ class ExportSupabaseStorage extends Command
     {
         try {
             // Vérifier si Supabase est configuré
-            if (!env('SUPABASE_URL') || !env('SUPABASE_SERVICE_ROLE_KEY') || !env('SUPABASE_BUCKET')) {
+            if (!env('SUPABASE_URL') || !env('SUPABASE_SERVICE_ROLE_KEY') || !env('SUPABASE_STORAGE_BUCKET')) {
                 // Fallback vers le stockage local
                 $this->info('⚠️  Supabase non configuré, sauvegarde locale...');
                 return $this->saveLocally($zipPath, $filename);
@@ -337,19 +337,55 @@ class ExportSupabaseStorage extends Command
     {
         $files = [];
         
-        // Essayer différentes variations du nom du bucket
+        try {
+            // Méthode 1: Utiliser l'API REST PostgreSQL sur la vue publique (si elle existe)
+            $response = Http::withHeaders([
+                'apikey' => $serviceKey,
+                'Authorization' => 'Bearer ' . $serviceKey,
+                'Content-Type' => 'application/json'
+            ])->get($supabaseUrl . '/rest/v1/storage_files_view', [
+                'bucket_id' => 'eq.' . $bucket,
+                'select' => 'name,created_at',
+                'order' => 'name.asc',
+                'limit' => 10000
+            ]);
+
+            if ($response->successful()) {
+                $data = $response->json();
+                if (is_array($data)) {
+                    foreach ($data as $item) {
+                        if (isset($item['name'])) {
+                            $files[] = [
+                                'name' => $item['name'],
+                                'size' => 0, // Taille non disponible dans cette vue
+                                'created_at' => $item['created_at'] ?? null
+                            ];
+                        }
+                    }
+                }
+                $this->info("📊 " . count($files) . " fichier(s) trouvé(s) via vue publique");
+                $this->info("✅ Vue 'storage_files_view' accessible");
+                return $files;
+            } else {
+                $this->info("❌ Vue 'storage_files_view' non accessible : " . $response->status());
+            }
+        } catch (\Exception $e) {
+            $this->info("❌ Erreur vue publique : " . $e->getMessage());
+        }
+
+        // Méthode 2: Utiliser l'API Storage directe de Supabase
         $bucketVariations = [
             $bucket,                    // Original
             strtolower($bucket),        // tout en minuscules
             strtoupper($bucket),        // tout en majuscules
             'storage',                 // Bucket par défaut Supabase
             'public',                 // Alternative
+            'ecijes-bucket',          // Votre bucket original
         ];
         
         $found = false;
         foreach ($bucketVariations as $bucketVar) {
             try {
-                // Utiliser l'API Storage directe de Supabase
                 $response = Http::withHeaders([
                     'apikey' => $serviceKey,
                     'Authorization' => 'Bearer ' . $serviceKey,
@@ -388,6 +424,10 @@ class ExportSupabaseStorage extends Command
         
         if (!$found) {
             $this->info("❌ Aucune variation du bucket trouvée. Le bucket '$bucket' n'existe peut-être pas.");
+            $this->info("💡 Solution : Créez une vue publique dans Supabase SQL Editor :");
+            $this->info("   CREATE VIEW public.storage_files_view AS");
+            $this->info("   SELECT bucket_id, name, created_at, updated_at FROM storage.objects;");
+            $this->info("   GRANT SELECT ON public.storage_files_view TO anon, authenticated, service_role;");
         }
 
         return $files;
