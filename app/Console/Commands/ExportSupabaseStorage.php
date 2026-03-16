@@ -258,12 +258,22 @@ class ExportSupabaseStorage extends Command
                 return $this->saveLocally($zipPath, $filename);
             }
 
-            // Augmenter la limite de mémoire temporairement
+            // Augmenter la limite de mémoire temporairement (si autorisé)
             $memoryLimit = ini_get('memory_limit');
-            ini_set('memory_limit', '512M');
+            try {
+                ini_set('memory_limit', '512M');
+            } catch (\Exception $e) {
+                $this->warn('⚠️  Impossible d\'augmenter la limite de mémoire, utilisation de la configuration actuelle');
+            }
             
             // Utiliser le service Supabase existant
             $storage = new SupabaseStorageService();
+            
+            // Générer un nom de fichier unique pour éviter les doublons
+            $uniqueFilename = pathinfo($filename, PATHINFO_FILENAME);
+            $extension = pathinfo($filename, PATHINFO_EXTENSION);
+            $timestamp = date('Y-m-d_H-i-s');
+            $finalFilename = $uniqueFilename . '_' . $timestamp . '.' . $extension;
             
             // Lire le contenu du fichier par chunks pour éviter la surcharge mémoire
             $fileHandle = fopen($zipPath, 'rb');
@@ -276,11 +286,11 @@ class ExportSupabaseStorage extends Command
                 $fileContent .= $chunk;
                 
                 // Si le contenu devient trop gros, on arrête et on utilise une autre approche
-                if (strlen($fileContent) > 50 * 1024 * 1024) { // 50MB max
+                if (strlen($fileContent) > 30 * 1024 * 1024) { // 30MB max
                     fclose($fileHandle);
                     $this->warn('⚠️  Fichier trop gros, utilisation de la sauvegarde locale...');
                     ini_set('memory_limit', $memoryLimit);
-                    return $this->saveLocally($zipPath, $filename);
+                    return $this->saveLocally($zipPath, $finalFilename);
                 }
             }
             
@@ -288,7 +298,7 @@ class ExportSupabaseStorage extends Command
             
             // Uploader vers Supabase Storage dans le dossier storage/
             $result = $storage->upload(
-                'storage/' . $filename,
+                'storage/' . $finalFilename,
                 $fileContent,
                 'application/zip'
             );
@@ -301,9 +311,9 @@ class ExportSupabaseStorage extends Command
             }
 
             $this->info('☁️  Upload Supabase réussi !');
-            $this->info('📁 Fichier : ' . $filename);
+            $this->info('📁 Fichier : ' . $finalFilename);
             $this->info('📊 Taille : ' . $this->formatBytes($fileSize));
-            $this->info('🔗 URL : ' . env('SUPABASE_URL') . '/storage/v1/object/' . env('SUPABASE_BUCKET') . '/storage/' . $filename);
+            $this->info('🔗 URL : ' . env('SUPABASE_URL') . '/storage/v1/object/' . env('SUPABASE_BUCKET') . '/storage/' . $finalFilename);
 
         } catch (\Exception $e) {
             $this->error('❌ Erreur upload Supabase : ' . $e->getMessage());
@@ -312,7 +322,7 @@ class ExportSupabaseStorage extends Command
         }
     }
     
-    private function saveLocally($filePath, $filename)
+    private function saveLocally($filePath, $finalFilename)
     {
         try {
             // Augmenter la limite de mémoire temporairement
@@ -333,7 +343,7 @@ class ExportSupabaseStorage extends Command
                 $fileContent .= $chunk;
                 
                 // Si le contenu devient trop gros, on arrête
-                if (strlen($fileContent) > 50 * 1024 * 1024) { // 50MB max
+                if (strlen($fileContent) > 30 * 1024 * 1024) { // 30MB max
                     fclose($fileHandle);
                     $this->warn('⚠️  Fichier trop gros pour upload, sauvegarde locale uniquement...');
                     ini_set('memory_limit', $memoryLimit);
@@ -343,11 +353,18 @@ class ExportSupabaseStorage extends Command
                     if (!File::exists($localDir)) {
                         File::makeDirectory($localDir, 0755, true);
                     }
-                    $localPath = $localDir . '/' . $filename;
+                    
+                    // Générer un nom de fichier unique
+                    $uniqueFilename = pathinfo($finalFilename, PATHINFO_FILENAME);
+                    $extension = pathinfo($finalFilename, PATHINFO_EXTENSION);
+                    $timestamp = date('Y-m-d_H-i-s');
+                    $localFinalFilename = $uniqueFilename . '_' . $timestamp . '.' . $extension;
+                    
+                    $localPath = $localDir . '/' . $localFinalFilename;
                     File::copy($filePath, $localPath);
                     
                     $this->info('✅ Sauvegarde locale réussie !');
-                    $this->info('📁 Fichier : ' . $filename);
+                    $this->info('📁 Fichier : ' . $localFinalFilename);
                     $this->info('📊 Taille : ' . $this->formatBytes($fileSize));
                     $this->info('📍 Chemin : ' . $localPath);
                     
@@ -358,7 +375,7 @@ class ExportSupabaseStorage extends Command
             fclose($fileHandle);
             
             // Uploader vers Supabase dans le dossier storage/
-            $path = 'storage/' . $filename;
+            $path = 'storage/' . $finalFilename;
             $result = $storage->upload(
                 $path,
                 $fileContent,
@@ -373,7 +390,7 @@ class ExportSupabaseStorage extends Command
             }
 
             $this->info('✅ Sauvegarde dans Supabase Storage (storage/) réussie !');
-            $this->info('📁 Fichier : ' . $filename);
+            $this->info('📁 Fichier : ' . $finalFilename);
             $this->info('📊 Taille : ' . $this->formatBytes($fileSize));
             $this->info('🔗 URL : ' . env('SUPABASE_URL') . '/storage/v1/object/' . env('SUPABASE_BUCKET') . '/' . $path);
 
