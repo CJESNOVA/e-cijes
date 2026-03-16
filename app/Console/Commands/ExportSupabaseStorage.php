@@ -83,7 +83,7 @@ class ExportSupabaseStorage extends Command
                 $totalSize = 0;
                 $processedFiles = 0;
 
-                foreach ($files as $file) {
+                foreach ($files as $index => $file) {
                     $this->info("📁 Téléchargement : {$file['name']} (" . $this->formatBytes($file['size']) . ")");
                     
                     // Télécharger le contenu du fichier
@@ -94,8 +94,27 @@ class ExportSupabaseStorage extends Command
                         $zip->addFromString($file['name'], $fileContent);
                         $totalSize += $file['size'];
                         $processedFiles++;
+                        
+                        // Libérer la mémoire immédiatement
+                        unset($fileContent);
                     } else {
                         $this->warn("❌ Erreur lors du téléchargement : {$file['name']}");
+                    }
+                    
+                    // Pause entre les téléchargements pour éviter la surcharge
+                    usleep(50000); // 0.05 seconde
+                    
+                    // Forcer le garbage collection tous les 10 fichiers
+                    if (($index + 1) % 10 == 0) {
+                        gc_collect_cycles();
+                        $memoryUsage = memory_get_usage(true);
+                        $this->info("🧹 Nettoyage mémoire : " . $this->formatBytes($memoryUsage));
+                        
+                        // Si la mémoire est trop élevée, arrêter
+                        if ($memoryUsage > 80 * 1024 * 1024) { // 80MB max
+                            $this->warn("⚠️  Limite mémoire atteinte, arrêt du téléchargement");
+                            break;
+                        }
                     }
                 }
             }
@@ -225,13 +244,51 @@ class ExportSupabaseStorage extends Command
     private function downloadFile($supabaseUrl, $serviceKey, $bucket, $fileName)
     {
         try {
+            // Vérifier l'utilisation mémoire avant de télécharger
+            $memoryUsage = memory_get_usage(true);
+            if ($memoryUsage > 60 * 1024 * 1024) { // 60MB max
+                $this->warn("⚠️  Limite mémoire atteinte, saut du fichier : {$fileName}");
+                return false;
+            }
+            
+            // Obtenir d'abord la taille du fichier avec HEAD request
+            $headResponse = Http::withHeaders([
+                'apikey' => $serviceKey,
+                'Authorization' => 'Bearer ' . $serviceKey
+            ])->head($supabaseUrl . '/storage/v1/object/' . $bucket . '/' . $fileName);
+            
+            if (!$headResponse->successful()) {
+                return false;
+            }
+            
+            $fileSize = (int) $headResponse->header('Content-Length', 0);
+            $maxFileSize = 2 * 1024 * 1024; // 2MB max par fichier
+            
+            if ($fileSize > $maxFileSize) {
+                $this->warn("⚠️  Fichier trop gros, ignoré : {$fileName} (" . $this->formatBytes($fileSize) . ")");
+                return false;
+            }
+            
+            // Télécharger le fichier avec timeout et options de stream
             $response = Http::withHeaders([
                 'apikey' => $serviceKey,
                 'Authorization' => 'Bearer ' . $serviceKey
+            ])->timeout(15)
+            ->withOptions([
+                'read_timeout' => 15,
+                'connect_timeout' => 10
             ])->get($supabaseUrl . '/storage/v1/object/' . $bucket . '/' . $fileName);
 
             if ($response->successful()) {
-                return $response->body();
+                $content = $response->body();
+                
+                // Vérifier la taille du contenu téléchargé
+                if (strlen($content) > $maxFileSize) {
+                    unset($content);
+                    return false;
+                }
+                
+                return $content;
             }
         } catch (\Exception $e) {
             $this->error("❌ Erreur téléchargement {$fileName} : " . $e->getMessage());
