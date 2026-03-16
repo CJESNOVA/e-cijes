@@ -39,9 +39,15 @@ class SupabaseBackup extends Command
         $date = now()->format('Y-m-d_H-i-s');
         $filename = "supabase_database_backup_$date.sql";
         
-        // Utiliser la configuration locale
-        $supabaseUrl = 'https://cjes-nova-supabase-c2d40c-144-91-65-9.traefik.me';
+        // Utiliser la configuration depuis les variables d'environnement
+        $supabaseUrl = env('SUPABASE_URL', 'https://cjes-nova-supabase-c2d40c-144-91-65-9.traefik.me');
         $serviceKey = env('SUPABASE_SERVICE_ROLE_KEY');
+        
+        if (!$supabaseUrl || !$serviceKey) {
+            $this->error('❌ Configuration manquante : SUPABASE_URL ou SUPABASE_SERVICE_ROLE_KEY');
+            $this->info('   Ajoutez ces variables dans votre fichier .env');
+            return;
+        }
         
         $this->info('🔗 Connexion à Supabase REST API...');
         
@@ -49,7 +55,7 @@ class SupabaseBackup extends Command
         $tablesToExport = [
             'languages', 'countries', // Vos tables confirmées
             // Ajoutez ici toutes vos autres tables :
-            // 'users', 'profiles', 'settings', 'orders', 'products'
+            'users', // 'profiles', 'settings', 'orders', 'products'
         ];
         
         $foundTables = [];
@@ -125,6 +131,10 @@ class SupabaseBackup extends Command
         $this->info('📁 Fichier : ' . $filename);
         $this->info('📍 Chemin : ' . $filePath);
         $this->info('📊 Taille : ' . $this->formatBytes(File::size($filePath)));
+        
+        // Générer le lien de téléchargement
+        $downloadUrl = url("storage/backups/" . $filename);
+        $this->info('🔗 Téléchargement : ' . $downloadUrl);
     }
 
     private function backupStorage()
@@ -134,9 +144,15 @@ class SupabaseBackup extends Command
         $date = now()->format('Y-m-d_H-i-s');
         $filename = "supabase_storage_backup_$date.zip";
         
-        // Utiliser la configuration locale
-        $supabaseUrl = 'https://cjes-nova-supabase-c2d40c-144-91-65-9.traefik.me';
+        // Utiliser la configuration depuis les variables d'environnement
+        $supabaseUrl = env('SUPABASE_URL', 'https://cjes-nova-supabase-c2d40c-144-91-65-9.traefik.me');
         $serviceKey = env('SUPABASE_SERVICE_ROLE_KEY');
+        
+        if (!$supabaseUrl || !$serviceKey) {
+            $this->error('❌ Configuration manquante : SUPABASE_URL ou SUPABASE_SERVICE_ROLE_KEY');
+            $this->info('   Ajoutez ces variables dans votre fichier .env');
+            return;
+        }
         $bucket = 'ecijes-bucket';
         
         $this->info('🔗 Connexion au Supabase Storage...');
@@ -170,6 +186,10 @@ class SupabaseBackup extends Command
         $this->info('📁 Fichier : ' . $filename);
         $this->info('📍 Chemin : ' . $filePath);
         $this->info('📊 Taille : ' . $this->formatBytes(File::size($filePath)));
+        
+        // Générer le lien de téléchargement
+        $downloadUrl = url("storage/backups/" . $filename);
+        $this->info('🔗 Téléchargement : ' . $downloadUrl);
     }
 
     private function generateInsertSQL($tableName, $data)
