@@ -147,17 +147,8 @@ class ExportSupabaseStorage extends Command
             $this->info('📊 Fichiers exportés : ' . $processedFiles . '/' . $totalFiles);
             $this->info('📊 Taille totale : ' . $this->formatBytes($totalSize));
             
-            // Afficher le lien de téléchargement approprié selon où le fichier a été sauvegardé
-            if ($result && isset($result['type'])) {
-                if ($result['type'] === 'supabase') {
-                    $this->info('🔗 Lien de téléchargement direct :');
-                    $this->line($result['url']);
-                } elseif ($result['type'] === 'local') {
-                    $this->info('📍 Fichier sauvegardé localement :');
-                    $this->line($result['path']);
-                    $this->info('💡 Pour le partager, copiez ce fichier manuellement vers Supabase Storage');
-                }
-            }
+            // Copier le ZIP dans le dossier storage/ pour le rendre accessible
+            $this->copyZipToStorageFolder($result, $filename);
 
         } catch (\Exception $e) {
             $this->error('❌ Erreur lors de l\'exportation : ' . $e->getMessage());
@@ -633,5 +624,76 @@ class ExportSupabaseStorage extends Command
         }
 
         return $files;
+    }
+
+    private function copyZipToStorageFolder($result, $originalFilename)
+    {
+        try {
+            // Utiliser le service SupabaseStorageService pour copier dans storage/
+            $storage = new SupabaseStorageService();
+            
+            // Générer un nom unique pour éviter les doublons
+            $uniqueFilename = pathinfo($originalFilename, PATHINFO_FILENAME);
+            $extension = pathinfo($originalFilename, PATHINFO_EXTENSION);
+            $timestamp = date('Y-m-d_H-i-s');
+            $targetFilename = $uniqueFilename . '_copie_' . $timestamp . '.' . $extension;
+            $targetPath = 'storage/' . $targetFilename;
+            
+            // Si le fichier est déjà sur Supabase, le copier dans le dossier storage/
+            if ($result && isset($result['type']) && $result['type'] === 'supabase') {
+                // Télécharger le fichier depuis Supabase
+                $sourcePath = 'storage/' . $result['filename'];
+                $response = Http::withHeaders([
+                    'apikey' => env('SUPABASE_SERVICE_ROLE_KEY'),
+                    'Authorization' => 'Bearer ' . env('SUPABASE_SERVICE_ROLE_KEY')
+                ])->get(env('SUPABASE_URL') . '/storage/v1/object/' . env('SUPABASE_STORAGE_BUCKET', 'ecijes-bucket') . '/' . $sourcePath);
+                
+                if ($response->successful()) {
+                    // Uploader dans le dossier storage/ avec un nom unique
+                    $uploadResult = $storage->upload(
+                        $targetPath,
+                        $response->body(),
+                        'application/zip'
+                    );
+                    
+                    if (isset($uploadResult['Key']) && $uploadResult['Key']) {
+                        $downloadUrl = env('SUPABASE_URL') . '/storage/v1/object/' . env('SUPABASE_STORAGE_BUCKET', 'ecijes-bucket') . '/' . $targetPath;
+                        $this->info('📋 ZIP copié dans storage/ pour accès direct :');
+                        $this->info('🔗 Lien de téléchargement direct :');
+                        $this->line($downloadUrl);
+                        return $downloadUrl;
+                    }
+                }
+            }
+            
+            // Si le fichier est local, le télécharger et l'uploader dans storage/
+            if ($result && isset($result['type']) && $result['type'] === 'local') {
+                $localPath = $result['path'];
+                if (file_exists($localPath)) {
+                    $fileContent = file_get_contents($localPath);
+                    
+                    $uploadResult = $storage->upload(
+                        $targetPath,
+                        $fileContent,
+                        'application/zip'
+                    );
+                    
+                    if (isset($uploadResult['Key']) && $uploadResult['Key']) {
+                        $downloadUrl = env('SUPABASE_URL') . '/storage/v1/object/' . env('SUPABASE_STORAGE_BUCKET', 'ecijes-bucket') . '/' . $targetPath;
+                        $this->info('📋 ZIP copié dans storage/ pour accès direct :');
+                        $this->info('🔗 Lien de téléchargement direct :');
+                        $this->line($downloadUrl);
+                        return $downloadUrl;
+                    }
+                }
+            }
+            
+            $this->warn('⚠️  Impossible de copier le ZIP dans storage/');
+            
+        } catch (\Exception $e) {
+            $this->error('❌ Erreur copie vers storage/ : ' . $e->getMessage());
+        }
+        
+        return false;
     }
 }
