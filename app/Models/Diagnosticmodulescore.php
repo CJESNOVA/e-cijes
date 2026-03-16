@@ -1,0 +1,49 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Orchid\Screen\AsSource;
+use Orchid\Attachment\Attachable;
+
+class Diagnosticmodulescore extends Model
+{
+    use AsSource, Attachable;
+
+    protected $table = 'diagnosticmodulescores';
+
+    /**
+     * @var array
+     */
+    protected $fillable = [
+        'diagnostic_id',
+        'diagnosticmodule_id',
+        'diagnosticquestion_id',
+        'score_total',
+        'score_max',
+        'score_pourcentage',
+        'diagnosticblocstatut_id',
+    ];
+    
+
+    public function diagnostic()
+    {
+        return $this->belongsTo(Diagnostic::class);
+    }
+
+    public function diagnosticmodule()
+    {
+        return $this->belongsTo(Diagnosticmodule::class);
+    }
+
+    public function diagnosticquestion()
+    {
+        return $this->belongsTo(Diagnosticquestion::class);
+    }
+
+    public function diagnosticblocstatut()
+    {
+        return $this->belongsTo(Diagnosticblocstatut::class);
+    }
+
+}

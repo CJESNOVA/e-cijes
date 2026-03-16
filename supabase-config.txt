@@ -1,0 +1,24 @@
+# Configuration Supabase pour l'export de base de données
+# Ajoutez ces variables à votre fichier .env
+
+SUPABASE_URL=https://votre-projet.supabase.co
+SUPABASE_SERVICE_ROLE_KEY=votre_service_role_key_ici
+SUPABASE_BUCKET=votre_bucket_ici
+
+# Pour obtenir ces clés :
+# 1. Allez sur https://supabase.com/dashboard
+# 2. Sélectionnez votre projet
+# 3. Allez dans Settings > API
+# 4. Copiez l'URL du projet
+# 5. IMPORTANT : Copiez la "service_role" key (commence par eyJ...) et NON la "service" key
+# 6. Allez dans Storage et créez un bucket
+
+# Exemple de configuration :
+# SUPABASE_URL=https://abcdefgh.supabase.co
+# SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+# SUPABASE_BUCKET=backups
+
+# Note importante :
+# - Utilisez SUPABASE_SERVICE_ROLE_KEY (pas SUPABASE_SERVICE_KEY)
+# - Le bucket doit exister dans Supabase Storage
+# - Les fichiers seront uploadés dans : storage/v1/object/{bucket}/{filename}
