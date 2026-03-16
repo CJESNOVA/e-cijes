@@ -137,7 +137,7 @@ class ExportSupabaseStorage extends Command
 
             // Uploader le ZIP vers Supabase Storage
             $this->info('☁️  Upload du ZIP vers Supabase Storage...');
-            $this->uploadZipToSupabase($zipPath, $filename);
+            $result = $this->uploadZipToSupabase($zipPath, $filename);
 
             // Supprimer le fichier temporaire
             unlink($zipPath);
@@ -147,10 +147,17 @@ class ExportSupabaseStorage extends Command
             $this->info('📊 Fichiers exportés : ' . $processedFiles . '/' . $totalFiles);
             $this->info('📊 Taille totale : ' . $this->formatBytes($totalSize));
             
-            // Afficher le lien de téléchargement direct
-            $downloadUrl = env('SUPABASE_URL') . '/storage/v1/object/' . env('SUPABASE_STORAGE_BUCKET', 'ecijes-bucket') . '/storage/' . $filename;
-            $this->info('🔗 Lien de téléchargement direct :');
-            $this->line($downloadUrl);
+            // Afficher le lien de téléchargement approprié selon où le fichier a été sauvegardé
+            if ($result && isset($result['type'])) {
+                if ($result['type'] === 'supabase') {
+                    $this->info('🔗 Lien de téléchargement direct :');
+                    $this->line($result['url']);
+                } elseif ($result['type'] === 'local') {
+                    $this->info('📍 Fichier sauvegardé localement :');
+                    $this->line($result['path']);
+                    $this->info('💡 Pour le partager, copiez ce fichier manuellement vers Supabase Storage');
+                }
+            }
 
         } catch (\Exception $e) {
             $this->error('❌ Erreur lors de l\'exportation : ' . $e->getMessage());
@@ -398,7 +405,9 @@ class ExportSupabaseStorage extends Command
             $this->info('☁️  Upload Supabase réussi !');
             $this->info('📁 Fichier : ' . $finalFilename);
             $this->info('📊 Taille : ' . $this->formatBytes($fileSize));
-            $this->info('🔗 URL : ' . env('SUPABASE_URL') . '/storage/v1/object/' . env('SUPABASE_BUCKET') . '/storage/' . $finalFilename);
+            $this->info('🔗 URL : ' . env('SUPABASE_URL') . '/storage/v1/object/' . env('SUPABASE_STORAGE_BUCKET', 'ecijes-bucket') . '/storage/' . $finalFilename);
+            
+            return ['type' => 'supabase', 'filename' => $finalFilename, 'url' => env('SUPABASE_URL') . '/storage/v1/object/' . env('SUPABASE_STORAGE_BUCKET', 'ecijes-bucket') . '/storage/' . $finalFilename];
 
         } catch (\Exception $e) {
             $this->error('❌ Erreur upload Supabase : ' . $e->getMessage());
@@ -446,7 +455,7 @@ class ExportSupabaseStorage extends Command
                 $this->info('📊 Taille : ' . $this->formatBytes($fileSize));
                 $this->info('📍 Chemin : ' . $localPath);
                 
-                return $localPath;
+                return ['type' => 'local', 'filename' => $localFinalFilename, 'path' => $localPath];
             }
             
             // Lire le contenu du fichier avec gestion de mémoire stricte
@@ -482,7 +491,7 @@ class ExportSupabaseStorage extends Command
                     $this->info('📊 Taille : ' . $this->formatBytes($fileSize));
                     $this->info('📍 Chemin : ' . $localPath);
                     
-                    return $localPath;
+                    return ['type' => 'local', 'filename' => $localFinalFilename, 'path' => $localPath];
                 }
             }
             
@@ -506,9 +515,9 @@ class ExportSupabaseStorage extends Command
             $this->info('✅ Sauvegarde dans Supabase Storage (storage/) réussie !');
             $this->info('📁 Fichier : ' . $finalFilename);
             $this->info('📊 Taille : ' . $this->formatBytes($fileSize));
-            $this->info('🔗 URL : ' . env('SUPABASE_URL') . '/storage/v1/object/' . env('SUPABASE_BUCKET') . '/' . $path);
+            $this->info('🔗 URL : ' . env('SUPABASE_URL') . '/storage/v1/object/' . env('SUPABASE_STORAGE_BUCKET', 'ecijes-bucket') . '/' . $path);
 
-            return $path;
+            return ['type' => 'supabase', 'filename' => $finalFilename, 'url' => env('SUPABASE_URL') . '/storage/v1/object/' . env('SUPABASE_STORAGE_BUCKET', 'ecijes-bucket') . '/' . $path];
 
         } catch (\Exception $e) {
             $this->error('❌ Erreur sauvegarde Supabase (storage/): ' . $e->getMessage());
