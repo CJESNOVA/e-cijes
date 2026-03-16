@@ -275,20 +275,33 @@ class ExportSupabaseStorage extends Command
             $timestamp = date('Y-m-d_H-i-s');
             $finalFilename = $uniqueFilename . '_' . $timestamp . '.' . $extension;
             
-            // Lire le contenu du fichier par chunks pour éviter la surcharge mémoire
-            $fileHandle = fopen($zipPath, 'rb');
+            // Vérifier la taille du fichier avant de continuer
             $fileSize = filesize($zipPath);
+            $this->info('📊 Taille du ZIP : ' . $this->formatBytes($fileSize));
+            
+            // Si le fichier est trop gros, utiliser directement le fallback local
+            if ($fileSize > 20 * 1024 * 1024) { // 20MB max
+                $this->warn('⚠️  Fichier trop gros pour upload direct (' . $this->formatBytes($fileSize) . '), utilisation de la sauvegarde locale...');
+                ini_set('memory_limit', $memoryLimit);
+                return $this->saveLocally($zipPath, $finalFilename);
+            }
+            
+            // Lire le contenu du fichier avec gestion de mémoire stricte
+            $fileHandle = fopen($zipPath, 'rb');
             $fileContent = '';
             
-            // Lire par chunks de 1MB
+            // Lire par chunks de 512KB pour limiter l'utilisation mémoire
             while (!feof($fileHandle)) {
-                $chunk = fread($fileHandle, 1024 * 1024); // 1MB chunks
+                $chunk = fread($fileHandle, 512 * 1024); // 512KB chunks
+                if ($chunk === false) break;
+                
                 $fileContent .= $chunk;
                 
-                // Si le contenu devient trop gros, on arrête et on utilise une autre approche
-                if (strlen($fileContent) > 30 * 1024 * 1024) { // 30MB max
+                // Vérifier l'utilisation mémoire et arrêter si nécessaire
+                $memoryUsage = memory_get_usage(true);
+                if ($memoryUsage > 80 * 1024 * 1024) { // 80MB max
                     fclose($fileHandle);
-                    $this->warn('⚠️  Fichier trop gros, utilisation de la sauvegarde locale...');
+                    $this->warn('⚠️  Limite mémoire atteinte (' . $this->formatBytes($memoryUsage) . '), utilisation de la sauvegarde locale...');
                     ini_set('memory_limit', $memoryLimit);
                     return $this->saveLocally($zipPath, $finalFilename);
                 }
@@ -332,20 +345,54 @@ class ExportSupabaseStorage extends Command
             // Utiliser SupabaseStorageService pour stocker dans le dossier storage/
             $storage = new SupabaseStorageService();
             
-            // Lire le contenu du fichier par chunks pour éviter la surcharge mémoire
-            $fileHandle = fopen($filePath, 'rb');
+            // Vérifier la taille du fichier avant de continuer
             $fileSize = filesize($filePath);
+            $this->info('📊 Taille du fichier : ' . $this->formatBytes($fileSize));
+            
+            // Si le fichier est trop gros, utiliser uniquement la sauvegarde locale
+            if ($fileSize > 20 * 1024 * 1024) { // 20MB max
+                $this->warn('⚠️  Fichier trop gros pour upload (' . $this->formatBytes($fileSize) . '), sauvegarde locale uniquement...');
+                ini_set('memory_limit', $memoryLimit);
+                
+                // Copier locale simple
+                $localDir = storage_path('app/exports');
+                if (!File::exists($localDir)) {
+                    File::makeDirectory($localDir, 0755, true);
+                }
+                
+                // Générer un nom de fichier unique
+                $uniqueFilename = pathinfo($finalFilename, PATHINFO_FILENAME);
+                $extension = pathinfo($finalFilename, PATHINFO_EXTENSION);
+                $timestamp = date('Y-m-d_H-i-s');
+                $localFinalFilename = $uniqueFilename . '_' . $timestamp . '.' . $extension;
+                
+                $localPath = $localDir . '/' . $localFinalFilename;
+                File::copy($filePath, $localPath);
+                
+                $this->info('✅ Sauvegarde locale réussie !');
+                $this->info('📁 Fichier : ' . $localFinalFilename);
+                $this->info('📊 Taille : ' . $this->formatBytes($fileSize));
+                $this->info('📍 Chemin : ' . $localPath);
+                
+                return $localPath;
+            }
+            
+            // Lire le contenu du fichier avec gestion de mémoire stricte
+            $fileHandle = fopen($filePath, 'rb');
             $fileContent = '';
             
-            // Lire par chunks de 1MB
+            // Lire par chunks de 512KB pour limiter l'utilisation mémoire
             while (!feof($fileHandle)) {
-                $chunk = fread($fileHandle, 1024 * 1024); // 1MB chunks
+                $chunk = fread($fileHandle, 512 * 1024); // 512KB chunks
+                if ($chunk === false) break;
+                
                 $fileContent .= $chunk;
                 
-                // Si le contenu devient trop gros, on arrête
-                if (strlen($fileContent) > 30 * 1024 * 1024) { // 30MB max
+                // Vérifier l'utilisation mémoire et arrêter si nécessaire
+                $memoryUsage = memory_get_usage(true);
+                if ($memoryUsage > 80 * 1024 * 1024) { // 80MB max
                     fclose($fileHandle);
-                    $this->warn('⚠️  Fichier trop gros pour upload, sauvegarde locale uniquement...');
+                    $this->warn('⚠️  Limite mémoire atteinte (' . $this->formatBytes($memoryUsage) . '), sauvegarde locale uniquement...');
                     ini_set('memory_limit', $memoryLimit);
                     
                     // Copier locale simple
@@ -354,12 +401,7 @@ class ExportSupabaseStorage extends Command
                         File::makeDirectory($localDir, 0755, true);
                     }
                     
-                    // Générer un nom de fichier unique
-                    $uniqueFilename = pathinfo($finalFilename, PATHINFO_FILENAME);
-                    $extension = pathinfo($finalFilename, PATHINFO_EXTENSION);
-                    $timestamp = date('Y-m-d_H-i-s');
-                    $localFinalFilename = $uniqueFilename . '_' . $timestamp . '.' . $extension;
-                    
+                    $localFinalFilename = pathinfo($finalFilename, PATHINFO_FILENAME) . '_' . date('Y-m-d_H-i-s') . '.' . pathinfo($finalFilename, PATHINFO_EXTENSION);
                     $localPath = $localDir . '/' . $localFinalFilename;
                     File::copy($filePath, $localPath);
                     
