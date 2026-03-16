@@ -38,7 +38,7 @@ class ExportSupabaseStorage extends Command
             // Utiliser la configuration depuis les variables d'environnement
             $supabaseUrl = env('SUPABASE_URL', 'https://cjes-nova-supabase-c2d40c-144-91-65-9.traefik.me');
             $serviceKey = env('SUPABASE_SERVICE_ROLE_KEY');
-            $bucket = env('SUPABASE_STORAGE_BUCKET', 'storage');
+            $bucket = env('SUPABASE_STORAGE_BUCKET', 'ecijes-bucket');
             
             if (!$supabaseUrl || !$serviceKey || !$bucket) {
                 $this->error('❌ Configuration manquante : SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY ou SUPABASE_STORAGE_BUCKET');
@@ -148,7 +148,7 @@ class ExportSupabaseStorage extends Command
             $this->info('📊 Taille totale : ' . $this->formatBytes($totalSize));
             
             // Afficher le lien de téléchargement direct
-            $downloadUrl = env('SUPABASE_URL') . '/storage/v1/object/' . env('SUPABASE_STORAGE_BUCKET', 'storage') . '/storage/' . $filename;
+            $downloadUrl = env('SUPABASE_URL') . '/storage/v1/object/' . env('SUPABASE_STORAGE_BUCKET', 'ecijes-bucket') . '/storage/' . $filename;
             $this->info('🔗 Lien de téléchargement direct :');
             $this->line($downloadUrl);
 
