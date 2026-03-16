@@ -84,10 +84,18 @@ class ExportSupabaseStorage extends Command
                 $processedFiles = 0;
 
                 foreach ($files as $index => $file) {
-                    $this->info("📁 Téléchargement : {$file['name']} (" . $this->formatBytes($file['size']) . ")");
+                    $fileName = $file['name'];
+                    
+                    // Ignorer les fichiers dans le dossier storage/ (ce sont des sauvegardes)
+                    if (str_starts_with($fileName, 'storage/')) {
+                        $this->info("⏭️  Ignoré (sauvegarde) : {$fileName}");
+                        continue;
+                    }
+                    
+                    $this->info("📁 Téléchargement : {$fileName} (" . $this->formatBytes($file['size']) . ")");
                     
                     // Télécharger le contenu du fichier
-                    $fileContent = $this->downloadFile($supabaseUrl, $serviceKey, $bucket, $file['name']);
+                    $fileContent = $this->downloadFile($supabaseUrl, $serviceKey, $bucket, $fileName);
                     
                     if ($fileContent !== false) {
                         // Ajouter le fichier au ZIP
@@ -98,7 +106,7 @@ class ExportSupabaseStorage extends Command
                         // Libérer la mémoire immédiatement
                         unset($fileContent);
                     } else {
-                        $this->warn("❌ Erreur lors du téléchargement : {$file['name']}");
+                        $this->warn("❌ Erreur lors du téléchargement : {$fileName}");
                     }
                     
                     // Pause entre les téléchargements pour éviter la surcharge
@@ -138,6 +146,11 @@ class ExportSupabaseStorage extends Command
             $this->info('📁 Fichier ZIP : ' . $filename);
             $this->info('📊 Fichiers exportés : ' . $processedFiles . '/' . $totalFiles);
             $this->info('📊 Taille totale : ' . $this->formatBytes($totalSize));
+            
+            // Afficher le lien de téléchargement direct
+            $downloadUrl = env('SUPABASE_URL') . '/storage/v1/object/' . env('SUPABASE_STORAGE_BUCKET', 'storage') . '/storage/' . $filename;
+            $this->info('🔗 Lien de téléchargement direct :');
+            $this->line($downloadUrl);
 
         } catch (\Exception $e) {
             $this->error('❌ Erreur lors de l\'exportation : ' . $e->getMessage());
