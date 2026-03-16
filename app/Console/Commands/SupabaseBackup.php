@@ -59,9 +59,65 @@ class SupabaseBackup extends Command
         
         // Liste des tables à exporter
         $tablesToExport = [
-            'languages', 'countries', // Vos tables confirmées
-            // Ajoutez ici toutes vos autres tables :
-            'users', // 'profiles', 'settings', 'orders', 'products'
+            // Tables d'authentification
+            'auth_register', 'auth_login', 'auth_google', 'auth_me',
+            
+            // Tables de cours
+            'coursecategories', 'courselessons', 'coursemodules', 'courseprogress', 'courses',
+            'lessonaudios', 'lessondocuments', 'lessonquizzes', 'lessonvideos',
+            'quizquestions', 'quizresults',
+            
+            // Tables administratives
+            'administrative_divisions', 'administrative_levels', 'contracting_authorities',
+            'contracting_authority_type_translations', 'contracting_authority_types',
+            
+            // Tables IA
+            'ai_training_files', 'ai_training_folders', 'ais',
+            
+            // Tables bancaires et financières
+            'authority_offers', 'bank_credit_document_types', 'bank_credit_documents_submitted',
+            'bank_credit_request_needs', 'bank_credit_requests',
+            
+            // Tables de contenu
+            'comments',
+            
+            // Tables de référence
+            'countries', 'currencies', 'languages', 'roles',
+            
+            // Tables d'experts
+            'expert_active_badges', 'expert_categories', 'expert_category_links',
+            'expert_certification_awards', 'expert_certifications', 'expert_rankings',
+            'expert_reviews', 'experts',
+            
+            // Tables de gestion de besoins
+            'need_kanban_columns', 'need_kanban_tasks',
+            
+            // Tables de notifications
+            'notifications',
+            
+            // Tables de profils et utilisateurs
+            'profiles', 'user_roles',
+            
+            // Tables de projets
+            'project_members', 'projects',
+            
+            // Tables de secteurs
+            'sector_translations', 'sectors',
+            
+            // Tables de startups
+            'startup_attestations', 'startup_needs', 'startup_portfolios', 'startup_tasks', 'startups',
+            
+            // Tables de fournisseurs
+            'supplier_categories', 'supplier_contacts', 'supplier_proformas', 'suppliers',
+            
+            // Tables de tâches
+            'tasks',
+            
+            // Tables de techniciens
+            'technician_attestations', 'technician_portfolios', 'technicians',
+            
+            // Tables de marchés publics
+            'tender_applications', 'tender_type_translations', 'tender_types', 'tenders'
         ];
         
         $foundTables = [];
