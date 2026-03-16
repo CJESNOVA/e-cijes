@@ -1,10 +1,16 @@
 <?php
+//Pour backup la base de données
+//php artisan supabase:backup database
+//Pour backup le storage
+//php artisan supabase:backup storage
+
 
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
+use App\Services\SupabaseStorageService;
 
 class SupabaseBackup extends Command
 {
@@ -127,14 +133,18 @@ class SupabaseBackup extends Command
         $filePath = $backupPath . '/' . $filename;
         File::put($filePath, $sqlContent);
         
+        // Récupérer la taille avant l'upload
+        $fileSize = File::size($filePath);
+        
+        // Uploader vers Supabase Storage
+        $this->uploadToSupabase($filePath, $filename, 'database');
+        
+        // Supprimer le fichier temporaire
+        unlink($filePath);
+        
         $this->info('✅ Backup de la base de données terminé !');
         $this->info('📁 Fichier : ' . $filename);
-        $this->info('📍 Chemin : ' . $filePath);
-        $this->info('📊 Taille : ' . $this->formatBytes(File::size($filePath)));
-        
-        // Générer le lien de téléchargement
-        $downloadUrl = url("storage/backups/" . $filename);
-        $this->info('🔗 Téléchargement : ' . $downloadUrl);
+        $this->info('📊 Taille : ' . $this->formatBytes($fileSize));
     }
 
     private function backupStorage()
@@ -176,20 +186,111 @@ class SupabaseBackup extends Command
         $readmeContent .= "Généré le : " . date('Y-m-d H:i:s') . "\n";
         $readmeContent .= "Bucket : " . $bucket . "\n";
         $readmeContent .= "URL : " . $supabaseUrl . "\n";
-        $readmeContent .= "\nNote: L'accès au storage est limité avec la clé actuelle.\n";
         $readmeContent .= "Pour un backup complet, utilisez une clé service_role avec permissions complètes.\n";
         
         $zip->addFromString('README.txt', $readmeContent);
         $zip->close();
         
+        // Récupérer la taille avant l'upload
+        $fileSize = File::size($filePath);
+        
+        // Uploader vers Supabase Storage
+        $this->uploadToSupabase($filePath, $filename, 'storage');
+        
+        // Supprimer le fichier temporaire
+        unlink($filePath);
+        
         $this->info('✅ Backup du storage terminé !');
         $this->info('📁 Fichier : ' . $filename);
-        $this->info('📍 Chemin : ' . $filePath);
-        $this->info('📊 Taille : ' . $this->formatBytes(File::size($filePath)));
-        
-        // Générer le lien de téléchargement
-        $downloadUrl = url("storage/backups/" . $filename);
-        $this->info('🔗 Téléchargement : ' . $downloadUrl);
+        $this->info('📊 Taille : ' . $this->formatBytes($fileSize));
+    }
+
+    private function uploadToSupabase($filePath, $filename, $type)
+    {
+        try {
+            // Vérifier si Supabase est configuré
+            if (!env('SUPABASE_URL') || !env('SUPABASE_SERVICE_ROLE_KEY') || !env('SUPABASE_BUCKET')) {
+                // Fallback vers le stockage local
+                $this->info('⚠️  Supabase non configuré, sauvegarde locale...');
+                return $this->saveLocally($filePath, $filename, $type);
+            }
+
+            // Vérifier si c'est une URL locale
+            if (str_contains(env('SUPABASE_URL'), '127.0.0.1') || str_contains(env('SUPABASE_URL'), 'localhost')) {
+                $this->warn('⚠️  URL Supabase locale détectée !');
+                $this->warn('📍  Pour le stockage Supabase, utilisez l\'URL de production');
+                $this->warn('🔄  Fallback vers sauvegarde locale...');
+                return $this->saveLocally($filePath, $filename, $type);
+            }
+
+            // Utiliser le service Supabase existant
+            $storage = new SupabaseStorageService();
+            
+            // Lire le contenu du fichier
+            $fileContent = File::get($filePath);
+            $fileSize = strlen($fileContent);
+            
+            // Uploader vers Supabase Storage dans le dossier approprié
+            $path = $type . '/' . $filename;
+            $contentType = $type === 'database' ? 'application/sql' : 'application/zip';
+            
+            $result = $storage->upload(
+                $path,
+                $fileContent,
+                $contentType
+            );
+
+            if (!isset($result['Key']) || !$result['Key']) {
+                throw new \Exception('Erreur upload Supabase: ' . json_encode($result));
+            }
+
+            $this->info('☁️  Upload Supabase réussi !');
+            $this->info('📁 Fichier : ' . $filename);
+            $this->info('📊 Taille : ' . $this->formatBytes($fileSize));
+            $this->info('🔗 URL : ' . env('SUPABASE_URL') . '/storage/v1/object/' . env('SUPABASE_BUCKET') . '/' . $path);
+
+        } catch (\Exception $e) {
+            $this->error('❌ Erreur upload Supabase : ' . $e->getMessage());
+            $this->info('🔄 Fallback vers sauvegarde locale...');
+            return $this->saveLocally($filePath, $filename, $type);
+        }
+    }
+
+    private function saveLocally($filePath, $filename, $type)
+    {
+        try {
+            // Utiliser SupabaseStorageService pour stocker dans le dossier approprié
+            $storage = new SupabaseStorageService();
+            
+            // Lire le contenu du fichier
+            $fileContent = File::get($filePath);
+            $fileSize = strlen($fileContent);
+            
+            // Uploader vers Supabase dans le dossier approprié
+            $path = $type . '/' . $filename;
+            $contentType = $type === 'database' ? 'application/sql' : 'application/zip';
+            
+            $result = $storage->upload(
+                $path,
+                $fileContent,
+                $contentType
+            );
+
+            if (!isset($result['Key']) || !$result['Key']) {
+                throw new \Exception('Erreur upload Supabase (' . $type . '/): ' . json_encode($result));
+            }
+
+            $this->info('✅ Sauvegarde dans Supabase Storage (' . $type . '/) réussie !');
+            $this->info('📁 Fichier : ' . $filename);
+            $this->info('📊 Taille : ' . $this->formatBytes($fileSize));
+            $this->info('🔗 URL : ' . env('SUPABASE_URL') . '/storage/v1/object/' . env('SUPABASE_BUCKET') . '/' . $path);
+
+            return $path;
+
+        } catch (\Exception $e) {
+            $this->error('❌ Erreur sauvegarde Supabase (' . $type . '/): ' . $e->getMessage());
+            throw $e;
+        }
     }
 
     private function generateInsertSQL($tableName, $data)
