@@ -40,7 +40,7 @@ class SupabaseBackup extends Command
         $filename = "supabase_database_backup_$date.sql";
         
         // Utiliser la configuration locale
-        $supabaseUrl = 'http://127.0.0.1:54321';
+        $supabaseUrl = 'https://cjes-nova-supabase-c2d40c-144-91-65-9.traefik.me';
         $serviceKey = env('SUPABASE_SERVICE_ROLE_KEY');
         
         $this->info('🔗 Connexion à Supabase REST API...');
@@ -135,7 +135,7 @@ class SupabaseBackup extends Command
         $filename = "supabase_storage_backup_$date.zip";
         
         // Utiliser la configuration locale
-        $supabaseUrl = 'http://127.0.0.1:54321';
+        $supabaseUrl = 'https://cjes-nova-supabase-c2d40c-144-91-65-9.traefik.me';
         $serviceKey = env('SUPABASE_SERVICE_ROLE_KEY');
         $bucket = 'ecijes-bucket';
         
