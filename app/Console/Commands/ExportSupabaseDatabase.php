@@ -103,9 +103,21 @@ class ExportSupabaseDatabase extends Command
     private function uploadToSupabase($filePath, $filename)
     {
         try {
-            // Utiliser l'URL locale pour les tests
-            $supabaseUrl = 'http://127.0.0.1:54321';
-            
+            // Vérifier si Supabase est configuré
+            if (!env('SUPABASE_URL') || !env('SUPABASE_SERVICE_ROLE_KEY') || !env('SUPABASE_BUCKET')) {
+                // Fallback vers le stockage local
+                $this->info('  Supabase non configuré, sauvegarde locale...');
+                return $this->saveLocally($filePath, $filename);
+            }
+
+            // Vérifier si c'est une URL locale
+            if (str_contains(env('SUPABASE_URL'), '127.0.0.1') || str_contains(env('SUPABASE_URL'), 'localhost')) {
+                $this->warn('  URL Supabase locale détectée !');
+                $this->warn('  Pour le stockage Supabase, utilisez l\'URL de production');
+                $this->warn('  Fallback vers sauvegarde locale...');
+                return $this->saveLocally($filePath, $filename);
+            }
+
             // Utiliser le service Supabase existant
             $storage = new SupabaseStorageService();
             
@@ -115,7 +127,7 @@ class ExportSupabaseDatabase extends Command
             
             // Uploader vers Supabase Storage
             $result = $storage->upload(
-                $filename,
+                'database/' . $filename,
                 $fileContent,
                 'application/sql'
             );
@@ -124,14 +136,14 @@ class ExportSupabaseDatabase extends Command
                 throw new \Exception('Erreur upload Supabase: ' . json_encode($result));
             }
 
-            $this->info('☁️  Upload Supabase Storage réussi !');
-            $this->info('📁 Fichier : ' . $filename);
-            $this->info('📊 Taille : ' . $this->formatBytes($fileSize));
-            $this->info('🔗 URL : ' . $supabaseUrl . '/storage/v1/object/' . env('SUPABASE_BUCKET', 'ecijes-bucket') . '/' . $filename);
+            $this->info('  Upload Supabase réussi !');
+            $this->info('  Fichier : ' . $filename);
+            $this->info('  Taille : ' . $this->formatBytes($fileSize));
+            $this->info('  URL : ' . env('SUPABASE_URL') . '/storage/v1/object/' . env('SUPABASE_BUCKET') . '/database/' . $filename);
 
         } catch (\Exception $e) {
-            $this->error('❌ Erreur upload Supabase : ' . $e->getMessage());
-            $this->info('🔄 Fallback vers sauvegarde locale...');
+            $this->error('  Erreur upload Supabase : ' . $e->getMessage());
+            $this->info('  Fallback vers sauvegarde locale...');
             return $this->saveLocally($filePath, $filename);
         }
     }
@@ -139,25 +151,34 @@ class ExportSupabaseDatabase extends Command
     private function saveLocally($filePath, $filename)
     {
         try {
-            // Créer le répertoire local si nécessaire
-            $localDir = storage_path('app/exports');
-            if (!File::exists($localDir)) {
-                File::makeDirectory($localDir, 0755, true);
+            // Utiliser SupabaseStorageService pour stocker dans le dossier database/
+            $storage = new SupabaseStorageService();
+            
+            // Lire le contenu du fichier
+            $fileContent = File::get($filePath);
+            $fileSize = strlen($fileContent);
+            
+            // Uploader vers Supabase dans le dossier database/
+            $path = 'database/' . $filename;
+            $result = $storage->upload(
+                $path,
+                $fileContent,
+                'application/sql'
+            );
+
+            if (!isset($result['Key']) || !$result['Key']) {
+                throw new \Exception('Erreur upload Supabase (database/): ' . json_encode($result));
             }
 
-            // Copier le fichier vers le stockage local
-            $localPath = $localDir . '/' . $filename;
-            File::copy($filePath, $localPath);
-            
-            $fileSize = File::size($localPath);
+            $this->info('  Sauvegarde dans Supabase Storage (database/) réussie !');
+            $this->info('  Fichier : ' . $filename);
+            $this->info('  Taille : ' . $this->formatBytes($fileSize));
+            $this->info('  URL : ' . env('SUPABASE_URL') . '/storage/v1/object/' . env('SUPABASE_BUCKET') . '/' . $path);
 
-            $this->info('✅ Sauvegarde locale réussie !');
-            $this->info('📁 Fichier : ' . $filename);
-            $this->info('📊 Taille : ' . $this->formatBytes($fileSize));
-            $this->info('� Chemin : ' . $localPath);
+            return $path;
 
         } catch (\Exception $e) {
-            $this->error('❌ Erreur sauvegarde locale : ' . $e->getMessage());
+            $this->error('  Erreur sauvegarde Supabase (database/): ' . $e->getMessage());
             throw $e;
         }
     }
@@ -170,11 +191,12 @@ class ExportSupabaseDatabase extends Command
             $filePath = $tempFile . '.sql';
             rename($tempFile, $filePath);
 
-            $supabaseUrl = 'http://127.0.0.1:54321';
-            $serviceKey = env('SUPABASE_SERVICE_ROLE_KEY'); // Votre clé locale
+            // Utiliser la configuration depuis les variables d'environnement
+            $supabaseUrl = env('SUPABASE_URL', 'https://cjes-nova-supabase-c2d40c-144-91-65-9.traefik.me');
+            $serviceKey = env('SUPABASE_SERVICE_ROLE_KEY');
             
             if (!$supabaseUrl || !$serviceKey) {
-                throw new \Exception('Configuration Supabase manquante');
+                throw new \Exception('Configuration manquante : SUPABASE_URL ou SUPABASE_SERVICE_ROLE_KEY');
             }
 
             $this->info('🔗 Connexion à Supabase REST API...');
@@ -345,38 +367,104 @@ class ExportSupabaseDatabase extends Command
             if (empty($existingTables)) {
                 $this->info("🔍 Utilisation de la liste pré-établie des tables...");
                 
-                // Liste des tables à exporter (à compléter par l'utilisateur)
+                // Liste des tables à exporter (même liste que SupabaseBackup)
                 $tablesToExport = [
-                    'languages', 'countries', // Vos tables confirmées
-                    'users', 'user', 'profiles', 'profile', 'auth_users', // Variations possibles
-                    // Ajoutez ici toutes vos autres tables :
-                    // 'roles', 'permissions', 'settings',
-                    // 'orders', 'products', 'categories', 'transactions',
-                    // 'notifications', 'logs', 'audit_trails', 'sessions',
-                    // 'configurations', 'metadata', 'files', 'documents',
-                    // 'customers', 'suppliers', 'employees', 'departments',
-                    // 'invoices', 'payments', 'shipments', 'inventory'
+                    // Tables d'authentification
+                    'auth_register', 'auth_login', 'auth_google', 'auth_me',
+                    
+                    // Tables de cours
+                    'CourseCategories', 'CourseLessons', 'CourseModules', 'courseprogress', 'CourseProgress', 'Courses',
+                    'lessonaudios', 'lessondocuments', 'lessonquizzes', 'lessonvideos',
+                    'quizquestions', 'quizresults',
+                    
+                    // Tables administratives
+                    'administrative_divisions', 'administrative_levels', 'contracting_authorities',
+                    'contracting_authority_type_translations', 'contracting_authority_types',
+                    
+                    // Tables IA
+                    'ai_training_files', 'ai_training_folders', 'ais',
+                    
+                    // Tables bancaires et financières
+                    'authority_offers', 'bank_credit_document_types', 'bank_credit_documents_submitted',
+                    'bank_credit_request_needs', 'bank_credit_requests',
+                    
+                    // Tables de contenu
+                    'comments',
+                    
+                    // Tables de référence
+                    'countries', 'currencies', 'languages', 'roles',
+                    
+                    // Tables d'experts
+                    'expert_active_badges', 'expert_categories', 'expert_category_links',
+                    'expert_certification_awards', 'expert_certifications', 'expert_rankings',
+                    'expert_reviews', 'experts',
+                    
+                    // Tables de gestion de besoins
+                    'need_kanban_columns', 'need_kanban_tasks',
+                    
+                    // Tables de notifications
+                    'notifications',
+                    
+                    // Tables de profils et utilisateurs
+                    'profiles', 'user_roles',
+                    
+                    // Tables de projets
+                    'project_members', 'projects',
+                    
+                    // Tables de secteurs
+                    'sector_translations', 'sectors',
+                    
+                    // Tables de startups
+                    'startup_attestations', 'startup_needs', 'startup_portfolios', 'startup_tasks', 'startups',
+                    
+                    // Tables de fournisseurs
+                    'supplier_categories', 'supplier_contacts', 'supplier_proformas', 'suppliers',
+                    
+                    // Tables de tâches
+                    'tasks',
+                    
+                    // Tables de techniciens
+                    'technician_attestations', 'technician_portfolios', 'technicians',
+                    
+                    // Tables de marchés publics
+                    'tender_applications', 'tender_type_translations', 'tender_types', 'tenders'
                 ];
                 
                 foreach ($tablesToExport as $tableName) {
-                    try {
-                        $response = Http::withHeaders([
-                            'apikey' => $serviceKey,
-                            'Authorization' => 'Bearer ' . $serviceKey,
-                            'Content-Type' => 'application/json'
-                        ])->get($supabaseUrl . '/rest/v1/' . $tableName, [
-                            'select' => 'count',
-                            'limit' => 1
-                        ]);
+                    $tableVariations = [
+                        $tableName,                    // Original
+                        strtolower($tableName),        // tout en minuscules
+                        strtoupper($tableName),        // tout en majuscules
+                        ucfirst($tableName),           // première lettre majuscule
+                        ucwords(str_replace('_', ' ', $tableName)), // mots avec majuscules
+                        str_replace('_', '', $tableName), // sans underscores
+                    ];
+                    
+                    $found = false;
+                    foreach ($tableVariations as $variation) {
+                        try {
+                            $response = Http::withHeaders([
+                                'apikey' => $serviceKey,
+                                'Authorization' => 'Bearer ' . $serviceKey,
+                                'Content-Type' => 'application/json'
+                            ])->get($supabaseUrl . '/rest/v1/' . $variation, [
+                                'select' => 'count',
+                                'limit' => 1
+                            ]);
 
-                        if ($response->successful()) {
-                            $existingTables[] = $tableName;
-                            $this->info("✅ Table trouvée : {$tableName}");
-                        } else {
-                            $this->info("❌ Table non trouvée : {$tableName} (" . $response->status() . ")");
+                            if ($response->successful()) {
+                                $existingTables[] = $variation;
+                                $this->info("✅ Table trouvée : $variation (original: $tableName)");
+                                $found = true;
+                                break;
+                            }
+                        } catch (\Exception $e) {
+                            // Continuer avec la variation suivante
                         }
-                    } catch (\Exception $e) {
-                        $this->info("❌ Erreur table {$tableName} : " . $e->getMessage());
+                    }
+                    
+                    if (!$found) {
+                        $this->info("❌ Table non trouvée : $tableName (aucune variation fonctionnelle)");
                     }
                 }
             }

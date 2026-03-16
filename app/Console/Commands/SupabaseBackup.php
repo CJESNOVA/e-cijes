@@ -63,7 +63,7 @@ class SupabaseBackup extends Command
             'auth_register', 'auth_login', 'auth_google', 'auth_me',
             
             // Tables de cours
-            'coursecategories', 'courselessons', 'coursemodules', 'courseprogress', 'courses',
+            'CourseCategories', 'CourseLessons', 'CourseModules', 'courseprogress', 'CourseProgress', 'Courses',
             'lessonaudios', 'lessondocuments', 'lessonquizzes', 'lessonvideos',
             'quizquestions', 'quizresults',
             
@@ -122,24 +122,40 @@ class SupabaseBackup extends Command
         
         $foundTables = [];
         foreach ($tablesToExport as $tableName) {
-            try {
-                $response = Http::withHeaders([
-                    'apikey' => $serviceKey,
-                    'Authorization' => 'Bearer ' . $serviceKey,
-                    'Content-Type' => 'application/json'
-                ])->get($supabaseUrl . '/rest/v1/' . $tableName, [
-                    'select' => 'count',
-                    'limit' => 1
-                ]);
+            $tableVariations = [
+                $tableName,                    // Original
+                strtolower($tableName),        // tout en minuscules
+                strtoupper($tableName),        // tout en majuscules
+                ucfirst($tableName),           // première lettre majuscule
+                ucwords(str_replace('_', ' ', $tableName)), // mots avec majuscules
+                str_replace('_', '', $tableName), // sans underscores
+            ];
+            
+            $found = false;
+            foreach ($tableVariations as $variation) {
+                try {
+                    $response = Http::withHeaders([
+                        'apikey' => $serviceKey,
+                        'Authorization' => 'Bearer ' . $serviceKey,
+                        'Content-Type' => 'application/json'
+                    ])->get($supabaseUrl . '/rest/v1/' . $variation, [
+                        'select' => 'count',
+                        'limit' => 1
+                    ]);
 
-                if ($response->successful()) {
-                    $foundTables[] = $tableName;
-                    $this->info("✅ Table trouvée : {$tableName}");
-                } else {
-                    $this->info("❌ Table non trouvée : {$tableName} (" . $response->status() . ")");
+                    if ($response->successful()) {
+                        $foundTables[] = $variation;
+                        $this->info("✅ Table trouvée : $variation (original: $tableName)");
+                        $found = true;
+                        break;
+                    }
+                } catch (\Exception $e) {
+                    // Continuer avec la variation suivante
                 }
-            } catch (\Exception $e) {
-                $this->info("❌ Erreur table {$tableName} : " . $e->getMessage());
+            }
+            
+            if (!$found) {
+                $this->info("❌ Table non trouvée : $tableName (aucune variation fonctionnelle)");
             }
         }
         
