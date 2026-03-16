@@ -35,13 +35,15 @@ class ExportSupabaseStorage extends Command
         $this->info('Exportation du Supabase Storage...');
 
         try {
-            // Utiliser la configuration locale Supabase
-            $supabaseUrl = 'http://127.0.0.1:54321';
-            $serviceKey = env('SUPABASE_SERVICE_ROLE_KEY'); // Votre clé locale
-            $bucket = 'ecijes-bucket'; // Le vrai bucket où sont vos fichiers
+            // Utiliser la configuration depuis les variables d'environnement
+            $supabaseUrl = env('SUPABASE_URL', 'https://cjes-nova-supabase-c2d40c-144-91-65-9.traefik.me');
+            $serviceKey = env('SUPABASE_SERVICE_ROLE_KEY');
+            $bucket = env('SUPABASE_BUCKET', 'ecijes-bucket');
             
             if (!$supabaseUrl || !$serviceKey || !$bucket) {
-                throw new \Exception('Configuration Supabase manquante');
+                $this->error('❌ Configuration manquante : SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY ou SUPABASE_BUCKET');
+                $this->info('   Ajoutez ces variables dans votre fichier .env');
+                return;
             }
 
             $this->info('🔗 Connexion à Supabase Storage...');
@@ -241,50 +243,59 @@ class ExportSupabaseStorage extends Command
     private function uploadZipToSupabase($zipPath, $filename)
     {
         try {
-            // Sauvegarder localement au lieu d'uploader (comme pour le script de base de données)
-            $this->info('💾 Sauvegarde locale du fichier ZIP...');
-            return $this->saveLocally($zipPath, $filename);
+            // Vérifier si Supabase est configuré
+            if (!env('SUPABASE_URL') || !env('SUPABASE_SERVICE_ROLE_KEY') || !env('SUPABASE_BUCKET')) {
+                // Fallback vers le stockage local
+                $this->info('⚠️  Supabase non configuré, sauvegarde locale...');
+                return $this->saveLocally($zipPath, $filename);
+            }
+
+            // Vérifier si c'est une URL locale
+            if (str_contains(env('SUPABASE_URL'), '127.0.0.1') || str_contains(env('SUPABASE_URL'), 'localhost')) {
+                $this->warn('⚠️  URL Supabase locale détectée !');
+                $this->warn('📍  Pour le stockage Supabase, utilisez l\'URL de production');
+                $this->warn('🔄  Fallback vers sauvegarde locale...');
+                return $this->saveLocally($zipPath, $filename);
+            }
+
+            // Utiliser le service Supabase existant
+            $storage = new SupabaseStorageService();
+            
+            // Lire le contenu du fichier
+            $fileContent = File::get($zipPath);
+            $fileSize = strlen($fileContent);
+            
+            // Uploader vers Supabase Storage dans le dossier storage/
+            $result = $storage->upload(
+                'storage/' . $filename,
+                $fileContent,
+                'application/zip'
+            );
+
+            if (!isset($result['Key']) || !$result['Key']) {
+                throw new \Exception('Erreur upload Supabase: ' . json_encode($result));
+            }
+
+            $this->info('☁️  Upload Supabase réussi !');
+            $this->info('📁 Fichier : ' . $filename);
+            $this->info('📊 Taille : ' . $this->formatBytes($fileSize));
+            $this->info('🔗 URL : ' . env('SUPABASE_URL') . '/storage/v1/object/' . env('SUPABASE_BUCKET') . '/storage/' . $filename);
 
         } catch (\Exception $e) {
-            $this->error('❌ Erreur sauvegarde ZIP : ' . $e->getMessage());
-            throw $e;
+            $this->error('❌ Erreur upload Supabase : ' . $e->getMessage());
+            $this->info('🔄 Fallback vers sauvegarde locale...');
+            return $this->saveLocally($zipPath, $filename);
         }
     }
     
     private function saveLocally($filePath, $filename)
     {
         try {
-            // Créer le répertoire local si nécessaire
-            $localDir = storage_path('app/exports');
-            if (!File::exists($localDir)) {
-                File::makeDirectory($localDir, 0755, true);
-            }
-
-            // Copier le fichier vers le stockage local
-            $localPath = $localDir . '/' . $filename;
-            File::copy($filePath, $localPath);
-            
-            $fileSize = File::size($localPath);
-
-            $this->info('✅ Sauvegarde locale réussie !');
-            $this->info('📁 Fichier : ' . $filename);
-            $this->info('📊 Taille : ' . $this->formatBytes($fileSize));
-            $this->info('� Chemin : ' . $localPath);
-
-        } catch (\Exception $e) {
-            $this->error('❌ Erreur sauvegarde locale : ' . $e->getMessage());
-            throw $e;
-        }
-    }
-
-    private function saveZipLocally($zipPath, $filename)
-    {
-        try {
-            // Utiliser SupabaseStorageService pour stocker dans /storage/
+            // Utiliser SupabaseStorageService pour stocker dans le dossier storage/
             $storage = new SupabaseStorageService();
             
-            // Lire le contenu du fichier ZIP
-            $fileContent = File::get($zipPath);
+            // Lire le contenu du fichier
+            $fileContent = File::get($filePath);
             $fileSize = strlen($fileContent);
             
             // Uploader vers Supabase dans le dossier storage/
@@ -296,10 +307,10 @@ class ExportSupabaseStorage extends Command
             );
 
             if (!isset($result['Key']) || !$result['Key']) {
-                throw new \Exception('Erreur upload ZIP (storage/): ' . json_encode($result));
+                throw new \Exception('Erreur upload Supabase (storage/): ' . json_encode($result));
             }
 
-            $this->info('✅ Sauvegarde ZIP dans Supabase Storage (storage/) réussie !');
+            $this->info('✅ Sauvegarde dans Supabase Storage (storage/) réussie !');
             $this->info('📁 Fichier : ' . $filename);
             $this->info('📊 Taille : ' . $this->formatBytes($fileSize));
             $this->info('🔗 URL : ' . env('SUPABASE_URL') . '/storage/v1/object/' . env('SUPABASE_BUCKET') . '/' . $path);
@@ -307,9 +318,19 @@ class ExportSupabaseStorage extends Command
             return $path;
 
         } catch (\Exception $e) {
-            $this->error('❌ Erreur sauvegarde ZIP (storage/): ' . $e->getMessage());
+            $this->error('❌ Erreur sauvegarde Supabase (storage/): ' . $e->getMessage());
             throw $e;
         }
+    }
+
+    private function formatBytes($bytes, $precision = 2) {
+        $units = array('B', 'KB', 'MB', 'GB', 'TB');
+        
+        for ($i = 0; $bytes > 1024 && $i < count($units) - 1; $i++) {
+            $bytes /= 1024;
+        }
+        
+        return round($bytes, $precision) . ' ' . $units[$i];
     }
 
     private function getAllStorageFilesViaSQL($supabaseUrl, $serviceKey, $bucket)
@@ -353,16 +374,5 @@ class ExportSupabaseStorage extends Command
         }
 
         return $files;
-    }
-
-    private function formatBytes($bytes, $precision = 2)
-    {
-        $units = array('B', 'KB', 'MB', 'GB', 'TB');
-        
-        for ($i = 0; $bytes > 1024 && $i < count($units) - 1; $i++) {
-            $bytes /= 1024;
-        }
-        
-        return round($bytes, $precision) . ' ' . $units[$i];
     }
 }
