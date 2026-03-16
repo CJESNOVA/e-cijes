@@ -337,40 +337,57 @@ class ExportSupabaseStorage extends Command
     {
         $files = [];
         
-        try {
-            // Essayer d'utiliser l'API REST PostgreSQL directement sur la table storage.objects
-            $response = Http::withHeaders([
-                'apikey' => $serviceKey,
-                'Authorization' => 'Bearer ' . $serviceKey,
-                'Content-Type' => 'application/json',
-                'Accept' => 'application/vnd.pgrst.object+json'
-            ])->get($supabaseUrl . '/rest/v1/storage.objects', [
-                'bucket_id' => 'eq.' . $bucket,
-                'select' => 'name,created_at',
-                'order' => 'name.asc',
-                'limit' => 10000
-            ]);
+        // Essayer différentes variations du nom du bucket
+        $bucketVariations = [
+            $bucket,                    // Original
+            strtolower($bucket),        // tout en minuscules
+            strtoupper($bucket),        // tout en majuscules
+            'storage',                 // Bucket par défaut Supabase
+            'public',                 // Alternative
+        ];
+        
+        $found = false;
+        foreach ($bucketVariations as $bucketVar) {
+            try {
+                // Utiliser l'API Storage directe de Supabase
+                $response = Http::withHeaders([
+                    'apikey' => $serviceKey,
+                    'Authorization' => 'Bearer ' . $serviceKey,
+                    'Content-Type' => 'application/json'
+                ])->get($supabaseUrl . '/storage/v1/object/list/' . $bucketVar, [
+                    'limit' => 10000
+                ]);
 
-            if ($response->successful()) {
-                $data = $response->json();
-                if (is_array($data)) {
-                    foreach ($data as $item) {
-                        if (isset($item['name'])) {
-                            $files[] = [
-                                'name' => $item['name'],
-                                'size' => 0, // Taille non disponible
-                                'created_at' => $item['created_at'] ?? null
-                            ];
+                if ($response->successful()) {
+                    $data = $response->json();
+                    if (is_array($data)) {
+                        foreach ($data as $item) {
+                            if (isset($item['name'])) {
+                                $files[] = [
+                                    'name' => $item['name'],
+                                    'size' => $item['size'] ?? 0,
+                                    'created_at' => $item['created_at'] ?? null
+                                ];
+                            }
                         }
                     }
+                    $this->info("📊 " . count($files) . " fichier(s) trouvé(s) via API Storage");
+                    $this->info("✅ Bucket trouvé : $bucketVar (original: $bucket)");
+                    $found = true;
+                    break;
+                } else {
+                    $this->info("❌ Bucket $bucketVar échoué : " . $response->status());
+                    if (strpos($response->body(), 'Bucket not found') !== false) {
+                        $this->info("   Ce bucket n'existe pas. Essayez avec : 'storage', 'public', ou vérifiez l'orthographe");
+                    }
                 }
-                $this->info("📊 " . count($files) . " fichier(s) trouvé(s) via table storage.objects");
-            } else {
-                $this->info("❌ Accès table storage.objects échoué : " . $response->status());
-                $this->info("   Body : " . substr($response->body(), 0, 200) . "...");
+            } catch (\Exception $e) {
+                $this->info("❌ Erreur API Storage avec bucket $bucketVar : " . $e->getMessage());
             }
-        } catch (\Exception $e) {
-            $this->info("❌ Erreur accès table storage.objects : " . $e->getMessage());
+        }
+        
+        if (!$found) {
+            $this->info("❌ Aucune variation du bucket trouvée. Le bucket '$bucket' n'existe peut-être pas.");
         }
 
         return $files;
