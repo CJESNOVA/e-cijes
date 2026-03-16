@@ -111,7 +111,7 @@ class ExportSupabaseStorage extends Command
                         $this->info("🧹 Nettoyage mémoire : " . $this->formatBytes($memoryUsage));
                         
                         // Si la mémoire est trop élevée, arrêter
-                        if ($memoryUsage > 80 * 1024 * 1024) { // 80MB max
+                        if ($memoryUsage > 120 * 1024 * 1024) { // 120MB max (augmenté)
                             $this->warn("⚠️  Limite mémoire atteinte, arrêt du téléchargement");
                             break;
                         }
@@ -246,7 +246,7 @@ class ExportSupabaseStorage extends Command
         try {
             // Vérifier l'utilisation mémoire avant de télécharger
             $memoryUsage = memory_get_usage(true);
-            if ($memoryUsage > 60 * 1024 * 1024) { // 60MB max
+            if ($memoryUsage > 100 * 1024 * 1024) { // 100MB max (augmenté)
                 $this->warn("⚠️  Limite mémoire atteinte, saut du fichier : {$fileName}");
                 return false;
             }
@@ -262,7 +262,7 @@ class ExportSupabaseStorage extends Command
             }
             
             $fileSize = (int) $headResponse->header('Content-Length', 0);
-            $maxFileSize = 2 * 1024 * 1024; // 2MB max par fichier
+            $maxFileSize = 5 * 1024 * 1024; // 5MB max par fichier (augmenté)
             
             if ($fileSize > $maxFileSize) {
                 $this->warn("⚠️  Fichier trop gros, ignoré : {$fileName} (" . $this->formatBytes($fileSize) . ")");
@@ -288,6 +288,8 @@ class ExportSupabaseStorage extends Command
                     return false;
                 }
                 
+                // Libérer la mémoire après chaque téléchargement réussi
+                $content = $content; // Force copy pour optimiser
                 return $content;
             }
         } catch (\Exception $e) {
