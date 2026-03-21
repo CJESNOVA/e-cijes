@@ -307,7 +307,7 @@ class ImportSupabaseStorage extends Command
                 }
             }
             
-            // Uploader le fichier avec le bon Content-Type
+            // Utiliser withBody pour éviter l'encodage JSON des fichiers binaires
             $response = Http::withHeaders([
                 'apikey' => $serviceKey,
                 'Authorization' => 'Bearer ' . $serviceKey,
@@ -316,7 +316,8 @@ class ImportSupabaseStorage extends Command
             ->withOptions([
                 'read_timeout' => 30,
                 'connect_timeout' => 15
-            ])->put($supabaseUrl . '/storage/v1/object/' . $bucket . '/' . $filename, $fileContent);
+            ])->withBody($fileContent, $mimeType)
+            ->put($supabaseUrl . '/storage/v1/object/' . $bucket . '/' . $filename);
 
             if ($response->successful()) {
                 return true;
