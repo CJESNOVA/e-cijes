@@ -1,6 +1,6 @@
 <?php
 
-//php artisan supabase:import-storage [fichier.zip]
+//php artisan supabase:import-storage supabase_storage.zip [fichier.zip]
 //php artisan supabase:import-storage //par defaut cherche le dernier zip
 
 namespace App\Console\Commands;
@@ -215,6 +215,12 @@ class ImportSupabaseStorage extends Command
                 $fileSize = strlen($fileContent);
                 $totalSize += $fileSize;
 
+                // Vérifier si le contenu contient des caractères UTF-8 invalides
+                if (!mb_check_encoding($fileContent, 'UTF-8') && !$this->isBinaryFile($filename)) {
+                    $this->info("\n⚠️  Caractères UTF-8 invalides, nettoyage : {$filename}");
+                    $fileContent = mb_convert_encoding($fileContent, 'UTF-8', 'UTF-8');
+                }
+
                 // Uploader vers le nouveau Supabase
                 $result = $this->uploadToNewSupabase($newSupabaseUrl, $newServiceKey, $newBucket, $filename, $fileContent);
                 
@@ -273,11 +279,14 @@ class ImportSupabaseStorage extends Command
                 return false;
             }
 
-            // Uploader le fichier
+            // Détecter le type MIME basé sur l'extension
+            $mimeType = $this->getMimeType($filename);
+            
+            // Uploader le fichier avec le bon Content-Type
             $response = Http::withHeaders([
                 'apikey' => $serviceKey,
                 'Authorization' => 'Bearer ' . $serviceKey,
-                'Content-Type' => 'application/octet-stream'
+                'Content-Type' => $mimeType
             ])->timeout(30)
             ->withOptions([
                 'read_timeout' => 30,
@@ -288,6 +297,9 @@ class ImportSupabaseStorage extends Command
                 return true;
             } else {
                 $this->warn("\n⚠️  Erreur upload {$filename} : " . $response->status());
+                if ($response->status() === 400) {
+                    $this->warn("   Détail : " . $response->body());
+                }
                 return false;
             }
             
@@ -295,6 +307,36 @@ class ImportSupabaseStorage extends Command
             $this->warn("\n⚠️  Erreur upload {$filename} : " . $e->getMessage());
             return false;
         }
+    }
+
+    private function getMimeType($filename)
+    {
+        $extension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+        
+        $mimeTypes = [
+            'jpg' => 'image/jpeg',
+            'jpeg' => 'image/jpeg',
+            'png' => 'image/png',
+            'gif' => 'image/gif',
+            'webp' => 'image/webp',
+            'pdf' => 'application/pdf',
+            'sql' => 'text/plain',
+            'txt' => 'text/plain',
+            'csv' => 'text/csv',
+            'doc' => 'application/msword',
+            'docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'xls' => 'application/vnd.ms-excel',
+            'xlsx' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        ];
+        
+        return $mimeTypes[$extension] ?? 'application/octet-stream';
+    }
+
+    private function isBinaryFile($filename)
+    {
+        $binaryExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'pdf', 'zip', 'doc', 'docx', 'xls', 'xlsx'];
+        $extension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+        return in_array($extension, $binaryExtensions);
     }
 
     private function formatBytes($bytes, $precision = 2) {
