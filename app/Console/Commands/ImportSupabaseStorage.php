@@ -300,35 +300,23 @@ class ImportSupabaseStorage extends Command
             // Détecter le type MIME basé sur l'extension
             $mimeType = $this->getMimeType($filename);
             
-            // Pour les fichiers binaires, utiliser le contenu brut sans encodage
-            if ($this->isBinaryFile($filename)) {
-                $response = Http::withHeaders([
-                    'apikey' => $serviceKey,
-                    'Authorization' => 'Bearer ' . $serviceKey,
-                    'Content-Type' => $mimeType
-                ])->timeout(30)
-                ->withOptions([
-                    'read_timeout' => 30,
-                    'connect_timeout' => 15
-                ])->body($fileContent)
-                ->put($supabaseUrl . '/storage/v1/object/' . $bucket . '/' . $filename);
-            } else {
-                // Pour les fichiers texte, s'assurer que l'encodage est correct
+            // Pour les fichiers texte, s'assurer que l'encodage est correct
+            if (!$this->isBinaryFile($filename)) {
                 if (!mb_check_encoding($fileContent, 'UTF-8')) {
                     $fileContent = mb_convert_encoding($fileContent, 'UTF-8', 'UTF-8');
                 }
-                
-                $response = Http::withHeaders([
-                    'apikey' => $serviceKey,
-                    'Authorization' => 'Bearer ' . $serviceKey,
-                    'Content-Type' => $mimeType
-                ])->timeout(30)
-                ->withOptions([
-                    'read_timeout' => 30,
-                    'connect_timeout' => 15
-                ])->body($fileContent)
-                ->put($supabaseUrl . '/storage/v1/object/' . $bucket . '/' . $filename);
             }
+            
+            // Uploader le fichier avec le bon Content-Type
+            $response = Http::withHeaders([
+                'apikey' => $serviceKey,
+                'Authorization' => 'Bearer ' . $serviceKey,
+                'Content-Type' => $mimeType
+            ])->timeout(30)
+            ->withOptions([
+                'read_timeout' => 30,
+                'connect_timeout' => 15
+            ])->put($supabaseUrl . '/storage/v1/object/' . $bucket . '/' . $filename, $fileContent);
 
             if ($response->successful()) {
                 return true;
