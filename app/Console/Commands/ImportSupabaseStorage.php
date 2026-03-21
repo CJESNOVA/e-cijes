@@ -51,6 +51,30 @@ class ImportSupabaseStorage extends Command
                 return;
             }
 
+            $this->info('🔗 Vérification de la connexion au nouveau Supabase...');
+            $this->info('   URL : ' . $newSupabaseUrl);
+            $this->info('   Bucket : ' . $newBucket);
+            
+            // Test de connexion au nouveau Supabase
+            $testResponse = Http::withHeaders([
+                'apikey' => $newServiceKey,
+                'Authorization' => 'Bearer ' . $newServiceKey
+            ])->get($newSupabaseUrl . '/storage/v1/bucket/' . $newBucket);
+            
+            if (!$testResponse->successful()) {
+                $this->error('❌ Impossible de se connecter au nouveau Supabase :');
+                $this->error('   Status : ' . $testResponse->status());
+                $this->error('   Message : ' . $testResponse->body());
+                $this->info('');
+                $this->info('💡 Solutions possibles :');
+                $this->info('   1. Vérifiez NEW_SUPABASE_URL et NEW_SUPABASE_SERVICE_ROLE_KEY');
+                $this->info('   2. Créez le bucket "' . $newBucket . '" dans le nouveau Supabase');
+                $this->info('   3. Vérifiez que les permissions sont correctes');
+                return;
+            }
+            
+            $this->info('✅ Connexion au nouveau Supabase réussie !');
+
             // Vérifier l'ancienne configuration pour télécharger le ZIP
             $oldSupabaseUrl = env('SUPABASE_URL');
             $oldServiceKey = env('SUPABASE_SERVICE_ROLE_KEY');
@@ -216,9 +240,12 @@ class ImportSupabaseStorage extends Command
                 $totalSize += $fileSize;
 
                 // Vérifier si le contenu contient des caractères UTF-8 invalides
-                if (!mb_check_encoding($fileContent, 'UTF-8') && !$this->isBinaryFile($filename)) {
-                    $this->info("\n⚠️  Caractères UTF-8 invalides, nettoyage : {$filename}");
-                    $fileContent = mb_convert_encoding($fileContent, 'UTF-8', 'UTF-8');
+                // Pour les fichiers binaires, on ne fait aucune vérification UTF-8
+                if (!$this->isBinaryFile($filename)) {
+                    if (!mb_check_encoding($fileContent, 'UTF-8')) {
+                        $this->info("\n⚠️  Caractères UTF-8 invalides, nettoyage : {$filename}");
+                        $fileContent = mb_convert_encoding($fileContent, 'UTF-8', 'UTF-8');
+                    }
                 }
 
                 // Uploader vers le nouveau Supabase
@@ -334,7 +361,14 @@ class ImportSupabaseStorage extends Command
 
     private function isBinaryFile($filename)
     {
-        $binaryExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'pdf', 'zip', 'doc', 'docx', 'xls', 'xlsx'];
+        $binaryExtensions = [
+            'jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'ico', 'svg', 'jfif',
+            'pdf', 'zip', 'rar', 'tar', 'gz', '7z',
+            'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx',
+            'mp4', 'avi', 'mov', 'wmv', 'flv', 'mkv',
+            'mp3', 'wav', 'ogg', 'flac',
+            'exe', 'dll', 'so', 'dylib'
+        ];
         $extension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
         return in_array($extension, $binaryExtensions);
     }
