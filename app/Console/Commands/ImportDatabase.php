@@ -33,7 +33,7 @@ class ImportDatabase extends Command
         foreach ($tables as $table) {
             $tableName = $table->{"Tables_in_$dbName"};
             try {
-                //DB::statement("DROP TABLE IF EXISTS `$tableName`;");
+                DB::statement("DROP TABLE IF EXISTS `$tableName`;");
             } catch (\Exception $e) {
                 $this->warn("Impossible de supprimer la table $tableName : ".$e->getMessage());
             }
