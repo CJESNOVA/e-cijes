@@ -69,6 +69,11 @@ use App\Orchid\Screens\Parametres\FormationtypeScreen;
 use App\Orchid\Screens\Parametres\NewslettertypeScreen;
 use App\Orchid\Screens\Cotisation\CotisationScreen;
 use App\Orchid\Screens\Parametres\CotisationtypeScreen;
+use App\Orchid\Screens\Parametres\AbonnementtypeScreen;
+use App\Orchid\Screens\Abonnement\AbonnementScreen;
+use App\Orchid\Screens\Abonnementressource\ListScreen as AbonnementressourceListScreen;
+use App\Orchid\Screens\Abonnementressource\EditScreen as AbonnementressourceEditScreen;
+use App\Orchid\Screens\Abonnementressource\ShowScreen as AbonnementressourceShowScreen;
 //use App\Orchid\Screens\Parametres\LangueScreen;
 use App\Orchid\Screens\Parametres\ActualitetypeScreen;
 use App\Orchid\Screens\Parametres\EvenementinscriptiontypeScreen;
@@ -591,6 +596,14 @@ Route::screen('cotisationtype', CotisationtypeScreen::class)
         return $trail
             ->parent('platform.index')
             ->push('Types de cotisations');
+    });
+
+Route::screen('abonnementtype', AbonnementtypeScreen::class)
+    ->name('platform.abonnementtype')
+    ->breadcrumbs(function (Trail $trail){
+        return $trail
+            ->parent('platform.index')
+            ->push('Types d\'abonnements');
     });
 
 
@@ -1320,6 +1333,39 @@ Route::screen('cotisations/{cotisation}/show', \App\Orchid\Screens\Cotisation\Sh
     });
 Route::post('cotisations/toggleEtat', [\App\Orchid\Screens\Cotisation\CotisationScreen::class, 'toggleEtat'])->name('platform.cotisation.toggleEtat');
 Route::post('cotisations/delete', [\App\Orchid\Screens\Cotisation\CotisationScreen::class, 'delete'])->name('platform.cotisation.delete');
+
+//abonnements//////////////////////
+Route::screen('abonnement/{abonnement?}', \App\Orchid\Screens\Abonnement\EditScreen::class)->name('platform.abonnement.edit')
+    ->breadcrumbs(function (Trail $trail, $abonnement = null) {
+        $trail->parent('platform.abonnement.list');
+        if ($abonnement && $abonnement->exists) {
+            $trail->push('Modifier l\'abonnement', route('platform.abonnement.edit', $abonnement));
+        } else {
+            $trail->push('Créer un abonnement', route('platform.abonnement.edit'));
+        }
+    });
+Route::screen('abonnements', \App\Orchid\Screens\Abonnement\AbonnementScreen::class)->name('platform.abonnement.list')
+    ->breadcrumbs(fn (Trail $trail) => $trail
+        ->parent('platform.index')
+        ->push('Abonnements', route('platform.abonnement.list')));
+
+// Alias pour la compatibilité
+Route::screen('abonnement', \App\Orchid\Screens\Abonnement\AbonnementScreen::class)->name('platform.abonnement')
+    ->breadcrumbs(fn (Trail $trail) => $trail
+        ->parent('platform.index')
+        ->push('Abonnements', route('platform.abonnement')));
+Route::screen('abonnements/{abonnement}/show', \App\Orchid\Screens\Abonnement\ShowScreen::class)->name('platform.abonnement.show')
+    ->breadcrumbs(function (Trail $trail, $abonnement) {
+        return $trail
+            ->parent('platform.abonnement.list') 
+            ->push('Détail de l\'abonnement');
+    });
+Route::post('abonnements/toggleEtat', [\App\Orchid\Screens\Abonnement\AbonnementScreen::class, 'toggleEtat'])->name('platform.abonnement.toggleEtat');
+Route::post('abonnements/delete', [\App\Orchid\Screens\Abonnement\AbonnementScreen::class, 'delete'])->name('platform.abonnement.delete');
+Route::post('abonnements/renouveler', [\App\Orchid\Screens\Abonnement\AbonnementScreen::class, 'renouveler'])->name('platform.abonnement.renouveler');
+Route::post('abonnements/resilier', [\App\Orchid\Screens\Abonnement\AbonnementScreen::class, 'resilier'])->name('platform.abonnement.resilier');
+Route::post('abonnements/suspendre', [\App\Orchid\Screens\Abonnement\AbonnementScreen::class, 'suspendre'])->name('platform.abonnement.suspendre');
+Route::post('abonnements/reactiver', [\App\Orchid\Screens\Abonnement\AbonnementScreen::class, 'reactiver'])->name('platform.abonnement.reactiver');
 
 //accompagnement//////////////////////
 Route::screen('accompagnement/{accompagnement?}', App\Orchid\Screens\Accompagnement\EditScreen::class)->name('platform.accompagnement.edit')
@@ -2468,6 +2514,30 @@ Route::screen('cotisationressources/{cotisationressource}/show', App\Orchid\Scre
 Route::post('cotisationressources/toggleSpotlight', [App\Orchid\Screens\Cotisationressource\ListScreen::class, 'toggleSpotlight'])->name('platform.cotisationressource.toggleSpotlight');
 Route::post('cotisationressources/toggleEtat', [App\Orchid\Screens\Cotisationressource\ListScreen::class, 'toggleEtat'])->name('platform.cotisationressource.toggleEtat');
 Route::post('cotisationressources/delete', [App\Orchid\Screens\Cotisationressource\ListScreen::class, 'delete'])->name('platform.cotisationressource.delete');
+
+//abonnementressource//////////////////////
+Route::screen('abonnementressource/{abonnementressource?}', AbonnementressourceEditScreen::class)->name('platform.abonnementressource.edit')
+    ->breadcrumbs(function (Trail $trail, $abonnementressource = null) {
+        $trail->parent('platform.abonnementressource.list');
+        if ($abonnementressource && $abonnementressource->exists) {
+            $trail->push('Modifier le paiement de l\'abonnement', route('platform.abonnementressource.edit', $abonnementressource));
+        } else {
+            $trail->push('Créer un paiement de l\'abonnement', route('platform.abonnementressource.edit'));
+        }
+    });
+Route::screen('abonnementressources', AbonnementressourceListScreen::class)->name('platform.abonnementressource.list')
+    ->breadcrumbs(fn (Trail $trail) => $trail
+        ->parent('platform.index')
+        ->push('Paiements des abonnements', route('platform.abonnementressource.list')));
+Route::screen('abonnementressources/{abonnementressource}/show', AbonnementressourceShowScreen::class)->name('platform.abonnementressource.show')
+    ->breadcrumbs(function (Trail $trail, $abonnementressource) {
+        return $trail
+            ->parent('platform.abonnementressource.list') 
+            ->push('Détail du paiement de l\'abonnement');
+    });
+Route::post('abonnementressources/toggleSpotlight', [AbonnementressourceListScreen::class, 'toggleSpotlight'])->name('platform.abonnementressource.toggleSpotlight');
+Route::post('abonnementressources/toggleEtat', [AbonnementressourceListScreen::class, 'toggleEtat'])->name('platform.abonnementressource.toggleEtat');
+Route::post('abonnementressources/delete', [AbonnementressourceListScreen::class, 'delete'])->name('platform.abonnementressource.delete');
 
 //espaceressource//////////////////////
 Route::screen('espaceressource/{espaceressource?}', App\Orchid\Screens\Espaceressource\EditScreen::class)->name('platform.espaceressource.edit')

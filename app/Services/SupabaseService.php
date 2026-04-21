@@ -77,7 +77,7 @@ public function insertWithServiceRole($table, $data)
     public function login($email, $password)
     {
         $response = Http::withHeaders([
-            'apikey' => $this->apiKey,
+            'apikey' => $this->apiKey,  // Pour l'auth, utiliser la clé API normale
             'Authorization' => 'Bearer ' . $this->apiKey,
             'Content-Type' => 'application/json',
         ])->post(env('SUPABASE_URL') . '/auth/v1/token?grant_type=password', [

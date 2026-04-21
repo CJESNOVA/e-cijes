@@ -368,15 +368,15 @@ use Illuminate\Support\Facades\DB;
                             </div>
                             <div class="col-lg-3 col-md-4">
                                 <div class="footer-widget social sm-mb-0">
-                                    <h3 class="hello-title">Say hello</h3>
+                                    <h3 class="hello-title">{{ __('contact_index') }}</h3>
                                     <p><a class="email" href="mailto:{{ __('emailsite2') }}">{{ __('emailsite2') }}</a></p>
                                     <p><a class="number" href="tel:{{ __('telephonesite3') }}">{{ __('telephonesite2') }}</a></p>
                                     <hr />
                                     <div class="social-links">
-                                        <a href="https://www.facebook.com/people/Conf%C3%A9d%C3%A9ration-des-Juniors-Entreprises-du-Togo/61552961216434/" target="_blank" class="social-icon"><i class="fab fa-facebook-f"></i></a>
-                                        <a href="#" class="social-icon"><i class="fab fa-x-twitter"></i></a>
-                                        <a href="https://www.linkedin.com/company/cjet-confederations-des-juniors-entreprises-du-togo/?viewAsMember=true" target="_blank" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
-                                        <a href="#" class="social-icon"><i class="fab fa-pinterest-p"></i></a>
+                                        <a href="https://www.facebook.com/profile.php?id=61588041190222" target="_blank" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                                        <a href="https://www.instagram.com/eco_cjes/?hl=fr" target="_blank" class="social-icon"><i class="fab fa-instagram"></i></a>
+                                        <a href="https://www.linkedin.com/company/cjes/?viewAsMember=true" target="_blank" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+                                        <a href="https://www.youtube.com/@lacjet" target="_blank" class="social-icon"><i class="fab fa-youtube"></i></a>
                                     </div>
                                 </div>
                             </div>
