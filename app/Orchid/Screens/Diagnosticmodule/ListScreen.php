@@ -26,7 +26,7 @@ class ListScreen extends Screen
     public function query(): iterable
     {
         return [
-            'diagnosticmodules' => Diagnosticmodule::with(['diagnosticmoduletype', 'diagnosticmodulecategory', 'entrepriseprofil', 'langue', 'pays'])
+            'diagnosticmodules' => Diagnosticmodule::with(['diagnosticmoduletype', 'diagnosticmodulecategory', 'entrepriseprofil'])
                 ->orderBy('position', 'asc')
                 ->paginate(),
         ];
