@@ -128,7 +128,7 @@ class ListScreen extends Screen
                     
                 TD::make('created_at', 'Créé le')
                     ->width('150')
-                    ->dateTime()
+                    ->render(fn (Diagnosticreponse $reponse) => $reponse->created_at?->format('d/m/Y H:i') ?? '-')
                     ->sort(),
                     
                 TD::make('Actions')

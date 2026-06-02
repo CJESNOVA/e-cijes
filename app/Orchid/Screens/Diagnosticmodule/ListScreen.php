@@ -139,7 +139,7 @@ class ListScreen extends Screen
                     
                 TD::make('created_at', 'Créé le')
                     ->width('150')
-                    ->dateTime()
+                    ->render(fn (Diagnosticmodule $module) => $module->created_at?->format('d/m/Y H:i') ?? '-')
                     ->sort(),
                     
                 TD::make('Actions')

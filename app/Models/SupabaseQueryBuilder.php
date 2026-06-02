@@ -12,7 +12,7 @@ class SupabaseQueryBuilder extends Builder
         // Pas de constructeur parent pour éviter les connexions SQL
     }
     
-    public function where($column, $operator = null, $value = null)
+    public function where($column, $operator = null, $value = null, $boolean = 'and')
     {
         return $this;
     }
