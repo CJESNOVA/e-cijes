@@ -7,6 +7,7 @@ use App\Models\Diagnosticquestion;
 use App\Models\Langue;
 use Orchid\Screen\Screen;
 use Orchid\Screen\Actions\Link;
+use Orchid\Screen\Actions\Button;
 use Orchid\Screen\Layouts\Table;
 use Orchid\Screen\TD;
 use Orchid\Support\Facades\Layout;
@@ -132,13 +133,26 @@ class ListScreen extends Screen
                     ->sort(),
                     
                 TD::make('Actions')
-                    ->width('100')
+                    ->width('200')
                     ->alignCenter()
-                    ->render(fn (Diagnosticreponse $reponse) => 
-                        Link::make('Voir')
+                    ->render(function (Diagnosticreponse $reponse) {
+                        return Link::make('Voir')
                             ->icon('bs.eye')
                             ->route('platform.diagnosticreponse.show', $reponse)
-                    ),
+                            ->class('btn btn-sm btn-info me-1')
+                            . '&nbsp;'
+                            . Link::make('Modifier')
+                            ->icon('bs.pencil')
+                            ->route('platform.diagnosticreponse.edit', $reponse)
+                            ->class('btn btn-sm btn-warning me-1')
+                            . '&nbsp;'
+                            . Button::make('Supprimer')
+                            ->icon('bs.trash')
+                            ->method('delete')
+                            ->parameters(['diagnosticreponse' => $reponse->id])
+                            ->confirm('Confirmer la suppression ?')
+                            ->class('btn btn-sm btn-danger');
+                    }),
             ]),
         ];
     }

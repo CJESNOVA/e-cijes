@@ -65,18 +65,19 @@ class EditScreen extends Screen
     {
         return [
             Button::make('Créer une réponse du diagnostic')
-                ->icon('pencil')
+                ->icon('bs.pencil')
                 ->method('createOrUpdate')
                 ->canSee(!$this->diagnosticreponse->exists),
 
             Button::make('Modifier la réponse du diagnostic')
-                ->icon('note')
+                ->icon('bs.journal-text')
                 ->method('createOrUpdate')
                 ->canSee($this->diagnosticreponse->exists),
 
             Button::make('Supprimer')
-                ->icon('trash')
+                ->icon('bs.trash')
                 ->method('remove')
+                ->confirm('Êtes-vous sûr de vouloir supprimer cette réponse ?')
                 ->canSee($this->diagnosticreponse->exists),
         ];
     }
